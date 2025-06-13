@@ -16,15 +16,31 @@ const BodyMapInteractive = () => {
     'LargeIntestine', 
     'Stomach',
     // Future: Heart, SmallIntestine, Bladder, Kidney, Pericardium, TripleWarmer, Gallbladder, Liver
-  ];
-
-  // Load region buttons data
+  ];  // Load region buttons data based on current view
   useEffect(() => {
-    fetch('/data/region_buttons.json')
+    const buttonFileMap = {
+      'front': 'region_buttons.json',
+      'back': 'button_map_back.json', 
+      'side': 'button_map_side.json'
+    };
+    
+    const buttonFile = buttonFileMap[currentView] || 'region_buttons.json';
+    
+    fetch(`/data/${buttonFile}`)
       .then(res => res.json())
-      .then(data => setRegionButtons(data))
-      .catch(err => console.log('Region buttons not found:', err));
-  }, []);
+      .then(data => {
+        console.log(`Loaded ${currentView} view buttons:`, data);
+        // Filter for region buttons only (exclude UI elements)
+        const regionButtons = data.filter(button => 
+          !['Front, Back, Side', 'logo home button', 'Meridian Selector'].includes(button.label)
+        );
+        setRegionButtons(regionButtons);
+      })
+      .catch(err => {
+        console.log(`Button mapping not found for ${currentView}:`, err);
+        setRegionButtons([]);
+      });
+  }, [currentView]);
 
   // Load points data when view, region, or meridian changes
   useEffect(() => {
@@ -134,24 +150,31 @@ const BodyMapInteractive = () => {
                 e.target.style.display = 'none';
               }}
             />
-            
-            {/* Region Buttons Overlay (only on full view) */}
-            {currentRegion === 'full' && regionButtons[currentView] && (
+              {/* Region Buttons Overlay (only on full view) */}
+            {currentRegion === 'full' && regionButtons.length > 0 && (
               <>
-                {regionButtons[currentView].map((region, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleRegionClick(region.name)}
-                    className="absolute bg-blue-500 bg-opacity-20 border-2 border-blue-400 hover:bg-opacity-40 transition-all"
-                    style={{
-                      left: `${region.x * 100}%`,
-                      top: `${region.y * 100}%`,
-                      width: `${region.width * 100}%`,
-                      height: `${region.height * 100}%`
-                    }}
-                    title={`Zoom to ${region.name}`}
-                  />
-                ))}
+                {regionButtons.map((region, index) => {
+                  // Convert label to region name format
+                  const regionName = region.label.toLowerCase()
+                    .replace('&', '')
+                    .replace(/\s+/g, '')
+                    .replace('headneck', 'head');
+                  
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleRegionClick(regionName)}
+                      className="absolute bg-blue-500 bg-opacity-20 border-2 border-blue-400 hover:bg-opacity-40 transition-all rounded"
+                      style={{
+                        left: `${region.x * 100}%`,
+                        top: `${region.y * 100}%`,
+                        width: `${region.width * 100}%`,
+                        height: `${region.height * 100}%`
+                      }}
+                      title={`Zoom to ${region.label}`}
+                    />
+                  );
+                })}
               </>
             )}
 

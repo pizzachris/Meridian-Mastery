@@ -1,0 +1,66 @@
+[
+  {
+    "type": "box",
+    "label": "logo home",
+    "x": 0.0929,
+    "y": 0.0331,
+    "width": 0.1416,
+    "height": 0.1009
+  },
+  {
+    "type": "box",
+    "label": "front, back, side",
+    "x": 0.5646,
+    "y": 0.1868,
+    "width": 0.3867,
+    "height": 0.0651
+  },
+  {
+    "type": "box",
+    "label": "Head & Neck",
+    "x": 0.5978,
+    "y": 0.3105,
+    "width": 0.3477,
+    "height": 0.0742
+  },
+  {
+    "type": "box",
+    "label": "Arms",
+    "x": 0.6291,
+    "y": 0.4459,
+    "width": 0.3252,
+    "height": 0.0762
+  },
+  {
+    "type": "box",
+    "label": "Trunk",
+    "x": 0.6193,
+    "y": 0.5833,
+    "width": 0.3174,
+    "height": 0.0762
+  },
+  {
+    "type": "box",
+    "label": "Legs",
+    "x": 0.6164,
+    "y": 0.72,
+    "width": 0.333,
+    "height": 0.0788
+  },
+  {
+    "type": "box",
+    "label": "Feet",
+    "x": 0.6144,
+    "y": 0.8548,
+    "width": 0.3281,
+    "height": 0.0749
+  },
+  {
+    "type": "box",
+    "label": "Meridian",
+    "x": 0.0412,
+    "y": 0.692,
+    "width": 0.1963,
+    "height": 0.0788
+  }
+]
