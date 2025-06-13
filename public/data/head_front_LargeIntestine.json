@@ -1,0 +1,38 @@
+[
+  {
+    "id": "LI17",
+    "name": "Chung Jung",
+    "meridian": "Large Intestine",
+    "region": "head_neck",
+    "description": "",
+    "x": 0.6625,
+    "y": 0.9071
+  },
+  {
+    "id": "LI18",
+    "name": "Boo Dohl",
+    "meridian": "Large Intestine",
+    "region": "head_neck",
+    "description": "",
+    "x": 0.6542,
+    "y": 0.8429
+  },
+  {
+    "id": "LI19",
+    "name": "Hwahn Ryoh",
+    "meridian": "Large Intestine",
+    "region": "head_neck",
+    "description": "",
+    "x": 0.5708,
+    "y": 0.5536
+  },
+  {
+    "id": "LI20",
+    "name": "Yuhng Hyahng",
+    "meridian": "Large Intestine",
+    "region": "head_neck",
+    "description": "",
+    "x": 0.4833,
+    "y": 0.525
+  }
+]

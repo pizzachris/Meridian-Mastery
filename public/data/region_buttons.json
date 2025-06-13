@@ -1,0 +1,113 @@
+{
+  "front": [
+    {
+      "name": "head",
+      "x": 0.35,
+      "y": 0.05,
+      "width": 0.3,
+      "height": 0.2
+    },
+    {
+      "name": "trunk", 
+      "x": 0.25,
+      "y": 0.25,
+      "width": 0.5,
+      "height": 0.4
+    },
+    {
+      "name": "arms",
+      "x": 0.1,
+      "y": 0.25,
+      "width": 0.15,
+      "height": 0.4
+    },
+    {
+      "name": "legs",
+      "x": 0.3,
+      "y": 0.65,
+      "width": 0.4,
+      "height": 0.25
+    },
+    {
+      "name": "feet",
+      "x": 0.35,
+      "y": 0.9,
+      "width": 0.3,
+      "height": 0.1
+    }
+  ],
+  "back": [
+    {
+      "name": "head",
+      "x": 0.35,
+      "y": 0.05,
+      "width": 0.3,
+      "height": 0.2
+    },
+    {
+      "name": "trunk",
+      "x": 0.25,
+      "y": 0.25,
+      "width": 0.5,
+      "height": 0.4
+    },
+    {
+      "name": "arms",
+      "x": 0.75,
+      "y": 0.25,
+      "width": 0.15,
+      "height": 0.4
+    },
+    {
+      "name": "legs",
+      "x": 0.3,
+      "y": 0.65,
+      "width": 0.4,
+      "height": 0.25
+    },
+    {
+      "name": "feet",
+      "x": 0.35,
+      "y": 0.9,
+      "width": 0.3,
+      "height": 0.1
+    }
+  ],
+  "side": [
+    {
+      "name": "head",
+      "x": 0.1,
+      "y": 0.05,
+      "width": 0.25,
+      "height": 0.2
+    },
+    {
+      "name": "trunk",
+      "x": 0.2,
+      "y": 0.25,
+      "width": 0.4,
+      "height": 0.4
+    },
+    {
+      "name": "arms",
+      "x": 0.6,
+      "y": 0.3,
+      "width": 0.25,
+      "height": 0.3
+    },
+    {
+      "name": "legs",
+      "x": 0.15,
+      "y": 0.65,
+      "width": 0.4,
+      "height": 0.25
+    },
+    {
+      "name": "feet",
+      "x": 0.1,
+      "y": 0.9,
+      "width": 0.3,
+      "height": 0.1
+    }
+  ]
+}

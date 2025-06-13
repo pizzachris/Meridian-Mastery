@@ -1,0 +1,164 @@
+[
+  {
+    "id": "ST13",
+    "name": "Kee Hoh",
+    "x": 0.3864,
+    "y": 0.1946,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST14",
+    "name": "Koh Bahng",
+    "x": 0.3883,
+    "y": 0.2364,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST15",
+    "name": "Ohg Yea",
+    "x": 0.3902,
+    "y": 0.2678,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST16",
+    "name": "Eung Chang",
+    "x": 0.392,
+    "y": 0.295,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST17",
+    "name": "Yoo Joong",
+    "x": 0.3939,
+    "y": 0.3326,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST18",
+    "name": "Yoo Guen",
+    "x": 0.3996,
+    "y": 0.4079,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST19",
+    "name": "Bool Yohng",
+    "x": 0.4675,
+    "y": 0.4603,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST20",
+    "name": "Seung Mahn",
+    "x": 0.4675,
+    "y": 0.5042,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST21",
+    "name": "Yahng Moon",
+    "x": 0.4675,
+    "y": 0.5377,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST22",
+    "name": "Gwahn Moon",
+    "x": 0.4675,
+    "y": 0.5774,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST23",
+    "name": "Tae Eul",
+    "x": 0.4675,
+    "y": 0.6172,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST24",
+    "name": "Hwahl Yook Moon",
+    "x": 0.4675,
+    "y": 0.6569,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST25",
+    "name": "Chuhn Choo",
+    "x": 0.4675,
+    "y": 0.6904,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST26",
+    "name": "Wae Reung",
+    "x": 0.4675,
+    "y": 0.7218,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST27",
+    "name": "Dae Guh",
+    "x": 0.4675,
+    "y": 0.7678,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST28",
+    "name": "Soo Doh",
+    "x": 0.4675,
+    "y": 0.8033,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST29",
+    "name": "Kee Rae",
+    "x": 0.4675,
+    "y": 0.8347,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  },
+  {
+    "id": "ST30",
+    "name": "Kee Choong",
+    "x": 0.4675,
+    "y": 0.8703,
+    "meridian": "Stomach",
+    "region": "trunk_front",
+    "description": ""
+  }
+]

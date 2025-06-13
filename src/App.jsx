@@ -3,6 +3,7 @@ import Home from './components/Home'
 import DailySession from './components/DailySession'
 import FlashcardSession from './components/FlashcardSession'
 import BodyMap from './components/BodyMap'
+import BodyMapInteractive from './components/BodyMapInteractive'
 import Settings from './components/Settings'
 import Progress from './components/Progress'
 import Quiz from './components/Quiz'
@@ -68,9 +69,8 @@ function App() {
       case 'session':
         return <DailySession navigateTo={navigateTo} />
       case 'flashcards':
-        return <FlashcardSession navigateTo={navigateTo} sessionMode={sessionMode} shuffleMode={shuffleMode} />
-      case 'bodymap':
-        return <BodyMap navigateTo={navigateTo} />
+        return <FlashcardSession navigateTo={navigateTo} sessionMode={sessionMode} shuffleMode={shuffleMode} />      case 'bodymap':
+        return <BodyMapInteractive navigateTo={navigateTo} />
       case 'quiz-selection':
         return <QuizSelection navigateTo={navigateTo} />
       case 'quiz':
