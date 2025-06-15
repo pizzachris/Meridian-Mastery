@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const Home = ({ navigateTo }) => {
   return (
@@ -15,28 +15,28 @@ const Home = ({ navigateTo }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
           <button
-            onClick={() => navigateTo('session')}
+            onClick={() => navigateTo("session")}
             className="bg-red-800 hover:bg-red-700 text-white font-bold py-4 px-6 rounded-lg border border-yellow-600 transition-all duration-200"
           >
             📚 DAILY SESSION
           </button>
 
           <button
-            onClick={() => navigateTo('flashcards')}
+            onClick={() => navigateTo("flashcards")}
             className="bg-blue-800 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg border border-blue-600 transition-all duration-200"
           >
             🗃️ FLASHCARDS
           </button>
 
           <button
-            onClick={() => navigateTo('quiz-selection')}
+            onClick={() => navigateTo("quiz-selection")}
             className="bg-green-800 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg border border-green-600 transition-all duration-200"
           >
             🧠 QUIZ
           </button>
 
           <button
-            onClick={() => navigateTo('progress')}
+            onClick={() => navigateTo("progress")}
             className="bg-purple-800 hover:bg-purple-700 text-white font-bold py-4 px-6 rounded-lg border border-purple-600 transition-all duration-200"
           >
             📊 PROGRESS
@@ -45,7 +45,7 @@ const Home = ({ navigateTo }) => {
 
         <div className="text-center mt-8">
           <button
-            onClick={() => navigateTo('settings')}
+            onClick={() => navigateTo("settings")}
             className="text-gray-400 hover:text-yellow-400 text-sm"
           >
             ⚙️ Settings
@@ -53,7 +53,7 @@ const Home = ({ navigateTo }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

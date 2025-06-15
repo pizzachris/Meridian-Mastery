@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 function App() {
   return (
@@ -6,7 +6,7 @@ function App() {
       <h1>Test App</h1>
       <p>This is a minimal test to see if React is working</p>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

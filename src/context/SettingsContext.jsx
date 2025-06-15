@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 // Create a context with default values
 const SettingsContext = createContext({
@@ -11,11 +11,13 @@ export const SettingsProvider = ({ children }) => {
   // Initialize state from localStorage if available, otherwise use default
   const [showElementalModal, setShowElementalModal] = useState(() => {
     try {
-      const savedValue = localStorage.getItem('meridian-mastery-show-elemental-modal');
+      const savedValue = localStorage.getItem(
+        "meridian-mastery-show-elemental-modal",
+      );
       // If the value has never been set, default to true (show modal)
-      return savedValue === null ? true : savedValue === 'true';
+      return savedValue === null ? true : savedValue === "true";
     } catch (error) {
-      console.error('Failed to load elemental modal setting:', error);
+      console.error("Failed to load elemental modal setting:", error);
       return true; // Default to showing modal on error
     }
   });
@@ -23,9 +25,12 @@ export const SettingsProvider = ({ children }) => {
   // Update localStorage when the setting changes
   useEffect(() => {
     try {
-      localStorage.setItem('meridian-mastery-show-elemental-modal', showElementalModal.toString());
+      localStorage.setItem(
+        "meridian-mastery-show-elemental-modal",
+        showElementalModal.toString(),
+      );
     } catch (error) {
-      console.error('Failed to save elemental modal setting:', error);
+      console.error("Failed to save elemental modal setting:", error);
     }
   }, [showElementalModal]);
 
@@ -46,7 +51,7 @@ export const SettingsProvider = ({ children }) => {
 export const useSettings = () => {
   const context = useContext(SettingsContext);
   if (context === undefined) {
-    throw new Error('useSettings must be used within a SettingsProvider');
+    throw new Error("useSettings must be used within a SettingsProvider");
   }
   return context;
 };

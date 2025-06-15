@@ -1,7 +1,7 @@
 // Import data directly for now to fix loading issues
-import allPointsData from '../data/meridian_mastery_points_bilateral.json'
-import maekChiKiData from '../data/maek_chi_ki.json'
-import maekChaKiData from '../data/maek_cha_ki.json'
+import allPointsData from "../data/meridian_mastery_points_bilateral.json";
+import maekChiKiData from "../data/maek_chi_ki.json";
+import maekChaKiData from "../data/maek_cha_ki.json";
 
 // Cache for transformed data to avoid re-processing
 let transformedAllPointsCache = null;
@@ -19,26 +19,38 @@ export const getAllPoints = async () => {
   }
 
   try {
-    const transformedData = allPointsData.map(point => ({
+    const transformedData = allPointsData.map((point) => ({
       id: point.id || point.ID || `point_${Math.random()}`,
-      nameEnglish: point.nameEnglish || point.english || point.name_english || '',
-      nameHangul: point.nameHangul || point.hangul || point.name_hangul || '',
-      nameRomanized: point.nameRomanized || point.romanized || point.name_romanized || '',
-      meridian: point.meridian || point.Meridian || '',
-      number: point.number || point.Number || point.point_number || '',  
-      location: point.location || point.Location || '',
-      tcmFunction: point.tcmFunction || point.tcm_function || point.TCMFunction || '',
-      healingFunction: point.healingFunction || point.healing_function || point.HealingFunction || '',
-      martialApplication: point.martialApplication || point.martial_application || point.MartialApplication || '',
-      warningNote: point.warningNote || point.warning_note || point.WarningNote || '',
-      side: point.side || point.Side || 'bilateral',
-      insights: point.insights || point.Insights || ''
+      nameEnglish:
+        point.nameEnglish || point.english || point.name_english || "",
+      nameHangul: point.nameHangul || point.hangul || point.name_hangul || "",
+      nameRomanized:
+        point.nameRomanized || point.romanized || point.name_romanized || "",
+      meridian: point.meridian || point.Meridian || "",
+      number: point.number || point.Number || point.point_number || "",
+      location: point.location || point.Location || "",
+      tcmFunction:
+        point.tcmFunction || point.tcm_function || point.TCMFunction || "",
+      healingFunction:
+        point.healingFunction ||
+        point.healing_function ||
+        point.HealingFunction ||
+        "",
+      martialApplication:
+        point.martialApplication ||
+        point.martial_application ||
+        point.MartialApplication ||
+        "",
+      warningNote:
+        point.warningNote || point.warning_note || point.WarningNote || "",
+      side: point.side || point.Side || "bilateral",
+      insights: point.insights || point.Insights || "",
     }));
 
     transformedAllPointsCache = transformedData;
     return transformedData;
   } catch (error) {
-    console.error('Error loading all points:', error);
+    console.error("Error loading all points:", error);
     return [];
   }
 };
@@ -50,26 +62,38 @@ export const getMaekChiKiPoints = async () => {
   }
 
   try {
-    const transformedData = maekChiKiData.map(point => ({
+    const transformedData = maekChiKiData.map((point) => ({
       id: point.id || point.ID || `maek_chi_ki_${Math.random()}`,
-      nameEnglish: point.nameEnglish || point.english || point.name_english || '',
-      nameHangul: point.nameHangul || point.hangul || point.name_hangul || '',
-      nameRomanized: point.nameRomanized || point.romanized || point.name_romanized || '',
-      meridian: point.meridian || point.Meridian || 'Maek Chi Ki',
-      number: point.number || point.Number || point.point_number || '',
-      location: point.location || point.Location || '',
-      tcmFunction: point.tcmFunction || point.tcm_function || point.TCMFunction || '',
-      healingFunction: point.healingFunction || point.healing_function || point.HealingFunction || '',
-      martialApplication: point.martialApplication || point.martial_application || point.MartialApplication || '',
-      warningNote: point.warningNote || point.warning_note || point.WarningNote || '',
-      side: point.side || point.Side || 'bilateral',
-      insights: point.insights || point.Insights || ''
+      nameEnglish:
+        point.nameEnglish || point.english || point.name_english || "",
+      nameHangul: point.nameHangul || point.hangul || point.name_hangul || "",
+      nameRomanized:
+        point.nameRomanized || point.romanized || point.name_romanized || "",
+      meridian: point.meridian || point.Meridian || "Maek Chi Ki",
+      number: point.number || point.Number || point.point_number || "",
+      location: point.location || point.Location || "",
+      tcmFunction:
+        point.tcmFunction || point.tcm_function || point.TCMFunction || "",
+      healingFunction:
+        point.healingFunction ||
+        point.healing_function ||
+        point.HealingFunction ||
+        "",
+      martialApplication:
+        point.martialApplication ||
+        point.martial_application ||
+        point.MartialApplication ||
+        "",
+      warningNote:
+        point.warningNote || point.warning_note || point.WarningNote || "",
+      side: point.side || point.Side || "bilateral",
+      insights: point.insights || point.Insights || "",
     }));
 
     transformedMaekChiKiCache = transformedData;
     return transformedData;
   } catch (error) {
-    console.error('Error loading Maek Chi Ki points:', error);
+    console.error("Error loading Maek Chi Ki points:", error);
     return [];
   }
 };
@@ -81,26 +105,38 @@ export const getMaekChaKiPoints = async () => {
   }
 
   try {
-    const transformedData = maekChaKiData.map(point => ({
+    const transformedData = maekChaKiData.map((point) => ({
       id: point.id || point.ID || `maek_cha_ki_${Math.random()}`,
-      nameEnglish: point.nameEnglish || point.english || point.name_english || '',
-      nameHangul: point.nameHangul || point.hangul || point.name_hangul || '',
-      nameRomanized: point.nameRomanized || point.romanized || point.name_romanized || '',
-      meridian: point.meridian || point.Meridian || 'Maek Cha Ki',
-      number: point.number || point.Number || point.point_number || '',
-      location: point.location || point.Location || '',
-      tcmFunction: point.tcmFunction || point.tcm_function || point.TCMFunction || '',
-      healingFunction: point.healingFunction || point.healing_function || point.HealingFunction || '',
-      martialApplication: point.martialApplication || point.martial_application || point.MartialApplication || '',
-      warningNote: point.warningNote || point.warning_note || point.WarningNote || '',
-      side: point.side || point.Side || 'bilateral',
-      insights: point.insights || point.Insights || ''
+      nameEnglish:
+        point.nameEnglish || point.english || point.name_english || "",
+      nameHangul: point.nameHangul || point.hangul || point.name_hangul || "",
+      nameRomanized:
+        point.nameRomanized || point.romanized || point.name_romanized || "",
+      meridian: point.meridian || point.Meridian || "Maek Cha Ki",
+      number: point.number || point.Number || point.point_number || "",
+      location: point.location || point.Location || "",
+      tcmFunction:
+        point.tcmFunction || point.tcm_function || point.TCMFunction || "",
+      healingFunction:
+        point.healingFunction ||
+        point.healing_function ||
+        point.HealingFunction ||
+        "",
+      martialApplication:
+        point.martialApplication ||
+        point.martial_application ||
+        point.MartialApplication ||
+        "",
+      warningNote:
+        point.warningNote || point.warning_note || point.WarningNote || "",
+      side: point.side || point.Side || "bilateral",
+      insights: point.insights || point.Insights || "",
     }));
 
     transformedMaekChaKiCache = transformedData;
     return transformedData;
   } catch (error) {
-    console.error('Error loading Maek Cha Ki points:', error);
+    console.error("Error loading Maek Cha Ki points:", error);
     return [];
   }
 };
@@ -113,10 +149,12 @@ export const getPointsByMeridian = async (meridian) => {
 
   try {
     const allPoints = await getAllPoints();
-    const meridianPoints = allPoints.filter(point => 
-      point.meridian && point.meridian.toLowerCase() === meridian.toLowerCase()
+    const meridianPoints = allPoints.filter(
+      (point) =>
+        point.meridian &&
+        point.meridian.toLowerCase() === meridian.toLowerCase(),
     );
-    
+
     meridianCache.set(meridian, meridianPoints);
     return meridianPoints;
   } catch (error) {
@@ -133,10 +171,12 @@ export const getPointsByRegion = async (region) => {
 
   try {
     const allPoints = await getAllPoints();
-    const regionPoints = allPoints.filter(point => 
-      point.location && point.location.toLowerCase().includes(region.toLowerCase())
+    const regionPoints = allPoints.filter(
+      (point) =>
+        point.location &&
+        point.location.toLowerCase().includes(region.toLowerCase()),
     );
-    
+
     regionCache.set(region, regionPoints);
     return regionPoints;
   } catch (error) {
@@ -149,19 +189,21 @@ export const getPointsByRegion = async (region) => {
 export const getPointsByTheme = async (theme) => {
   try {
     const allPoints = await getAllPoints();
-    
+
     switch (theme.toLowerCase()) {
-      case 'healing':
-        return allPoints.filter(point => 
-          point.healingFunction && point.healingFunction.trim() !== ''
+      case "healing":
+        return allPoints.filter(
+          (point) =>
+            point.healingFunction && point.healingFunction.trim() !== "",
         );
-      case 'martial':
-        return allPoints.filter(point => 
-          point.martialApplication && point.martialApplication.trim() !== ''
+      case "martial":
+        return allPoints.filter(
+          (point) =>
+            point.martialApplication && point.martialApplication.trim() !== "",
         );
-      case 'tcm':
-        return allPoints.filter(point => 
-          point.tcmFunction && point.tcmFunction.trim() !== ''
+      case "tcm":
+        return allPoints.filter(
+          (point) => point.tcmFunction && point.tcmFunction.trim() !== "",
         );
       default:
         return allPoints;
@@ -176,10 +218,12 @@ export const getPointsByTheme = async (theme) => {
 export const getAvailableMeridians = async () => {
   try {
     const allPoints = await getAllPoints();
-    const meridians = [...new Set(allPoints.map(point => point.meridian).filter(Boolean))];
+    const meridians = [
+      ...new Set(allPoints.map((point) => point.meridian).filter(Boolean)),
+    ];
     return meridians.sort();
   } catch (error) {
-    console.error('Error getting available meridians:', error);
+    console.error("Error getting available meridians:", error);
     return [];
   }
 };
@@ -187,26 +231,62 @@ export const getAvailableMeridians = async () => {
 export const getAvailableRegions = async () => {
   try {
     const allPoints = await getAllPoints();
-    const regions = [...new Set(
-      allPoints
-        .map(point => point.location)
-        .filter(Boolean)
-        .map(location => {
-          // Extract main body regions from location descriptions
-          const lowerLocation = location.toLowerCase();
-          if (lowerLocation.includes('head') || lowerLocation.includes('face') || lowerLocation.includes('forehead')) return 'Head';
-          if (lowerLocation.includes('neck') || lowerLocation.includes('throat')) return 'Neck';
-          if (lowerLocation.includes('chest') || lowerLocation.includes('breast')) return 'Chest';
-          if (lowerLocation.includes('back') || lowerLocation.includes('spine')) return 'Back';
-          if (lowerLocation.includes('arm') || lowerLocation.includes('elbow') || lowerLocation.includes('wrist') || lowerLocation.includes('hand')) return 'Arm';
-          if (lowerLocation.includes('leg') || lowerLocation.includes('knee') || lowerLocation.includes('ankle') || lowerLocation.includes('foot')) return 'Leg';
-          if (lowerLocation.includes('abdomen') || lowerLocation.includes('stomach') || lowerLocation.includes('belly')) return 'Abdomen';
-          return 'Other';
-        })
-    )];
+    const regions = [
+      ...new Set(
+        allPoints
+          .map((point) => point.location)
+          .filter(Boolean)
+          .map((location) => {
+            // Extract main body regions from location descriptions
+            const lowerLocation = location.toLowerCase();
+            if (
+              lowerLocation.includes("head") ||
+              lowerLocation.includes("face") ||
+              lowerLocation.includes("forehead")
+            )
+              return "Head";
+            if (
+              lowerLocation.includes("neck") ||
+              lowerLocation.includes("throat")
+            )
+              return "Neck";
+            if (
+              lowerLocation.includes("chest") ||
+              lowerLocation.includes("breast")
+            )
+              return "Chest";
+            if (
+              lowerLocation.includes("back") ||
+              lowerLocation.includes("spine")
+            )
+              return "Back";
+            if (
+              lowerLocation.includes("arm") ||
+              lowerLocation.includes("elbow") ||
+              lowerLocation.includes("wrist") ||
+              lowerLocation.includes("hand")
+            )
+              return "Arm";
+            if (
+              lowerLocation.includes("leg") ||
+              lowerLocation.includes("knee") ||
+              lowerLocation.includes("ankle") ||
+              lowerLocation.includes("foot")
+            )
+              return "Leg";
+            if (
+              lowerLocation.includes("abdomen") ||
+              lowerLocation.includes("stomach") ||
+              lowerLocation.includes("belly")
+            )
+              return "Abdomen";
+            return "Other";
+          }),
+      ),
+    ];
     return regions.sort();
   } catch (error) {
-    console.error('Error getting available regions:', error);
+    console.error("Error getting available regions:", error);
     return [];
   }
 };
@@ -217,12 +297,12 @@ export const getCombinedData = async () => {
     const [allPoints, maekChiKi, maekChaKi] = await Promise.all([
       getAllPoints(),
       getMaekChiKiPoints(),
-      getMaekChaKiPoints()
+      getMaekChaKiPoints(),
     ]);
-    
+
     return [...allPoints, ...maekChiKi, ...maekChaKi];
   } catch (error) {
-    console.error('Error loading combined data:', error);
+    console.error("Error loading combined data:", error);
     return [];
   }
 };
@@ -233,28 +313,28 @@ export const validateDataIntegrity = async () => {
     const allPoints = await getAllPoints();
     const maekChiKi = await getMaekChiKiPoints();
     const maekChaKi = await getMaekChaKiPoints();
-    
+
     const issues = [];
-    
+
     // Check for missing required fields
     const checkRequiredFields = (points, dataType) => {
       points.forEach((point, index) => {
-        if (!point.nameEnglish || point.nameEnglish.trim() === '') {
+        if (!point.nameEnglish || point.nameEnglish.trim() === "") {
           issues.push(`${dataType}[${index}]: Missing nameEnglish`);
         }
-        if (!point.nameHangul || point.nameHangul.trim() === '') {
+        if (!point.nameHangul || point.nameHangul.trim() === "") {
           issues.push(`${dataType}[${index}]: Missing nameHangul`);
         }
-        if (!point.nameRomanized || point.nameRomanized.trim() === '') {
+        if (!point.nameRomanized || point.nameRomanized.trim() === "") {
           issues.push(`${dataType}[${index}]: Missing nameRomanized`);
         }
       });
     };
-    
-    checkRequiredFields(allPoints, 'AllPoints');
-    checkRequiredFields(maekChiKi, 'MaekChiKi');
-    checkRequiredFields(maekChaKi, 'MaekChaKi');
-    
+
+    checkRequiredFields(allPoints, "AllPoints");
+    checkRequiredFields(maekChiKi, "MaekChiKi");
+    checkRequiredFields(maekChaKi, "MaekChaKi");
+
     return {
       isValid: issues.length === 0,
       issues,
@@ -262,16 +342,16 @@ export const validateDataIntegrity = async () => {
         totalPoints: allPoints.length,
         maekChiKiPoints: maekChiKi.length,
         maekChaKiPoints: maekChaKi.length,
-        uniqueMeridians: await getAvailableMeridians().then(m => m.length),
-        uniqueRegions: await getAvailableRegions().then(r => r.length)
-      }
+        uniqueMeridians: await getAvailableMeridians().then((m) => m.length),
+        uniqueRegions: await getAvailableRegions().then((r) => r.length),
+      },
     };
   } catch (error) {
-    console.error('Error validating data integrity:', error);
+    console.error("Error validating data integrity:", error);
     return {
       isValid: false,
-      issues: ['Failed to validate data integrity'],
-      stats: {}
+      issues: ["Failed to validate data integrity"],
+      stats: {},
     };
   }
 };

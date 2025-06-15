@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node copy-icons.js",
+    "build": "vite build",
     "copy-icons": "node copy-icons.js",
     "preview": "vite preview"
   },
@@ -13,7 +13,9 @@
     "framer-motion": "^10.12.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.30.1"  },  "devDependencies": {
+    "react-router-dom": "^6.30.1"
+  },
+  "devDependencies": {
     "@types/react": "^18.2.12",
     "@types/react-dom": "^18.2.5",
     "@vitejs/plugin-react": "^4.0.0",

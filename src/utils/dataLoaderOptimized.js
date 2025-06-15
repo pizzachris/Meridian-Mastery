@@ -33,18 +33,20 @@ class LazyDataLoader {
 
   async createLoadingPromise(dataType) {
     switch (dataType) {
-      case 'all-points':
-        const { default: allPoints } = await import('../data/meridian_mastery_points_bilateral.json');
+      case "all-points":
+        const { default: allPoints } = await import(
+          "../data/meridian_mastery_points_bilateral.json"
+        );
         return this.transformAllPoints(allPoints);
-      
-      case 'maek-chi-ki':
-        const { default: maekChiKi } = await import('../data/maek_chi_ki.json');
-        return this.transformMaekPoints(maekChiKi, 'Maek Chi Ki');
-      
-      case 'maek-cha-ki':
-        const { default: maekChaKi } = await import('../data/maek_cha_ki.json');
-        return this.transformMaekPoints(maekChaKi, 'Maek Cha Ki');
-      
+
+      case "maek-chi-ki":
+        const { default: maekChiKi } = await import("../data/maek_chi_ki.json");
+        return this.transformMaekPoints(maekChiKi, "Maek Chi Ki");
+
+      case "maek-cha-ki":
+        const { default: maekChaKi } = await import("../data/maek_cha_ki.json");
+        return this.transformMaekPoints(maekChaKi, "Maek Cha Ki");
+
       default:
         throw new Error(`Unknown data type: ${dataType}`);
     }
@@ -52,48 +54,62 @@ class LazyDataLoader {
   transformAllPoints(data) {
     return data.map((point, index) => ({
       id: point.id || `point_${index}`,
-      nameEnglish: point["English Translation (Verified)"] || '',
-      nameHangul: point["Korean Name (Hangul)"] || '',
-      nameRomanized: point["Romanized Korean"] || '',
-      meridian: point["Meridian Name"] ? point["Meridian Name"].replace(/\s*\([^)]*\)/, '').trim() : '',
-      point_number: point["Point Number"] || '',
-      location: point["Anatomical Location"] || '',
-      healingFunction: point["Healing Function"] || '',
-      martialApplication: point["Martial Application"] || '',
+      nameEnglish: point["English Translation (Verified)"] || "",
+      nameHangul: point["Korean Name (Hangul)"] || "",
+      nameRomanized: point["Romanized Korean"] || "",
+      meridian: point["Meridian Name"]
+        ? point["Meridian Name"].replace(/\s*\([^)]*\)/, "").trim()
+        : "",
+      point_number: point["Point Number"] || "",
+      location: point["Anatomical Location"] || "",
+      healingFunction: point["Healing Function"] || "",
+      martialApplication: point["Martial Application"] || "",
       bilateral: point.Bilateral === "Yes",
-      insight: point.Insight || '',
-      element: this.getElementFromMeridian(point["Meridian Name"])
+      insight: point.Insight || "",
+      element: this.getElementFromMeridian(point["Meridian Name"]),
     }));
   }
   transformMaekPoints(data, defaultMeridian) {
     return data.map((point, index) => ({
-      id: point.id || `${defaultMeridian.toLowerCase().replace(/\s+/g, '_')}_${index}`,
-      nameEnglish: point.english || point.nameEnglish || '',
-      nameHangul: point.hangul || point.nameHangul || '',
-      nameRomanized: point.romanized || point.nameRomanized || '',
+      id:
+        point.id ||
+        `${defaultMeridian.toLowerCase().replace(/\s+/g, "_")}_${index}`,
+      nameEnglish: point.english || point.nameEnglish || "",
+      nameHangul: point.hangul || point.nameHangul || "",
+      nameRomanized: point.romanized || point.nameRomanized || "",
       meridian: point.meridian || defaultMeridian,
-      point_number: point.point_number || point.number || '',
-      location: point.location || '',
-      healingFunction: point.healingFunction || point["Healing Function"] || '',
-      martialApplication: point.martialApplication || point["Martial Application"] || '',
+      point_number: point.point_number || point.number || "",
+      location: point.location || "",
+      healingFunction: point.healingFunction || point["Healing Function"] || "",
+      martialApplication:
+        point.martialApplication || point["Martial Application"] || "",
       bilateral: point.bilateral !== "No",
-      insight: point.insight || ''
+      insight: point.insight || "",
     }));
   }
 
   getElementFromMeridian(meridianName) {
-    if (!meridianName) return 'earth';
-    const normalizedName = meridianName.replace(/\s*\([^)]*\)/, '').trim();
+    if (!meridianName) return "earth";
+    const normalizedName = meridianName.replace(/\s*\([^)]*\)/, "").trim();
     const elementMap = {
-      'Lung': 'metal', 'Large Intestine': 'metal',
-      'Stomach': 'earth', 'Spleen': 'earth',
-      'Heart': 'fire', 'Small Intestine': 'fire',
-      'Bladder': 'water', 'Urinary Bladder': 'water', 'Kidney': 'water',
-      'Pericardium': 'fire', 'Triple Heater': 'fire', 'Triple Burner': 'fire',
-      'Liver': 'wood', 'Gallbladder': 'wood',
-      'Governing': 'extraordinary', 'Conception': 'extraordinary'
+      Lung: "metal",
+      "Large Intestine": "metal",
+      Stomach: "earth",
+      Spleen: "earth",
+      Heart: "fire",
+      "Small Intestine": "fire",
+      Bladder: "water",
+      "Urinary Bladder": "water",
+      Kidney: "water",
+      Pericardium: "fire",
+      "Triple Heater": "fire",
+      "Triple Burner": "fire",
+      Liver: "wood",
+      Gallbladder: "wood",
+      Governing: "extraordinary",
+      Conception: "extraordinary",
     };
-    return elementMap[normalizedName] || 'earth';
+    return elementMap[normalizedName] || "earth";
   }
 
   // Preload critical data
@@ -101,11 +117,11 @@ class LazyDataLoader {
     try {
       // Load most common data types in background
       await Promise.all([
-        this.loadData('all-points'),
-        this.loadData('maek-chi-ki')
+        this.loadData("all-points"),
+        this.loadData("maek-chi-ki"),
       ]);
     } catch (error) {
-      console.warn('Failed to preload critical data:', error);
+      console.warn("Failed to preload critical data:", error);
     }
   }
 
@@ -120,7 +136,7 @@ class LazyDataLoader {
     return {
       cacheSize: this.cache.size,
       loadingPromises: this.loadingPromises.size,
-      cachedTypes: Array.from(this.cache.keys())
+      cachedTypes: Array.from(this.cache.keys()),
     };
   }
 }
@@ -130,15 +146,15 @@ const dataLoader = new LazyDataLoader();
 
 // Enhanced data loader functions with lazy loading
 export const getAllPoints = async () => {
-  return dataLoader.loadData('all-points');
+  return dataLoader.loadData("all-points");
 };
 
 export const getMaekChiKiPoints = async () => {
-  return dataLoader.loadData('maek-chi-ki');
+  return dataLoader.loadData("maek-chi-ki");
 };
 
 export const getMaekChaKiPoints = async () => {
-  return dataLoader.loadData('maek-cha-ki');
+  return dataLoader.loadData("maek-cha-ki");
 };
 
 // Utility functions with caching
@@ -151,43 +167,63 @@ export const getPointsByMeridian = async (meridian) => {
   }
 
   const allPoints = await getAllPoints();
-  
+
   // Clean up the meridian name for matching
   // Remove parentheses and abbreviations to match the transformed data
-  const cleanMeridian = meridian.replace(/\s*\([^)]*\)/, '').trim();
-  
-  console.log(`🔍 Searching for meridian: "${meridian}" -> cleaned: "${cleanMeridian}"`);
-  
-  const meridianPoints = allPoints.filter(point => {
+  const cleanMeridian = meridian.replace(/\s*\([^)]*\)/, "").trim();
+
+  console.log(
+    `🔍 Searching for meridian: "${meridian}" -> cleaned: "${cleanMeridian}"`,
+  );
+
+  const meridianPoints = allPoints.filter((point) => {
     if (!point.meridian) return false;
-    
+
     const pointMeridian = point.meridian.toLowerCase();
     const searchMeridian = cleanMeridian.toLowerCase();
-    
+
     // Direct match
     if (pointMeridian === searchMeridian) return true;
-    
+
     // Handle some common variations
     const variations = {
-      'urinary bladder': 'bladder',
-      'bladder': 'urinary bladder',
-      'triple burner': 'triple heater',
-      'triple heater': 'triple burner'
+      "urinary bladder": "bladder",
+      bladder: "urinary bladder",
+      "triple burner": "triple heater",
+      "triple heater": "triple burner",
     };
-    
-    if (variations[searchMeridian] && pointMeridian === variations[searchMeridian]) return true;
-    if (variations[pointMeridian] && searchMeridian === variations[pointMeridian]) return true;
-    
+
+    if (
+      variations[searchMeridian] &&
+      pointMeridian === variations[searchMeridian]
+    )
+      return true;
+    if (
+      variations[pointMeridian] &&
+      searchMeridian === variations[pointMeridian]
+    )
+      return true;
+
     return false;
   });
-  
-  console.log(`✅ Found ${meridianPoints.length} points for "${cleanMeridian}"`);
+
+  console.log(
+    `✅ Found ${meridianPoints.length} points for "${cleanMeridian}"`,
+  );
   if (meridianPoints.length > 0) {
-    console.log('📋 Sample points:', meridianPoints.slice(0, 3).map(p => `${p.point_number}: ${p.nameEnglish}`));
+    console.log(
+      "📋 Sample points:",
+      meridianPoints
+        .slice(0, 3)
+        .map((p) => `${p.point_number}: ${p.nameEnglish}`),
+    );
   } else {
-    console.log('❌ No points found. Available meridians:', [...new Set(allPoints.map(p => p.meridian))].slice(0, 10));
+    console.log(
+      "❌ No points found. Available meridians:",
+      [...new Set(allPoints.map((p) => p.meridian))].slice(0, 10),
+    );
   }
-  
+
   meridianCache.set(meridian, meridianPoints);
   return meridianPoints;
 };
@@ -198,25 +234,28 @@ export const getPointsByRegion = async (region) => {
   }
 
   const allPoints = await getAllPoints();
-  const regionPoints = allPoints.filter(point => 
-    point.location && point.location.toLowerCase().includes(region.toLowerCase())
+  const regionPoints = allPoints.filter(
+    (point) =>
+      point.location &&
+      point.location.toLowerCase().includes(region.toLowerCase()),
   );
-  
+
   regionCache.set(region, regionPoints);
   return regionPoints;
 };
 
 export const getPointsByTheme = async (theme) => {
   const allPoints = await getAllPoints();
-  
+
   switch (theme.toLowerCase()) {
-    case 'healing':
-      return allPoints.filter(point => 
-        point.healingFunction && point.healingFunction.trim() !== ''
+    case "healing":
+      return allPoints.filter(
+        (point) => point.healingFunction && point.healingFunction.trim() !== "",
       );
-    case 'martial':
-      return allPoints.filter(point => 
-        point.martialApplication && point.martialApplication.trim() !== ''
+    case "martial":
+      return allPoints.filter(
+        (point) =>
+          point.martialApplication && point.martialApplication.trim() !== "",
       );
     default:
       return allPoints;
@@ -228,9 +267,9 @@ export const getCombinedData = async () => {
   const [allPoints, maekChiKi, maekChaKi] = await Promise.all([
     getAllPoints(),
     getMaekChiKiPoints(),
-    getMaekChaKiPoints()
+    getMaekChaKiPoints(),
   ]);
-  
+
   return [...allPoints, ...maekChiKi, ...maekChaKi];
 };
 
@@ -248,6 +287,6 @@ export const getDataCacheStats = () => {
   return {
     ...dataLoader.getCacheStats(),
     meridianCacheSize: meridianCache.size,
-    regionCacheSize: regionCache.size
+    regionCacheSize: regionCache.size,
   };
 };

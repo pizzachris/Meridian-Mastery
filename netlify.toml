@@ -1,7 +1,7 @@
 # Netlify build configuration for Meridian Mastery
 [build]
-  # Build command - clean install with esbuild fix
-  command = "rm -rf node_modules package-lock.json && npm install && npm run build"
+  # Simple build command - let Netlify handle dependency management
+  command = "npm run build"
   # Directory to publish (build output)
   publish = "dist"
 

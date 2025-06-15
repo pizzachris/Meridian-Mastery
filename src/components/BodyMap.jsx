@@ -1,11 +1,7 @@
-import React from 'react';
+import React from "react";
 
 function BodyMap() {
-  return (
-    <div>
-      Body Map Placeholder
-    </div>
-  );
+  return <div>Body Map Placeholder</div>;
 }
 
 export default BodyMap;
