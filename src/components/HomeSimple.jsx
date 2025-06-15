@@ -7,14 +7,14 @@ const Home = ({ navigateTo }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-4 sm:py-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <Logo className="mx-auto mb-6" />
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+        <div className="text-center mb-8 sm:mb-12">
+          <Logo className="mx-auto mb-4 sm:mb-6" />
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Meridian Mastery Coach
           </h1>
-          <p className="text-gray-300 text-lg">
+          <p className="text-gray-300 text-sm sm:text-base md:text-lg">
             Master Traditional Korean Medicine pressure points
           </p>
         </div>

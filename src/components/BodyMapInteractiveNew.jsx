@@ -7,6 +7,7 @@ const BodyMapInteractive = ({ navigateTo }) => {
   const [selectedMeridian, setSelectedMeridian] = useState(""); // Lung, LargeIntestine, Stomach, etc.
   const [points, setPoints] = useState([]);
   const [pathData, setPathData] = useState([]);
+  const [regionButtons, setRegionButtons] = useState([]);
 
   // Available meridians for the selector
   const availableMeridians = [
@@ -25,6 +26,56 @@ const BodyMapInteractive = ({ navigateTo }) => {
     "GoverningVessel",
     "ConceptionVessel",
   ];
+
+  // Load region button coordinates based on current view
+  useEffect(() => {
+    let buttonFile = "region_buttons.json"; // default
+    
+    // Use view-specific button maps if available
+    if (currentView === "back") {
+      buttonFile = "button_map_back.json";
+    } else if (currentView === "side") {
+      buttonFile = "button_map_side.json";
+    }
+
+    fetch(`/data/${buttonFile}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(`Loaded region buttons for ${currentView}:`, data);
+        setRegionButtons(data || []);
+      })
+      .catch((err) => {
+        console.log(`Button map not found: ${buttonFile}`, err);
+        // Fallback to default region buttons
+        setRegionButtons([
+          {
+            type: "box",
+            label: "Head & Neck",
+            x: 0.35, y: 0.05, width: 0.3, height: 0.2
+          },
+          {
+            type: "box", 
+            label: "Arms",
+            x: 0.05, y: 0.25, width: 0.2, height: 0.4
+          },
+          {
+            type: "box",
+            label: "Trunk", 
+            x: 0.25, y: 0.25, width: 0.5, height: 0.4
+          },
+          {
+            type: "box",
+            label: "Legs",
+            x: 0.3, y: 0.65, width: 0.4, height: 0.25
+          },
+          {
+            type: "box",
+            label: "Feet",
+            x: 0.35, y: 0.9, width: 0.3, height: 0.1
+          }
+        ]);
+      });
+  }, [currentView]);
 
   // Meridian color mapping (based on Korean martial arts system)
   const meridianColors = {
@@ -51,18 +102,18 @@ const BodyMapInteractive = ({ navigateTo }) => {
     Stomach: ["front"],
     Spleen: ["front"],
     Heart: ["front"],
-    SmallIntestine: ["back"],
+    SmallIntestine: ["front", "back"],
     Bladder: ["back"],
-    Kidney: ["front"],
+    Kidney: ["front", "back"],
     Pericardium: ["front"],
-    TripleWarmer: ["back"],
-    Gallbladder: ["side"],
+    TripleWarmer: ["front", "back"],
+    Gallbladder: ["side", "front"],
     Liver: ["front"],
     GoverningVessel: ["back"],
     ConceptionVessel: ["front"],
   };
 
-  // Check if current meridian should be visible on current view
+  // Check if selected meridian is visible on current view
   const isMeridianVisibleOnCurrentView = () => {
     if (!selectedMeridian) return false;
     const visibleViews = meridianVisibility[selectedMeridian] || [];
@@ -142,9 +193,38 @@ const BodyMapInteractive = ({ navigateTo }) => {
     return { x: point.x, y: point.y };
   };
 
-  // Handle region button clicks
-  const handleRegionButtonClick = (region) => {
-    setCurrentRegion(region);
+  // Handle region button clicks from JSON coordinates
+  const handleRegionButtonClick = (regionLabel) => {
+    console.log("Region clicked:", regionLabel);
+    
+    // Map button labels to region names
+    const labelToRegion = {
+      "Head & Neck": "head",
+      "Arms": "arms", 
+      "Trunk": "trunk",
+      "Legs": "legs",
+      "Feet": "feet",
+      // Handle logo click
+      "logo home button": "home",
+      // Handle view switches
+      "Front, Back, Side": "view-switch"
+    };
+
+    const region = labelToRegion[regionLabel];
+    
+    if (region === "home") {
+      if (navigateTo) {
+        navigateTo("home");
+      }
+    } else if (region === "view-switch") {
+      // Cycle through views
+      const views = ["front", "back", "side"];
+      const currentIndex = views.indexOf(currentView);
+      const nextView = views[(currentIndex + 1) % views.length];
+      setCurrentView(nextView);
+    } else if (region) {
+      setCurrentRegion(region);
+    }
   };
 
   // Handle point clicks
@@ -182,25 +262,25 @@ const BodyMapInteractive = ({ navigateTo }) => {
 
           {/* Overlay Container for all interactive elements */}
           <div className="absolute inset-0">
-            {/* Control Panel - Fixed position overlay */}
-            <div className="absolute top-4 left-4 z-50 bg-black/80 backdrop-blur-sm rounded-lg p-4 border border-yellow-400/30 max-w-xs">
+            {/* Control Panel - Fixed position overlay - Mobile optimized */}
+            <div className="absolute top-2 left-2 z-50 bg-black/80 backdrop-blur-sm rounded-lg p-2 sm:p-4 border border-yellow-400/30 max-w-xs">
               {/* Logo */}
-              <div className="mb-4">
+              <div className="mb-2 sm:mb-4">
                 <button
                   onClick={handleLogoClick}
-                  className="text-yellow-400 font-bold text-lg hover:text-yellow-300 transition-colors"
+                  className="text-yellow-400 font-bold text-sm sm:text-lg hover:text-yellow-300 transition-colors"
                 >
                   ← MERIDIAN MASTERY
                 </button>
               </div>
 
               {/* View Controls */}
-              <div className="mb-4">
-                <div className="text-xs text-gray-400 mb-2">VIEW</div>
+              <div className="mb-2 sm:mb-4">
+                <div className="text-xs text-gray-400 mb-1 sm:mb-2">VIEW</div>
                 <div className="flex gap-1">
                   <button
                     onClick={() => setCurrentView("front")}
-                    className={`px-3 py-1 text-xs font-semibold rounded transition-all ${
+                    className={`px-2 sm:px-3 py-1 text-xs font-semibold rounded transition-all ${
                       currentView === "front"
                         ? "bg-red-600 text-white"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
@@ -210,7 +290,7 @@ const BodyMapInteractive = ({ navigateTo }) => {
                   </button>
                   <button
                     onClick={() => setCurrentView("back")}
-                    className={`px-3 py-1 text-xs font-semibold rounded transition-all ${
+                    className={`px-2 sm:px-3 py-1 text-xs font-semibold rounded transition-all ${
                       currentView === "back"
                         ? "bg-red-600 text-white"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
@@ -220,7 +300,7 @@ const BodyMapInteractive = ({ navigateTo }) => {
                   </button>
                   <button
                     onClick={() => setCurrentView("side")}
-                    className={`px-3 py-1 text-xs font-semibold rounded transition-all ${
+                    className={`px-2 sm:px-3 py-1 text-xs font-semibold rounded transition-all ${
                       currentView === "side"
                         ? "bg-red-600 text-white"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
@@ -317,6 +397,24 @@ const BodyMapInteractive = ({ navigateTo }) => {
                   />
                 );
               })}
+
+          {/* Invisible Overlay Buttons - Using JSON coordinates */}
+          {currentRegion === "full" && regionButtons.map((button, index) => (
+            <button
+              key={index}
+              onClick={() => handleRegionButtonClick(button.label)}
+              className="absolute bg-transparent border-0 hover:bg-white/10 active:bg-white/20 transition-colors"
+              style={{
+                left: `${button.x * 100}%`,
+                top: `${button.y * 100}%`,
+                width: `${button.width * 100}%`,
+                height: `${button.height * 100}%`,
+                zIndex: 45
+              }}
+              title={button.label}
+              aria-label={button.label}
+            />
+          ))}
           </div>
         </div>
       </div>
