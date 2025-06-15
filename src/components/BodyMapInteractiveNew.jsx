@@ -124,6 +124,7 @@ const BodyMapInteractive = ({ navigateTo }) => {
   useEffect(() => {
     if (selectedMeridian && currentRegion !== "full") {
       const filename = `${currentRegion}_${currentView}_${selectedMeridian}.json`;
+      console.log(`Attempting to load: ${filename} for region: ${currentRegion}, view: ${currentView}, meridian: ${selectedMeridian}`);
       fetch(`/data/${filename}`)
         .then((res) => res.json())
         .then((data) => {
@@ -134,6 +135,7 @@ const BodyMapInteractive = ({ navigateTo }) => {
           console.log(`Points file not found: ${filename}`, err);
           // Try alternative filename format
           const altFilename = `${currentRegion}s_${currentView}_${selectedMeridian}.json`;
+          console.log(`Trying alternative filename: ${altFilename}`);
           fetch(`/data/${altFilename}`)
             .then((res) => res.json())
             .then((data) => {
@@ -258,41 +260,50 @@ const BodyMapInteractive = ({ navigateTo }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Main Body Map Container */}
+    <div className="min-h-screen bg-gray-900 text-white mobile-safe">
+      {/* Main Body Map Container - Mobile optimized with consistent sizing */}
       <div className="relative w-full h-screen overflow-hidden">
-        {/* Body Image - fills container and maintains aspect ratio */}
-        <div className="relative w-full h-full">
+        {/* Body Image - fills container and maintains aspect ratio - consistent scaling */}
+        <div className="relative w-full h-full bg-gray-800">
           <img
             src={getCurrentImagePath()}
             alt={`${currentView} view - ${currentRegion}`}
             className="w-full h-full object-contain"
+            style={{
+              imageRendering: 'crisp-edges',
+              display: 'block'
+            }}
+            onLoad={(e) => {
+              console.log(`Image loaded: ${e.target.src}, natural size: ${e.target.naturalWidth}x${e.target.naturalHeight}, display size: ${e.target.width}x${e.target.height}`);
+            }}
             onError={(e) => {
               console.log("Image failed to load:", e.target.src);
             }}
           />
 
-          {/* Clear Meridian Button - appears when meridian is selected */}
+          {/* Clear Meridian Button - appears when meridian is selected - Mobile optimized */}
           {selectedMeridian && (
             <button
               onClick={() => setSelectedMeridian("")}
-              className="absolute top-4 right-4 z-50 bg-black/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-yellow-400/30 text-yellow-400 font-bold text-sm hover:text-yellow-300 hover:bg-black/90 transition-colors"
+              className="absolute top-2 right-2 sm:top-4 sm:right-4 z-50 bg-black/80 backdrop-blur-sm rounded-lg px-4 py-3 sm:px-3 sm:py-2 border border-yellow-400/30 text-yellow-400 font-bold text-sm hover:text-yellow-300 hover:bg-black/90 transition-colors min-w-[44px] min-h-[44px]"
               title="Clear Meridian Selection"
             >
-              Clear
+              <span className="block sm:hidden">✕</span>
+              <span className="hidden sm:block">Clear</span>
             </button>
           )}
 
-          {/* Back Button - appears when in zoomed region - positioned to avoid logo */}
+          {/* Back Button - appears when in zoomed region - Mobile optimized */}
           {currentRegion !== "full" && (
             <button
               onClick={resetToFull}
-              className={`absolute top-4 z-50 bg-black/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-blue-400/30 text-blue-400 font-bold text-sm hover:text-blue-300 hover:bg-black/90 transition-colors ${
-                selectedMeridian ? 'right-20' : 'right-4'
+              className={`absolute top-2 sm:top-4 z-50 bg-black/80 backdrop-blur-sm rounded-lg px-4 py-3 sm:px-3 sm:py-2 border border-blue-400/30 text-blue-400 font-bold text-sm hover:text-blue-300 hover:bg-black/90 transition-colors min-w-[44px] min-h-[44px] ${
+                selectedMeridian ? 'right-16 sm:right-20' : 'right-2 sm:right-4'
               }`}
               title="Back to Full Body Map"
             >
-              ← Back
+              <span className="block sm:hidden">←</span>
+              <span className="hidden sm:block">← Back</span>
             </button>
           )}
 
@@ -424,7 +435,7 @@ const BodyMapInteractive = ({ navigateTo }) => {
                   <button
                     key={index}
                     onClick={() => handlePointClick(point)}
-                    className="absolute w-3 h-3 bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-125 transition-all shadow-lg"
+                    className="absolute w-4 h-4 sm:w-3 sm:h-3 bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-125 transition-all shadow-lg min-w-[20px] min-h-[20px] cursor-pointer"
                     style={{
                       left: `${transformedPoint.x * 100}%`,
                       top: `${transformedPoint.y * 100}%`,

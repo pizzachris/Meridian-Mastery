@@ -19,12 +19,12 @@ const Home = ({ navigateTo }) => {
           </p>
         </div>
 
-        {/* Navigation Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Navigation Grid - Mobile optimized */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Daily Session */}
           <button
             onClick={() => navigateTo("session")}
-            className="w-full element-metal font-semibold py-3 px-4 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base relative group"
+            className="w-full element-metal font-semibold py-4 px-4 sm:py-3 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-base sm:text-sm md:text-base relative group min-h-[56px]"
           >
             <span className="relative z-10">⚡ Daily Session</span>
           </button>
@@ -32,7 +32,7 @@ const Home = ({ navigateTo }) => {
           {/* Flashcard Practice */}
           <button
             onClick={() => navigateTo("flashcards", { sessionMode: "all" })}
-            className="w-full element-wood font-semibold py-3 px-4 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base relative group"
+            className="w-full element-wood font-semibold py-4 px-4 sm:py-3 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-base sm:text-sm md:text-base relative group min-h-[56px]"
           >
             <span className="relative z-10">🎯 Flashcards</span>
           </button>
@@ -40,7 +40,7 @@ const Home = ({ navigateTo }) => {
           {/* Quiz Mode */}
           <button
             onClick={() => navigateTo("quiz-selection")}
-            className="w-full element-fire font-semibold py-3 px-4 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base relative group"
+            className="w-full element-fire font-semibold py-4 px-4 sm:py-3 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-base sm:text-sm md:text-base relative group min-h-[56px]"
           >
             <span className="relative z-10">🔥 Quiz Mode</span>
           </button>
