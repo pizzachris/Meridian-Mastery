@@ -132,7 +132,18 @@ const BodyMapInteractive = ({ navigateTo }) => {
         })
         .catch((err) => {
           console.log(`Points file not found: ${filename}`, err);
-          setPoints([]);
+          // Try alternative filename format
+          const altFilename = `${currentRegion}s_${currentView}_${selectedMeridian}.json`;
+          fetch(`/data/${altFilename}`)
+            .then((res) => res.json())
+            .then((data) => {
+              console.log("Loaded points for region (alt format):", data);
+              setPoints(Array.isArray(data) ? data : []);
+            })
+            .catch((err2) => {
+              console.log(`Alternative points file not found: ${altFilename}`, err2);
+              setPoints([]);
+            });
         });
     } else {
       setPoints([]);
@@ -403,13 +414,14 @@ const BodyMapInteractive = ({ navigateTo }) => {
             <button
               key={index}
               onClick={() => handleRegionButtonClick(button.label)}
-              className="absolute bg-transparent border-0 hover:bg-white/10 active:bg-white/20 transition-colors"
+              className="absolute bg-transparent border-none outline-none"
               style={{
                 left: `${button.x * 100}%`,
                 top: `${button.y * 100}%`,
                 width: `${button.width * 100}%`,
                 height: `${button.height * 100}%`,
-                zIndex: 45
+                zIndex: 45,
+                cursor: 'pointer'
               }}
               title={button.label}
               aria-label={button.label}

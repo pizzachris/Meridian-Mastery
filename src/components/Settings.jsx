@@ -19,7 +19,7 @@ const debounce = (func, wait) => {
 };
 
 const Settings = ({ navigateTo, darkMode, setDarkMode }) => {
-  const { showElementTheoryModal, setShowElementTheoryModal } = useSettings();
+  const { showElementalModal, setShowElementalModal } = useSettings();
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [autoFlip, setAutoFlip] = useState(() => {
     try {
@@ -390,8 +390,8 @@ const Settings = ({ navigateTo, darkMode, setDarkMode }) => {
                 <span>Element theory popups</span>
                 <input
                   type="checkbox"
-                  checked={showElementTheoryModal}
-                  onChange={(e) => setShowElementTheoryModal(e.target.checked)}
+                  checked={showElementalModal}
+                  onChange={(e) => setShowElementalModal(e.target.checked)}
                   className="w-4 h-4 accent-yellow-500"
                 />
               </div>
