@@ -227,11 +227,12 @@ const BodyMapInteractive = ({ navigateTo }) => {
       if (navigateTo) {
         navigateTo("home");
       }
-    } else if (region === "view-switch") {
-      // Cycle through views
+    } else if (region === "view-switch" || regionLabel === "Front, Back, Side") {
+      // Cycle through views: front -> back -> side -> front
       const views = ["front", "back", "side"];
       const currentIndex = views.indexOf(currentView);
       const nextView = views[(currentIndex + 1) % views.length];
+      console.log(`Switching from ${currentView} to ${nextView}`);
       setCurrentView(nextView);
     } else if (region) {
       setCurrentRegion(region);
@@ -271,9 +272,34 @@ const BodyMapInteractive = ({ navigateTo }) => {
             }}
           />
 
+          {/* Clear Meridian Button - appears when meridian is selected */}
+          {selectedMeridian && (
+            <button
+              onClick={() => setSelectedMeridian("")}
+              className="absolute top-4 right-4 z-50 bg-black/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-yellow-400/30 text-yellow-400 font-bold text-sm hover:text-yellow-300 hover:bg-black/90 transition-colors"
+              title="Clear Meridian Selection"
+            >
+              Clear
+            </button>
+          )}
+
+          {/* Back Button - appears when in zoomed region - positioned to avoid logo */}
+          {currentRegion !== "full" && (
+            <button
+              onClick={resetToFull}
+              className={`absolute top-4 z-50 bg-black/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-blue-400/30 text-blue-400 font-bold text-sm hover:text-blue-300 hover:bg-black/90 transition-colors ${
+                selectedMeridian ? 'right-20' : 'right-4'
+              }`}
+              title="Back to Full Body Map"
+            >
+              ← Back
+            </button>
+          )}
+
           {/* Overlay Container for all interactive elements */}
           <div className="absolute inset-0">
-            {/* Control Panel - Fixed position overlay - Mobile optimized */}
+            {/* Control Panel - DISABLED - Using JSON positioned elements instead */}
+            {false && (
             <div className="absolute top-2 left-2 z-50 bg-black/80 backdrop-blur-sm rounded-lg p-2 sm:p-4 border border-yellow-400/30 max-w-xs">
               {/* Logo */}
               <div className="mb-2 sm:mb-4">
@@ -369,6 +395,7 @@ const BodyMapInteractive = ({ navigateTo }) => {
                 </select>
               </div>
             </div>
+            )}
 
             {/* Meridian Path Overlay */}
             {selectedMeridian &&
@@ -410,23 +437,100 @@ const BodyMapInteractive = ({ navigateTo }) => {
               })}
 
           {/* Invisible Overlay Buttons - Using JSON coordinates */}
-          {currentRegion === "full" && regionButtons.map((button, index) => (
-            <button
-              key={index}
-              onClick={() => handleRegionButtonClick(button.label)}
-              className="absolute bg-transparent border-none outline-none"
-              style={{
-                left: `${button.x * 100}%`,
-                top: `${button.y * 100}%`,
-                width: `${button.width * 100}%`,
-                height: `${button.height * 100}%`,
-                zIndex: 45,
-                cursor: 'pointer'
-              }}
-              title={button.label}
-              aria-label={button.label}
-            />
-          ))}
+          {currentRegion === "full" && regionButtons.map((button, index) => {
+            // Handle meridian selector separately - invisible until clicked
+            if (button.label === "Meridian Selector") {
+              return (
+                <select
+                  key={index}
+                  value={selectedMeridian}
+                  onChange={(e) => setSelectedMeridian(e.target.value)}
+                  className="absolute bg-transparent border-none outline-none text-transparent cursor-pointer"
+                  style={{
+                    left: `${button.x * 100}%`,
+                    top: `${button.y * 100}%`,
+                    width: `${button.width * 100}%`,
+                    height: `${button.height * 100}%`,
+                    zIndex: 50,
+                    appearance: 'none',
+                    WebkitAppearance: 'none',
+                    MozAppearance: 'none',
+                    fontSize: '16px' // Prevent zoom on iOS
+                  }}
+                  title="Select Meridian"
+                  aria-label="Select Meridian"
+                >
+                  <option value="">Select Meridian...</option>
+                  {availableMeridians.map((meridian) => (
+                    <option key={meridian} value={meridian}>
+                      {meridian}
+                    </option>
+                  ))}
+                </select>
+              );
+            } else if (button.label === "Front, Back, Side") {
+              return (
+                <button
+                  key={index}
+                  onClick={() => {
+                    const views = ["front", "back", "side"];
+                    const currentIndex = views.indexOf(currentView);
+                    const nextView = views[(currentIndex + 1) % views.length];
+                    setCurrentView(nextView);
+                  }}
+                  className="absolute bg-transparent border-none outline-none cursor-pointer"
+                  style={{
+                    left: `${button.x * 100}%`,
+                    top: `${button.y * 100}%`,
+                    width: `${button.width * 100}%`,
+                    height: `${button.height * 100}%`,
+                    zIndex: 45
+                  }}
+                  title={`Current: ${currentView.toUpperCase()} - Click to switch`}
+                  aria-label="Switch View"
+                />
+              );
+            } else if (button.label === "logo home button") {
+              return (
+                <button
+                  key={index}
+                  onClick={() => {
+                    if (navigateTo) {
+                      navigateTo("home");
+                    }
+                  }}
+                  className="absolute bg-transparent border-none outline-none cursor-pointer"
+                  style={{
+                    left: `${button.x * 100}%`,
+                    top: `${button.y * 100}%`,
+                    width: `${button.width * 100}%`,
+                    height: `${button.height * 100}%`,
+                    zIndex: 45
+                  }}
+                  title="Return to Home"
+                  aria-label="Home"
+                />
+              );
+            }
+            
+            // Regular invisible buttons for region navigation (Head & Neck, Arms, Trunk, Legs, Feet)
+            return (
+              <button
+                key={index}
+                onClick={() => handleRegionButtonClick(button.label)}
+                className="absolute bg-transparent border-none outline-none cursor-pointer"
+                style={{
+                  left: `${button.x * 100}%`,
+                  top: `${button.y * 100}%`,
+                  width: `${button.width * 100}%`,
+                  height: `${button.height * 100}%`,
+                  zIndex: 45
+                }}
+                title={button.label}
+                aria-label={button.label}
+              />
+            );
+          })}
           </div>
         </div>
       </div>
