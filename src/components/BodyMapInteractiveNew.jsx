@@ -309,8 +309,8 @@ const BodyMapInteractive = ({ navigateTo }) => {
 
           {/* Overlay Container for all interactive elements */}
           <div className="absolute inset-0">
-            {/* Control Panel - DISABLED - Using JSON positioned elements instead */}
-            {false && (
+            {/* Control Panel - Show when in zoomed region or when no button maps available */}
+            {(currentRegion !== "full" || regionButtons.length === 0) && (
             <div className="absolute top-2 left-2 z-50 bg-black/80 backdrop-blur-sm rounded-lg p-2 sm:p-4 border border-yellow-400/30 max-w-xs">
               {/* Logo */}
               <div className="mb-2 sm:mb-4">
@@ -360,22 +360,28 @@ const BodyMapInteractive = ({ navigateTo }) => {
               </div>
 
               {/* Region Controls */}
-              {currentRegion === "full" && (
-                <div className="mb-4">
-                  <div className="text-xs text-gray-400 mb-2">REGION ZOOM</div>
+              <div className="mb-4">
+                <div className="text-xs text-gray-400 mb-2">
+                  {currentRegion === "full" ? "REGION ZOOM" : "CURRENT REGION"}
+                </div>
+                {currentRegion === "full" ? (
                   <div className="grid grid-cols-2 gap-1">
                     {["head", "arms", "trunk", "legs", "feet"].map((region) => (
                       <button
                         key={region}
-                        onClick={() => handleRegionButtonClick(region)}
+                        onClick={() => setCurrentRegion(region)}
                         className="px-2 py-1 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded transition-all"
                       >
                         {region.toUpperCase()}
                       </button>
                     ))}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="text-sm font-semibold text-yellow-400 mb-2">
+                    {currentRegion.toUpperCase()}
+                  </div>
+                )}
+              </div>
 
               {/* Back to Full View Button (when zoomed) */}
               {currentRegion !== "full" && (
@@ -398,7 +404,12 @@ const BodyMapInteractive = ({ navigateTo }) => {
                   className="w-full bg-gray-800 border border-gray-600 text-white px-2 py-1 text-sm rounded focus:border-yellow-400 focus:outline-none"
                 >
                   <option value="">Select Meridian...</option>
-                  {availableMeridians.map((meridian) => (
+                  {availableMeridians
+                    .filter(meridian => {
+                      const visibleViews = meridianVisibility[meridian] || [];
+                      return visibleViews.includes(currentView);
+                    })
+                    .map((meridian) => (
                     <option key={meridian} value={meridian}>
                       {meridian}
                     </option>
@@ -447,8 +458,8 @@ const BodyMapInteractive = ({ navigateTo }) => {
                 );
               })}
 
-          {/* Invisible Overlay Buttons - Using JSON coordinates */}
-          {currentRegion === "full" && regionButtons.map((button, index) => {
+          {/* Invisible Overlay Buttons - Only for full view with button maps */}
+          {currentRegion === "full" && regionButtons.length > 0 && regionButtons.map((button, index) => {
             // Handle meridian selector separately - invisible until clicked
             if (button.label === "Meridian Selector") {
               return (
