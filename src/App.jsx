@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import HomeSimple from "./components/HomeSimple";
 import DailySession from "./components/DailySession";
 import FlashcardSession from "./components/FlashcardSession";
-import BodyMap from "./components/BodyMap";
 import BodyMapInteractiveNew from "./components/BodyMapInteractiveNew";
 import Settings from "./components/Settings";
 import Progress from "./components/Progress";
