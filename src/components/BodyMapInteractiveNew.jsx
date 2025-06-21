@@ -8,11 +8,10 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   const [pathData, setPathData] = useState([]);
   const [selectedPoint, setSelectedPoint] = useState(null);
   const [zoomRegion, setZoomRegion] = useState(null);
-
   // Available meridians - only complete ones
   const availableMeridians = [
     { id: "Lung", name: "Lung", element: "element-metal", view: "front" },
-    { id: "LargeIntestine", name: "Large Intestine", element: "element-metal", view: "side" }
+    { id: "LargeIntestine", name: "Large Intestine", element: "element-metal", view: "front" }
   ];
 
   // Meridian colors for visualization
@@ -93,9 +92,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     setSelectedMeridian("");
     closeFlashcard(); // This will clear both selectedPoint and zoomRegion
   };
-
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
       {/* Header with Logo and Back Button */}
       <div className="absolute top-4 left-4 right-4 z-50 flex justify-between items-center">
         {/* Logo - Home Button */}
@@ -120,12 +118,14 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       </div>
 
       {/* Main Content Area */}
-      <div className="pt-16 pb-4 px-4">
+      <div className="pt-16 pb-4 px-4 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         {!selectedMeridian ? (
           // Meridian Selector View
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold mb-2 text-yellow-400">Select a Meridian</h1>
+              <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                Master Your Meridians
+              </h1>
               <p className="text-gray-300">Choose a meridian to view pressure points</p>
             </div>
             
@@ -145,6 +145,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
         ) : (
           // Body Map View
           <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-6">
+              <h1 className="text-2xl font-bold mb-2 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                Master Your Meridians
+              </h1>
+              <p className="text-gray-300">{selectedMeridian} Meridian Points</p>
+            </div>
             {/* Body Map Container - CRITICAL: Maintain exact image proportions */}
             <div className="relative bg-gray-800 rounded-lg overflow-hidden">
               {/* Body Image - Natural size to maintain point accuracy */}
@@ -162,14 +168,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   console.log(`Natural size: ${e.target.naturalWidth}x${e.target.naturalHeight}`);
                   console.log(`Display size: ${e.target.clientWidth}x${e.target.clientHeight}`);
                 }}
-              />
-
-              {/* Points Overlay - positioned relative to image */}
+              />              {/* Points Overlay - positioned relative to image */}
               {points.map((point, index) => (
                 <button
                   key={index}
                   onClick={() => handlePointClick(point)}
-                  className="absolute w-3 h-3 bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-125 transition-all shadow-lg cursor-pointer"
+                  className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-125 transition-all shadow-lg cursor-pointer w-2 h-2 sm:w-3 sm:h-3"
                   style={{
                     left: `${point.x * 100}%`,
                     top: `${point.y * 100}%`,
@@ -177,97 +181,131 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   }}
                   title={`${point.id}: ${point.name}`}
                 />
-              ))}              {/* Zoom Region Overlay - 200x200px equivalent */}
+              ))}{/* Zoom Region Overlay - 200x200px equivalent */}
               {zoomRegion && (
                 <div
-                  className="absolute border-4 border-yellow-400 bg-yellow-400/20 rounded-lg shadow-2xl"
+                  className="absolute border-4 border-yellow-400 bg-black/50 rounded-lg shadow-2xl overflow-hidden"
                   style={{
-                    left: `${zoomRegion.x * 100}%`,
-                    top: `${zoomRegion.y * 100}%`,
-                    width: `${zoomRegion.width * 100}%`,
-                    height: `${zoomRegion.height * 100}%`,
-                    zIndex: 30
+                    right: '20px',
+                    top: '20px',
+                    width: '200px',
+                    height: '200px',
+                    zIndex: 40
                   }}
                 >
-                  {/* Zoomed content indicator */}
-                  <div className="absolute inset-0 bg-yellow-400/10 border-2 border-yellow-400 rounded-lg">
-                    <div className="absolute top-1 left-1 text-xs font-bold text-yellow-400 bg-black/70 px-1 rounded">
-                      ZOOM
-                    </div>
+                  {/* Zoomed image view */}
+                  <img
+                    src={getCurrentImagePath()}
+                    alt="Zoomed view"
+                    className="absolute"
+                    style={{
+                      left: `${-(zoomRegion.x * 100 - 10)}%`,
+                      top: `${-(zoomRegion.y * 100 - 10)}%`,
+                      width: '500%',
+                      height: '500%',
+                      objectFit: 'contain'
+                    }}
+                  />
+                  {/* Point in zoom window */}
+                  {selectedPoint && (
+                    <div
+                      className="absolute w-2 h-2 bg-red-500 rounded-full border border-white"
+                      style={{
+                        left: '50%',
+                        top: '50%',
+                        transform: 'translate(-50%, -50%)'
+                      }}
+                    />
+                  )}
+                  {/* Zoom label */}
+                  <div className="absolute top-1 left-1 text-xs font-bold text-yellow-400 bg-black/70 px-1 rounded">
+                    ZOOM
                   </div>
                 </div>
               )}
-            </div>            {/* Flashcard - appears below body model when point is selected */}
+            </div>            {/* Flashcard - proper flashcard back styling */}
             {selectedPoint && (
-              <div className="mt-6 card w-full max-w-2xl mx-auto">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-2xl font-bold text-yellow-400">
-                    {selectedPoint.id}: {selectedPoint.name}
-                  </h3>
-                  <button
-                    onClick={closeFlashcard}
-                    className="text-red-400 hover:text-red-300 text-xl font-bold min-w-[30px] min-h-[30px] bg-black/50 rounded-full flex items-center justify-center"
-                    title="Close Card"
-                  >
-                    ✕
-                  </button>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-4 text-sm">
-                  <div className="space-y-3">
+              <div className="mt-6 max-w-2xl mx-auto">
+                {/* Flashcard container with proper styling */}
+                <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 shadow-2xl border-2 border-yellow-400/30">                  {/* Traditional Korean decorative border */}
+                  <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-red-600 via-yellow-400 to-blue-500 rounded-t-2xl"></div>
+                  
+                  {/* Header */}
+                  <div className="flex justify-between items-start mb-4 pt-2">
                     <div>
-                      <span className="font-semibold text-blue-300">Point ID:</span>
-                      <span className="ml-2 text-white font-bold">{selectedPoint.id}</span>
+                      <h3 className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                        {selectedPoint.id}
+                      </h3>
+                      <h4 className="text-xl font-semibold text-white mb-1">
+                        {selectedPoint.name}
+                      </h4>
                     </div>
-                    
-                    <div>
-                      <span className="font-semibold text-blue-300">Name:</span>
-                      <span className="ml-2 text-white">{selectedPoint.name}</span>
-                    </div>
-                    
-                    <div>
-                      <span className="font-semibold text-blue-300">Meridian:</span>
-                      <span className="ml-2 text-white">{selectedPoint.meridian || selectedMeridian}</span>
-                    </div>
-                    
-                    {selectedPoint.region && (
-                      <div>
-                        <span className="font-semibold text-blue-300">Region:</span>
-                        <span className="ml-2 text-white">{selectedPoint.region}</span>
-                      </div>
-                    )}
+                    <button
+                      onClick={closeFlashcard}
+                      className="text-red-400 hover:text-red-300 text-2xl font-bold min-w-[30px] min-h-[30px] bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+                      title="Close Card"
+                    >
+                      ✕
+                    </button>
                   </div>
                   
-                  <div className="space-y-3">
-                    <div>
-                      <span className="font-semibold text-blue-300">View:</span>
-                      <span className="ml-2 text-white capitalize">{selectedPoint.view || currentView}</span>
-                    </div>
-                    
-                    <div>
-                      <span className="font-semibold text-blue-300">Position:</span>
-                      <span className="ml-2 text-white">
-                        {Math.round(selectedPoint.x * 100)}%, {Math.round(selectedPoint.y * 100)}%
-                      </span>
+                  {/* Card content */}
+                  <div className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <div className="bg-black/30 rounded-lg p-3">
+                          <span className="text-blue-300 font-semibold text-sm">MERIDIAN</span>
+                          <p className="text-white font-bold">{selectedPoint.meridian || selectedMeridian}</p>
+                        </div>
+                        
+                        {selectedPoint.region && (
+                          <div className="bg-black/30 rounded-lg p-3">
+                            <span className="text-blue-300 font-semibold text-sm">REGION</span>
+                            <p className="text-white">{selectedPoint.region}</p>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="bg-black/30 rounded-lg p-3">
+                          <span className="text-blue-300 font-semibold text-sm">VIEW</span>
+                          <p className="text-white capitalize">{selectedPoint.view || currentView}</p>
+                        </div>
+                        
+                        <div className="bg-black/30 rounded-lg p-3">
+                          <span className="text-blue-300 font-semibold text-sm">COORDINATES</span>
+                          <p className="text-white font-mono text-sm">
+                            {Math.round(selectedPoint.x * 100)}%, {Math.round(selectedPoint.y * 100)}%
+                          </p>
+                        </div>
+                      </div>
                     </div>
                     
                     {selectedPoint.description && (
-                      <div>
-                        <span className="font-semibold text-blue-300">Description:</span>
-                        <p className="ml-2 text-white mt-1 leading-relaxed">{selectedPoint.description}</p>
+                      <div className="bg-black/30 rounded-lg p-4">
+                        <span className="text-blue-300 font-semibold text-sm">DESCRIPTION</span>
+                        <p className="text-white mt-2 leading-relaxed">{selectedPoint.description}</p>
                       </div>
                     )}
-                  </div>
-                </div>
 
-                {/* Close button at bottom */}
-                <div className="mt-6 flex justify-center">
-                  <button
-                    onClick={closeFlashcard}
-                    className="element-water font-bold py-3 px-6 rounded-xl text-sm transition-all duration-300 transform hover:scale-105"
-                  >
-                    Close Card
-                  </button>
+                    {/* Additional traditional info */}
+                    <div className="bg-gradient-to-r from-yellow-400/10 to-orange-400/10 rounded-lg p-4 border border-yellow-400/20">
+                      <span className="text-yellow-400 font-semibold text-sm">TRADITIONAL KOREAN MEDICINE</span>
+                      <p className="text-gray-300 mt-1 text-sm">
+                        This pressure point is part of the {selectedPoint.meridian || selectedMeridian} meridian system used in Korean martial arts and healing practices.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Close button */}
+                  <div className="mt-6 flex justify-center">
+                    <button
+                      onClick={closeFlashcard}
+                      className="element-water font-bold py-3 px-8 rounded-xl text-sm transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    >
+                      Close Card
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
