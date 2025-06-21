@@ -70,24 +70,28 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     setSelectedPoint(null);
     setZoomRegion(null);
   };
-
-  // Handle point click - zoom to 200x200px area
+  // Handle point click - zoom to 200x200px area and show flashcard
   const handlePointClick = (point) => {
+    console.log("Point clicked:", point);
     setSelectedPoint(point);
-    // Create zoom region centered on point
+    // Create 200x200px zoom region centered on point
     setZoomRegion({
-      x: Math.max(0, point.x - 0.1), // 10% on each side = 20% total width
-      y: Math.max(0, point.y - 0.1),
-      width: 0.2,
-      height: 0.2
+      x: Math.max(0, Math.min(1 - 0.2, point.x - 0.1)), // Keep zoom within bounds
+      y: Math.max(0, Math.min(1 - 0.2, point.y - 0.1)),
+      width: 0.2, // 20% of image width
+      height: 0.2 // 20% of image height
     });
   };
 
+  // Close flashcard and zoom
+  const closeFlashcard = () => {
+    setSelectedPoint(null);
+    setZoomRegion(null);
+  };
   // Clear selection and return to meridian selector
   const clearSelection = () => {
     setSelectedMeridian("");
-    setSelectedPoint(null);
-    setZoomRegion(null);
+    closeFlashcard(); // This will clear both selectedPoint and zoomRegion
   };
 
   return (
@@ -173,53 +177,98 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   }}
                   title={`${point.id}: ${point.name}`}
                 />
-              ))}
-
-              {/* Zoom Region Overlay */}
+              ))}              {/* Zoom Region Overlay - 200x200px equivalent */}
               {zoomRegion && (
                 <div
-                  className="absolute border-4 border-yellow-400 bg-yellow-400/10 rounded"
+                  className="absolute border-4 border-yellow-400 bg-yellow-400/20 rounded-lg shadow-2xl"
                   style={{
                     left: `${zoomRegion.x * 100}%`,
                     top: `${zoomRegion.y * 100}%`,
                     width: `${zoomRegion.width * 100}%`,
-                    height: `${zoomRegion.height * 100}%`
+                    height: `${zoomRegion.height * 100}%`,
+                    zIndex: 30
                   }}
-                />
+                >
+                  {/* Zoomed content indicator */}
+                  <div className="absolute inset-0 bg-yellow-400/10 border-2 border-yellow-400 rounded-lg">
+                    <div className="absolute top-1 left-1 text-xs font-bold text-yellow-400 bg-black/70 px-1 rounded">
+                      ZOOM
+                    </div>
+                  </div>
+                </div>
               )}
-            </div>
-
-            {/* Selected Point Info */}
+            </div>            {/* Flashcard - appears below body model when point is selected */}
             {selectedPoint && (
-              <div className="mt-4 bg-black/80 backdrop-blur-sm rounded-lg p-4 border border-yellow-400/30">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-bold text-yellow-400">
+              <div className="mt-6 card w-full max-w-2xl mx-auto">
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-2xl font-bold text-yellow-400">
                     {selectedPoint.id}: {selectedPoint.name}
                   </h3>
                   <button
-                    onClick={() => {
-                      setSelectedPoint(null);
-                      setZoomRegion(null);
-                    }}
-                    className="text-gray-400 hover:text-white text-xl"
+                    onClick={closeFlashcard}
+                    className="text-red-400 hover:text-red-300 text-xl font-bold min-w-[30px] min-h-[30px] bg-black/50 rounded-full flex items-center justify-center"
+                    title="Close Card"
                   >
-                    ×
+                    ✕
                   </button>
                 </div>
-                <p className="text-gray-300 mb-2">
-                  <strong>Meridian:</strong> {selectedPoint.meridian}
-                </p>
-                <p className="text-gray-300 mb-2">
-                  <strong>Region:</strong> {selectedPoint.region}
-                </p>
-                <p className="text-gray-300 mb-2">
-                  <strong>View:</strong> {selectedPoint.view}
-                </p>
-                {selectedPoint.description && (
-                  <p className="text-gray-300">
-                    <strong>Description:</strong> {selectedPoint.description}
-                  </p>
-                )}
+                
+                <div className="grid md:grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-3">
+                    <div>
+                      <span className="font-semibold text-blue-300">Point ID:</span>
+                      <span className="ml-2 text-white font-bold">{selectedPoint.id}</span>
+                    </div>
+                    
+                    <div>
+                      <span className="font-semibold text-blue-300">Name:</span>
+                      <span className="ml-2 text-white">{selectedPoint.name}</span>
+                    </div>
+                    
+                    <div>
+                      <span className="font-semibold text-blue-300">Meridian:</span>
+                      <span className="ml-2 text-white">{selectedPoint.meridian || selectedMeridian}</span>
+                    </div>
+                    
+                    {selectedPoint.region && (
+                      <div>
+                        <span className="font-semibold text-blue-300">Region:</span>
+                        <span className="ml-2 text-white">{selectedPoint.region}</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <span className="font-semibold text-blue-300">View:</span>
+                      <span className="ml-2 text-white capitalize">{selectedPoint.view || currentView}</span>
+                    </div>
+                    
+                    <div>
+                      <span className="font-semibold text-blue-300">Position:</span>
+                      <span className="ml-2 text-white">
+                        {Math.round(selectedPoint.x * 100)}%, {Math.round(selectedPoint.y * 100)}%
+                      </span>
+                    </div>
+                    
+                    {selectedPoint.description && (
+                      <div>
+                        <span className="font-semibold text-blue-300">Description:</span>
+                        <p className="ml-2 text-white mt-1 leading-relaxed">{selectedPoint.description}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Close button at bottom */}
+                <div className="mt-6 flex justify-center">
+                  <button
+                    onClick={closeFlashcard}
+                    className="element-water font-bold py-3 px-6 rounded-xl text-sm transition-all duration-300 transform hover:scale-105"
+                  >
+                    Close Card
+                  </button>
+                </div>
               </div>
             )}
           </div>
