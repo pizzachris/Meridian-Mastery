@@ -93,7 +93,7 @@ export default defineConfig({
           ],
           // Components
           components: [
-            "./src/components/BodyMap.jsx",
+            "./src/components/BodyMapInteractiveNew.jsx",
             "./src/components/DailySession.jsx",
           ],
         },
