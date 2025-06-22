@@ -1,0 +1,365 @@
+{
+  "points": [
+    {
+      "id": "ST1",
+      "name": "Seung Eub",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4906,
+      "y": 0.1383
+    },
+    {
+      "id": "ST2",
+      "name": "Sah Baek",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4906,
+      "y": 0.1443
+    },
+    {
+      "id": "ST3",
+      "name": "Kuh Ryoh",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4906,
+      "y": 0.1504
+    },
+    {
+      "id": "ST4",
+      "name": "Jee Chahng",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4935,
+      "y": 0.1649
+    },
+    {
+      "id": "ST5",
+      "name": "Dae Yuhng",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4733,
+      "y": 0.1721
+    },
+    {
+      "id": "ST6",
+      "name": "Hyuhp Guh",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4646,
+      "y": 0.1612
+    },
+    {
+      "id": "ST7",
+      "name": "Hah Gwahn",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4531,
+      "y": 0.1407
+    },
+    {
+      "id": "ST8",
+      "name": "Doo Yoo",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4574,
+      "y": 0.1008
+    },
+    {
+      "id": "ST9",
+      "name": "In Yuhng",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4848,
+      "y": 0.2011
+    },
+    {
+      "id": "ST10",
+      "name": "Soo Dohl",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4848,
+      "y": 0.2114
+    },
+    {
+      "id": "ST11",
+      "name": "Kee Sah",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4848,
+      "y": 0.2289
+    },
+    {
+      "id": "ST12",
+      "name": "Kyuhl Boon",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4185,
+      "y": 0.2264
+    },
+    {
+      "id": "ST13",
+      "name": "Kee Hoh",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4185,
+      "y": 0.2421
+    },
+    {
+      "id": "ST14",
+      "name": "Koh Bahng",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.417,
+      "y": 0.2524
+    },
+    {
+      "id": "ST15",
+      "name": "Ohg Yea",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4156,
+      "y": 0.2639
+    },
+    {
+      "id": "ST16",
+      "name": "Eung Chang",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4156,
+      "y": 0.2742
+    },
+    {
+      "id": "ST17",
+      "name": "Yoo Joong",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4156,
+      "y": 0.285
+    },
+    {
+      "id": "ST18",
+      "name": "Yoo Geun",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4156,
+      "y": 0.3116
+    },
+    {
+      "id": "ST19",
+      "name": "Bool Yohng",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.456,
+      "y": 0.3231
+    },
+    {
+      "id": "ST20",
+      "name": "Seung Mahn",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.456,
+      "y": 0.3339
+    },
+    {
+      "id": "ST21",
+      "name": "Yahng Moon",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.456,
+      "y": 0.346
+    },
+    {
+      "id": "ST22",
+      "name": "Gwahn Moon",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.456,
+      "y": 0.3569
+    },
+    {
+      "id": "ST23",
+      "name": "Tae Eul",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.456,
+      "y": 0.372
+    },
+    {
+      "id": "ST24",
+      "name": "Hwahl Yook Moon",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.456,
+      "y": 0.3895
+    },
+    {
+      "id": "ST25",
+      "name": "Chuhn Choo",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.456,
+      "y": 0.4058
+    },
+    {
+      "id": "ST26",
+      "name": "Wae Reung",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.456,
+      "y": 0.4221
+    },
+    {
+      "id": "ST27",
+      "name": "Dae Guh",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.456,
+      "y": 0.4354
+    },
+    {
+      "id": "ST28",
+      "name": "Soo Doh",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.456,
+      "y": 0.4487
+    },
+    {
+      "id": "ST29",
+      "name": "Kee Rae",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4545,
+      "y": 0.4583
+    },
+    {
+      "id": "ST30",
+      "name": "Kee Choong",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4545,
+      "y": 0.4716
+    },
+    {
+      "id": "ST31",
+      "name": "Bee Gwahn",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3579,
+      "y": 0.5079
+    },
+    {
+      "id": "ST32",
+      "name": "Bohnk Toh",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3939,
+      "y": 0.6051
+    },
+    {
+      "id": "ST33",
+      "name": "Eum Shee",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3939,
+      "y": 0.6226
+    },
+    {
+      "id": "ST34",
+      "name": "Yang Goo",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3939,
+      "y": 0.6335
+    },
+    {
+      "id": "ST35",
+      "name": "Dohk Bi",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3939,
+      "y": 0.6522
+    },
+    {
+      "id": "ST36",
+      "name": "Johk Sahm Ri",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3939,
+      "y": 0.6787
+    },
+    {
+      "id": "ST37",
+      "name": "Sahng Guh Huh",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3954,
+      "y": 0.7228
+    },
+    {
+      "id": "ST38",
+      "name": "Joh Goo",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3968,
+      "y": 0.7506
+    },
+    {
+      "id": "ST39",
+      "name": "Hah Guh Huh",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3968,
+      "y": 0.7639
+    },
+    {
+      "id": "ST40",
+      "name": "Poong Nyoong",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3608,
+      "y": 0.747
+    },
+    {
+      "id": "ST41",
+      "name": "Hae Gyea",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4214,
+      "y": 0.8702
+    },
+    {
+      "id": "ST42",
+      "name": "Choong Yahng",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.4185,
+      "y": 0.8847
+    },
+    {
+      "id": "ST43",
+      "name": "Hahm Gok",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.404,
+      "y": 0.8949
+    },
+    {
+      "id": "ST44",
+      "name": "Nae Juhng",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3882,
+      "y": 0.9052
+    },
+    {
+      "id": "ST45",
+      "name": "Yea Tae",
+      "meridian": "Stomach",
+      "description": "",
+      "x": 0.3781,
+      "y": 0.9155
+    }
+  ],
+  "regions": []
+}

@@ -8,7 +8,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   const [points, setPoints] = useState([]);
   const [selectedPoint, setSelectedPoint] = useState(null);
   const [showZoomedView, setShowZoomedView] = useState(false);  const [isFlipped, setIsFlipped] = useState(false);  const [allFlashcardData, setAllFlashcardData] = useState([]);
-  const [showHT9Popup, setShowHT9Popup] = useState(false);  const [availableMeridians, setAvailableMeridians] = useState([]);
+  const [showHT9Popup, setShowHT9Popup] = useState(false);
+  const [popupPoint, setPopupPoint] = useState(null);  const [availableMeridians, setAvailableMeridians] = useState([]);
 
   // Load available meridians dynamically from JSON files
   useEffect(() => {
@@ -132,13 +133,13 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     setSelectedPoint(null);
     setShowZoomedView(false);
     setIsFlipped(false);
-  };
-  // Handle point click - zoom to that region
+  };  // Handle point click - check for popup first, then zoom to region
   const handlePointClick = (point) => {
     console.log("Point clicked:", point);
     
-    // Special handling for HT9 - show popup first
-    if (point.id === "HT9" || point.name?.toLowerCase().includes("ht9")) {
+    // Check if point has popup configuration
+    if (point.popup && point.popup.enabled) {
+      setPopupPoint(point);
       setShowHT9Popup(true);
       return;
     }
@@ -158,19 +159,19 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Flip flashcard
   const flipCard = () => {
     setIsFlipped(!isFlipped);
-  };
-  // Clear selection and return to home view
+  };  // Clear selection and return to home view
   const clearSelection = () => {
     setSelectedMeridian("");
     setSelectedPoint(null);
     setShowZoomedView(false);
     setIsFlipped(false);
     setShowHT9Popup(false);
+    setPopupPoint(null);
   };
-
-  // Handle HT9 popup close and proceed to zoom
-  const closeHT9PopupAndZoom = (point) => {
+  // Handle popup close and proceed to zoom
+  const closePopupAndZoom = (point) => {
     setShowHT9Popup(false);
+    setPopupPoint(null);
     setSelectedPoint(point);
     setShowZoomedView(true);
     setIsFlipped(false);
@@ -451,49 +452,50 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
             </div>          </div>
         )}
       </div>
-      
-      {/* HT9 Special Popup */}
-      {showHT9Popup && (
+        {/* Dynamic Point Popup */}
+      {showHT9Popup && popupPoint && popupPoint.popup && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gradient-to-br from-red-900 to-black border-2 border-red-500 rounded-xl max-w-md w-full p-6 relative">
+          <div className={`bg-gradient-to-br ${popupPoint.popup.type === 'warning' ? 'from-red-900 to-black border-2 border-red-500' : 'from-gray-900 to-black border-2 border-gray-500'} rounded-xl max-w-md w-full p-6 relative`}>
             {/* Close button */}
             <button
-              onClick={() => setShowHT9Popup(false)}
-              className="absolute top-4 right-4 text-red-400 hover:text-red-300 text-2xl font-bold transition-colors"
+              onClick={() => {
+                setShowHT9Popup(false);
+                setPopupPoint(null);
+              }}
+              className={`absolute top-4 right-4 ${popupPoint.popup.type === 'warning' ? 'text-red-400 hover:text-red-300' : 'text-gray-400 hover:text-gray-300'} text-2xl font-bold transition-colors`}
             >
               ×
             </button>
             
             {/* Header */}
             <div className="text-center mb-4">
-              <h2 className="text-xl font-bold text-red-400 mb-2">HT9 • FIRE</h2>
-              <h3 className="text-lg text-white font-semibold">Special Location Note</h3>
+              <h2 className={`text-xl font-bold ${popupPoint.popup.type === 'warning' ? 'text-red-400' : 'text-gray-400'} mb-2`}>
+                {popupPoint.id} • {selectedMeridian === "Heart" ? "FIRE" : "METAL"}
+              </h2>
+              <h3 className="text-lg text-white font-semibold">{popupPoint.popup.title}</h3>
             </div>
             
-            {/* Warning content */}
-            <div className="bg-red-600/20 border border-red-500/50 rounded-lg p-4 mb-6">
+            {/* Message content */}
+            <div className={`${popupPoint.popup.type === 'warning' ? 'bg-red-600/20 border border-red-500/50' : 'bg-gray-600/20 border border-gray-500/50'} rounded-lg p-4 mb-6`}>
               <p className="text-white text-center leading-relaxed">
-                <strong className="text-red-400">HT9</strong> is located on the <strong>back of the finger</strong> near the fingernail.
-              </p>
-              <p className="text-gray-300 text-center text-sm mt-2">
-                This point is on the opposite view from the other Heart meridian points shown.
+                {popupPoint.popup.message}
               </p>
             </div>
             
             {/* Action buttons */}
             <div className="flex gap-4">
               <button
-                onClick={() => setShowHT9Popup(false)}
+                onClick={() => {
+                  setShowHT9Popup(false);
+                  setPopupPoint(null);
+                }}
                 className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
               >
                 Close
               </button>
               <button
-                onClick={() => {
-                  const ht9Point = points.find(p => p.id === "HT9" || p.name?.toLowerCase().includes("ht9"));
-                  if (ht9Point) closeHT9PopupAndZoom(ht9Point);
-                }}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                onClick={() => closePopupAndZoom(popupPoint)}
+                className={`flex-1 ${popupPoint.popup.type === 'warning' ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'} text-white font-bold py-3 px-4 rounded-lg transition-colors`}
               >
                 View Point
               </button>

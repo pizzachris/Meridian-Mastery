@@ -73,7 +73,13 @@
       "meridian": "Heart",
       "description": "Located on the back side of the pinky finger, near the nail on the radial edge.",
       "x": 0.2266,
-      "y": 0.5507
+      "y": 0.5507,
+      "popup": {
+        "enabled": true,
+        "title": "Special Location Note",
+        "message": "HT9 is located on the back of the finger near the fingernail. This point is on the opposite view from the other Heart meridian points shown.",
+        "type": "warning"
+      }
     }
   ],
   "regions": []
