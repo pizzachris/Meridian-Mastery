@@ -69,11 +69,20 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       setCurrentView("side");
     }
   }, [selectedMeridian, availableMeridians]);
-
   // Load meridian data when meridian is selected
   useEffect(() => {
     if (selectedMeridian) {
-      const filename = `${selectedMeridian.toLowerCase()}_meridian_with_regions.json`;
+      // Convert meridian ID to filename format
+      const filenameMap = {
+        'Lung': 'lung',
+        'LargeIntestine': 'large_intestine',
+        'Heart': 'heart',
+        'Stomach': 'stomach',
+        'Spleen': 'spleen',
+        'SmallIntestine': 'small_intestine',
+        'Pericardium': 'pericardium'
+      };
+      const filename = `${filenameMap[selectedMeridian]}_meridian_with_regions.json`;
       fetch(`/improved/${filename}`)
         .then(res => res.json())
         .then(data => {
@@ -111,35 +120,13 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       // For points without region, include them in all views (fallback)
       return true;
     });
-  };
-  // Transform coordinates for different views
+  };  // Transform coordinates for different views
   const transformCoordinates = (point, meridianId) => {
-    // For Small Intestine side view, coordinates might be in percentage format
-    if (meridianId === "SmallIntestine" && point.region === "side" && currentView === "side") {
-      // If coordinates are greater than 1, they're already in pixel format
-      // If they're between 0-1, they're in percentage format and need conversion
-      if (point.x <= 1 && point.y <= 1) {
-        return { 
-          x: point.x, // Keep as percentage (0-1)
-          y: point.y 
-        };
-      }
-      // If coordinates are large numbers, normalize them to 0-1 range
-      if (point.x > 1 || point.y > 1) {
-        // Assume image dimensions for normalization
-        const maxX = 400; // Approximate side view width
-        const maxY = 600; // Approximate side view height
-        return {
-          x: Math.min(point.x / maxX, 1),
-          y: Math.min(point.y / maxY, 1)
-        };
-      }
-    }
-    
-    // For other meridians and views, coordinates should already be in 0-1 format
+    // All coordinates in the JSON files are already in 0-1 format
+    // No transformation needed, just return as-is
     return { 
-      x: point.x <= 1 ? point.x : point.x / 1000, // Normalize if needed
-      y: point.y <= 1 ? point.y : point.y / 1000 
+      x: point.x,
+      y: point.y
     };
   };
   // Get current image path
@@ -525,7 +512,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     <button
                       key={index}
                       onClick={() => handlePointClick(point)}
-                      className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 touch-manipulation"
+                      className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 touch-manipulation"
                       style={{
                         left: `${x * 100}%`,
                         top: `${y * 100}%`,
