@@ -14,20 +14,20 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Load available meridians dynamically from JSON files
   useEffect(() => {
     const loadMeridianMetadata = async () => {
-      const meridianFiles = ['lung', 'large_intestine', 'heart', 'stomach', 'spleen'];
+      const meridianFiles = ['lung', 'large_intestine', 'heart', 'stomach', 'spleen', 'small_intestine'];
       const meridianData = [];
       
       for (const meridianFile of meridianFiles) {
         try {
           const response = await fetch(`/improved/${meridianFile}_meridian_with_regions.json`);
           const data = await response.json();
-          
-          meridianData.push({
+            meridianData.push({
             id: data.meridian.replace(' ', ''), // Remove spaces for ID (e.g., "Large Intestine" -> "LargeIntestine")
             name: data.meridian,
             element: `element-${data.element}`,
-            view: data.view
-          });        } catch (error) {
+            view: data.view,
+            views: data.views || [data.view] // Support multi-view or default to single view
+          });} catch (error) {
           console.error(`Failed to load ${meridianFile} meridian metadata:`, error);
         }
       }
@@ -70,21 +70,28 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     }
   }, [selectedMeridian]);  // Load meridian data when meridian is selected
   useEffect(() => {
-    if (selectedMeridian) {
-      // Map meridian names to filenames
+    if (selectedMeridian) {      // Map meridian names to filenames
       const filenameMap = {
         "Lung": "lung_meridian_with_regions.json",
         "LargeIntestine": "large_intestine_meridian_with_regions.json",
-        "Large Intestine": "large_intestine_meridian_with_regions.json"
+        "Large Intestine": "large_intestine_meridian_with_regions.json",
+        "SmallIntestine": "small_intestine_meridian_with_regions.json",
+        "Small Intestine": "small_intestine_meridian_with_regions.json"
       };
       
       const filename = filenameMap[selectedMeridian] || `${selectedMeridian.toLowerCase()}_meridian_with_regions.json`;
       
       fetch(`/improved/${filename}`)
-        .then(res => res.json())
-        .then(data => {
+        .then(res => res.json())        .then(data => {
           console.log(`Loaded improved meridian data for ${selectedMeridian}:`, data);
           setPoints(data.points || []);
+          
+          // Set view based on where point 1 is located (for multi-view meridians)
+          const pointsData = data.points || [];
+          const firstPoint = pointsData.find(p => p.id.endsWith('1')) || pointsData[0];
+          if (firstPoint && firstPoint.view) {
+            setCurrentView(firstPoint.view);
+          }
         })
         .catch(err => {
           console.error(`Failed to load improved meridian data: ${filename}`, err);
@@ -185,7 +192,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       "Large Intestine": "LI",
       Heart: "HT",
       Stomach: "ST",
-      Spleen: "SP"
+      Spleen: "SP",
+      SmallIntestine: "SI",
+      "Small Intestine": "SI"
     };
     const abbrev = abbrevMap[meridianName] || "UN";
     const number = pointNumber?.replace(/[A-Z]+/, '') || '';
@@ -246,8 +255,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
         y: paddingAdjustment.y + (point.y * paddingAdjustment.scaleY)
       };
     }
-    
-    // Heart, Stomach, and Spleen coordinates appear to be correct for padded images
+      // Heart, Stomach, Spleen, and Small Intestine coordinates appear to be correct for padded images
     return { x: point.x, y: point.y };
   };
 
@@ -459,12 +467,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                               </p>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })()}                {/* Card controls - Mobile optimized */}
-                <div className="flex justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
+                                     <p className="text-gray-300 text-lg">
+                  {selectedMeridian 
+                    ? `${selectedMeridian} Meridian ${hasMultipleViews() ? `(${currentView} view)` : ''} - ${getPointsForCurrentView().length} points - Click a point to zoom in`
+                    : "Select a meridian on the right to begin exploring pressure points"}
+                </p> className="flex justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
                   <button
                     onClick={flipCard}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
@@ -485,12 +492,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
           // Home View - Body Model with Meridian Selector on Right
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
             {/* Main content area with title and body model */}
-            <div className="flex-1">              <div className="text-center mb-6">
-                <h1 className="text-2xl lg:text-3xl font-bold mb-2 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                  Master Your Meridians
-                </h1>
-                <p className="text-gray-300 text-lg">
-                  {selectedMeridian 
+            <div c                  {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
+                {selectedMeridian && getPointsForCurrentView().map((point, index) => {
+                  // Transform point coordinates for correct positioning
+                  const { x, y } = transformCoordinates(point, selectedMeridian);
+                  return (dMeridian 
                     ? `${selectedMeridian} Meridian Points - Click a point to zoom in`
                     : "Select a meridian on the right to begin exploring pressure points"}
                 </p>
