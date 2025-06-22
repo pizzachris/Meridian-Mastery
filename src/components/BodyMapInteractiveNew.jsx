@@ -68,18 +68,17 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       setPoints([]);
     }
   }, [selectedMeridian]);
-
-  // Get current image path - using improved body models
+  // Get current image path - using improved body models with padding for complete finger visibility
   const getCurrentImagePath = () => {
     switch (currentView) {
       case "front":
-        return "/improved/front_view_full_cleaned.png";
+        return "/improved/front_view_model_wide_padded.png";
       case "back":
-        return "/improved/back_view_full_cleaned.png";
+        return "/improved/back_view_model_wide_padded.png";
       case "side":
-        return "/improved/side_full_cleaned.png";
+        return "/improved/side_full_cleaned_padded.png";
       default:
-        return "/improved/side_full_cleaned.png";
+        return "/improved/side_full_cleaned_padded.png";
     }
   };
 
