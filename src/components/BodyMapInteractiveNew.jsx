@@ -7,40 +7,46 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   const [selectedMeridian, setSelectedMeridian] = useState("");
   const [points, setPoints] = useState([]);
   const [selectedPoint, setSelectedPoint] = useState(null);
-  const [showZoomedView, setShowZoomedView] = useState(false);  const [isFlipped, setIsFlipped] = useState(false);  const [allFlashcardData, setAllFlashcardData] = useState([]);
+  const [showZoomedView, setShowZoomedView] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [allFlashcardData, setAllFlashcardData] = useState([]);
   const [showHT9Popup, setShowHT9Popup] = useState(false);
-  const [popupPoint, setPopupPoint] = useState(null);  const [availableMeridians, setAvailableMeridians] = useState([]);
+  const [popupPoint, setPopupPoint] = useState(null);
+  const [availableMeridians, setAvailableMeridians] = useState([]);
 
   // Load available meridians dynamically from JSON files
   useEffect(() => {
     const loadMeridianMetadata = async () => {
-      const meridianFiles = ['lung', 'large_intestine', 'heart', 'stomach', 'spleen', 'small_intestine'];
+      const meridianFiles = ['lung', 'large_intestine', 'heart', 'stomach', 'spleen', 'small_intestine', 'pericardium'];
       const meridianData = [];
       
       for (const meridianFile of meridianFiles) {
         try {
           const response = await fetch(`/improved/${meridianFile}_meridian_with_regions.json`);
           const data = await response.json();
-            meridianData.push({
-            id: data.meridian.replace(' ', ''), // Remove spaces for ID (e.g., "Large Intestine" -> "LargeIntestine")
+          
+          meridianData.push({
+            id: data.meridian.replace(/\s+/g, ''), // Remove spaces for ID (e.g., "Large Intestine" -> "LargeIntestine")
             name: data.meridian,
             element: `element-${data.element}`,
             view: data.view,
             views: data.views || [data.view] // Support multi-view or default to single view
-          });} catch (error) {
+          });
+        } catch (error) {
           console.error(`Failed to load ${meridianFile} meridian metadata:`, error);
         }
       }
       
       setAvailableMeridians(meridianData);
       console.log('Loaded meridian metadata:', meridianData);
-      console.log('Meridian count:', meridianData.length);
-      meridianData.forEach(m => console.log(`- ${m.id}: ${m.name} (${m.element})`));
-        // Set the first meridian as default if none selected
+      
+      // Set the first meridian as default if none selected
       if (meridianData.length > 0 && selectedMeridian === "") {
         setSelectedMeridian(meridianData[0].id);
       }
-    };    loadMeridianMetadata();
+    };
+    
+    loadMeridianMetadata();
   }, []);
 
   // Load all flashcard data on component mount
@@ -68,50 +74,83 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       // Reset to side view when no meridian selected (home state)
       setCurrentView("side");
     }
-  }, [selectedMeridian]);  // Load meridian data when meridian is selected
+  }, [selectedMeridian, availableMeridians]);
+
+  // Load meridian data when meridian is selected
   useEffect(() => {
-    if (selectedMeridian) {      // Map meridian names to filenames
-      const filenameMap = {
-        "Lung": "lung_meridian_with_regions.json",
-        "LargeIntestine": "large_intestine_meridian_with_regions.json",
-        "Large Intestine": "large_intestine_meridian_with_regions.json",
-        "SmallIntestine": "small_intestine_meridian_with_regions.json",
-        "Small Intestine": "small_intestine_meridian_with_regions.json"
-      };
-      
-      const filename = filenameMap[selectedMeridian] || `${selectedMeridian.toLowerCase()}_meridian_with_regions.json`;
-      
+    if (selectedMeridian) {
+      const filename = `${selectedMeridian.toLowerCase()}_meridian_with_regions.json`;
       fetch(`/improved/${filename}`)
-        .then(res => res.json())        .then(data => {
-          console.log(`Loaded improved meridian data for ${selectedMeridian}:`, data);
+        .then(res => res.json())
+        .then(data => {
+          console.log(`Loaded meridian data for ${selectedMeridian}:`, data);
           setPoints(data.points || []);
-          
-          // Set view based on where point 1 is located (for multi-view meridians)
-          const pointsData = data.points || [];
-          const firstPoint = pointsData.find(p => p.id.endsWith('1')) || pointsData[0];
-          if (firstPoint && firstPoint.view) {
-            setCurrentView(firstPoint.view);
-          }
         })
         .catch(err => {
-          console.error(`Failed to load improved meridian data: ${filename}`, err);
+          console.error(`Failed to load meridian data: ${filename}`, err);
           setPoints([]);
         });
     } else {
       setPoints([]);
     }
   }, [selectedMeridian]);
-  // Get current image path - using improved body models with padding for complete finger visibility
+
+  // Check if current meridian has multiple views
+  const hasMultipleViews = () => {
+    const meridian = availableMeridians.find(m => m.id === selectedMeridian);
+    return meridian && meridian.views && meridian.views.length > 1;
+  };
+
+  // Get available views for current meridian
+  const getAvailableViews = () => {
+    const meridian = availableMeridians.find(m => m.id === selectedMeridian);
+    return meridian ? meridian.views : [currentView];
+  };
+
+  // Filter points by current view
+  const getPointsForCurrentView = () => {
+    if (!hasMultipleViews()) return points;
+    return points.filter(point => point.view === currentView);
+  };
+
+  // Transform coordinates for different views
+  const transformCoordinates = (point, meridianId) => {
+    // For multi-view meridians, coordinates are already correct for their specific view
+    return { x: point.x, y: point.y };
+  };
+
+  // Get current image path
   const getCurrentImagePath = () => {
+    if (showZoomedView && selectedPoint) {
+      // Get region-specific image for true zoom
+      const regionMap = {
+        "Trunk Front": "/region images final/trunk_front_manual_v1.png",
+        "Trunk Back": "/region images final/trunk_back_manual_v1.png", 
+        "Arms Front": "/region images final/arms_front_manual_v6.png",
+        "Arms Back": "/region images final/arms_back_manual_v1.png",
+        "Legs Front": "/region images final/legs_front_manual_v4.png",
+        "Legs Back": "/region images final/legs_back_manual_v1.png",
+        "Feet Front": "/region images final/feet_front_manual_v4.png",
+        "Feet Back": "/region images final/feet_back_manual_final.png",
+        "Head Front": "/region images final/head_neck_front_manual_v4.png",
+        "Head Back": "/region images final/head_neck_back_manual_v1.png"
+      };
+      
+      const regionImage = regionMap[selectedPoint.region];
+      if (regionImage) {
+        return regionImage;
+      }
+    }
+    
     switch (currentView) {
       case "front":
-        return "/improved/front_view_model_wide_padded.png";
+        return "/body-images/front_view_model_wide_padded.png";
       case "back":
-        return "/improved/back_view_model_wide_padded.png";
+        return "/body-images/back_view_model_wide_padded.png";
       case "side":
-        return "/improved/side_full_cleaned_padded.png";
+        return "/body-images/side_full_cleaned_padded.png";
       default:
-        return "/improved/side_full_cleaned_padded.png";
+        return "/body-images/side_full_cleaned_padded.png";
     }
   };
 
@@ -143,12 +182,20 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     setSelectedPoint(null);
     setShowZoomedView(false);
     setIsFlipped(false);
-  };  // Handle point click - check for popup first, then zoom to region
+    
+    // Set appropriate view for the meridian
+    const meridian = availableMeridians.find(m => m.id === meridianId);
+    if (meridian) {
+      setCurrentView(meridian.view);
+    }
+  };
+
+  // Handle point click - zoom to that region
   const handlePointClick = (point) => {
     console.log("Point clicked:", point);
     
-    // Check if point has popup configuration
-    if (point.popup && point.popup.enabled) {
+    // Check for special popup (like HT9)
+    if (point.popup) {
       setPopupPoint(point);
       setShowHT9Popup(true);
       return;
@@ -169,24 +216,19 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Flip flashcard
   const flipCard = () => {
     setIsFlipped(!isFlipped);
-  };  // Clear selection and return to home view
+  };
+
+  // Clear selection and return to home view
   const clearSelection = () => {
     setSelectedMeridian("");
     setSelectedPoint(null);
     setShowZoomedView(false);
     setIsFlipped(false);
-    setShowHT9Popup(false);
-    setPopupPoint(null);
   };
-  // Handle popup close and proceed to zoom
-  const closePopupAndZoom = (point) => {
-    setShowHT9Popup(false);
-    setPopupPoint(null);
-    setSelectedPoint(point);
-    setShowZoomedView(true);
-    setIsFlipped(false);
-  };  // Get meridian abbreviation for badge
-  const getMeridianAbbreviation = (meridianName, pointNumber) => {    const abbrevMap = {
+
+  // Get meridian abbreviation for badge
+  const getMeridianAbbreviation = (meridianName, pointNumber) => {
+    const abbrevMap = {
       Lung: "LU",
       LargeIntestine: "LI",
       "Large Intestine": "LI",
@@ -194,102 +236,49 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       Stomach: "ST",
       Spleen: "SP",
       SmallIntestine: "SI",
-      "Small Intestine": "SI"
+      "Small Intestine": "SI",
+      Pericardium: "PC"
     };
     const abbrev = abbrevMap[meridianName] || "UN";
     const number = pointNumber?.replace(/[A-Z]+/, '') || '';
     return `${abbrev}${number}`;
   };
 
-  // Get element name for display
+  // Get element name for current meridian
   const getElementName = () => {
     const meridian = availableMeridians.find(m => m.id === selectedMeridian);
+    if (!meridian) return "UNKNOWN";
+    
     const elementMap = {
-      "element-fire": "FIRE",
-      "element-earth": "EARTH", 
-      "element-metal": "METAL",
-      "element-water": "WATER",
-      "element-wood": "WOOD"
+      'element-metal': 'METAL',
+      'element-fire': 'FIRE',
+      'element-earth': 'EARTH',
+      'element-water': 'WATER',
+      'element-wood': 'WOOD'
     };
-    return elementMap[meridian?.element] || "UNKNOWN";
-  };// Get element colors for meridians
+    
+    return elementMap[meridian.element] || "UNKNOWN";
+  };
+
+  // Get element colors
   const getElementColors = () => {
     const meridian = availableMeridians.find(m => m.id === selectedMeridian);
-    if (meridian?.element === "element-fire") {
-      return {
-        bg: "bg-red-600",
-        text: "text-white", 
-        border: "border-red-400"
-      };
-    }
-    if (meridian?.element === "element-earth") {
-      return {
-        bg: "bg-yellow-600",
-        text: "text-black", 
-        border: "border-yellow-400"
-      };
-    }
-    // Default to Metal colors
-    return {
-      bg: "bg-gray-600",
-      text: "text-white",
-      border: "border-gray-400"
+    if (!meridian) return { bg: "bg-gray-600", text: "text-white", border: "border-gray-400" };
+    
+    const colorMap = {
+      'element-metal': { bg: "bg-gray-600", text: "text-white", border: "border-gray-400" },
+      'element-fire': { bg: "bg-red-600", text: "text-white", border: "border-red-400" },
+      'element-earth': { bg: "bg-yellow-600", text: "text-black", border: "border-yellow-400" },
+      'element-water': { bg: "bg-blue-600", text: "text-white", border: "border-blue-400" },
+      'element-wood': { bg: "bg-green-600", text: "text-white", border: "border-green-400" }
     };
-  };
-  // Transform coordinates for meridians that were calibrated for different image versions
-  const transformCoordinates = (point, meridianName) => {
-    // Lung and Large Intestine appear to have coordinates for unpadded images
-    // Apply transformation to adjust for padded images
-    if (meridianName === "Lung" || meridianName === "LargeIntestine") {
-      // The padded images have extra space, so we need to adjust the coordinates
-      // Based on the padding, points need to be shifted and scaled
-      const paddingAdjustment = {
-        x: 0.15, // Shift right to account for left padding
-        y: 0.1,  // Shift down to account for top padding
-        scaleX: 0.7, // Scale down X to fit the narrower body area
-        scaleY: 0.8  // Scale down Y to fit the shorter body area
-      };
-      
-      return {
-        x: paddingAdjustment.x + (point.x * paddingAdjustment.scaleX),
-        y: paddingAdjustment.y + (point.y * paddingAdjustment.scaleY)
-      };
-    }
-      // Heart, Stomach, Spleen, and Small Intestine coordinates appear to be correct for padded images
-    return { x: point.x, y: point.y };
-  };
-
-  // Get available views for the selected meridian
-  const getAvailableViews = () => {
-    const meridian = availableMeridians.find(m => m.id === selectedMeridian);
-    if (!meridian) return [];
     
-    // If meridian has views array, use it; otherwise default to single view
-    return meridian.views || [meridian.view];
-  };
-
-  // Check if selected meridian has multiple views
-  const hasMultipleViews = () => {
-    return getAvailableViews().length > 1;
-  };
-
-  // Get default view for selected meridian (view containing point 1)
-  const getDefaultView = () => {
-    if (!selectedMeridian || points.length === 0) return currentView;
-    
-    // Find point 1 (or first point) and return its view
-    const firstPoint = points.find(p => p.id.endsWith('1')) || points[0];
-    return firstPoint?.view || currentView;
-  };
-
-  // Filter points by current view
-  const getPointsForCurrentView = () => {
-    if (!hasMultipleViews()) return points;
-    return points.filter(point => point.view === currentView);
+    return colorMap[meridian.element] || { bg: "bg-gray-600", text: "text-white", border: "border-gray-400" };
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">      {/* Header with Logo and Back Button - Mobile optimized positioning */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+      {/* Header with Logo and Back Button - Mobile optimized positioning */}
       <div className="absolute top-16 sm:top-4 left-4 right-4 z-50 flex items-center">
         {/* Logo - Home Button - Always on left */}
         <button
@@ -300,14 +289,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
           <Logo className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400" />
         </button>
 
-        {/* Spacer to push back button to right */}
-        <div className="flex-1"></div>
-
         {/* Back Button - appears when meridian is selected or in zoom view */}
         {(selectedMeridian || showZoomedView) && (
           <button
             onClick={showZoomedView ? closeZoom : clearSelection}
-            className="bg-black/80 backdrop-blur-sm rounded-lg px-4 py-3 sm:px-4 sm:py-2 border border-blue-400/30 text-blue-400 font-bold text-sm hover:text-blue-300 hover:bg-black/90 transition-colors touch-manipulation"
+            className="ml-auto bg-black/80 backdrop-blur-sm rounded-lg px-3 py-2 sm:px-4 sm:py-2 border border-blue-400/30 text-blue-400 font-bold text-xs sm:text-sm hover:text-blue-300 hover:bg-black/90 transition-colors touch-manipulation"
             title={showZoomedView ? "Back to Body Map" : "Back to Home"}
           >
             ← {showZoomedView ? "Full View" : "Back"}
@@ -315,163 +301,145 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
         )}
       </div>
 
-      {/* View Toggle - only show for multi-view meridians */}
-      {selectedMeridian && hasMultipleViews() && (
-        <div className="absolute top-28 sm:top-16 left-1/2 transform -translate-x-1/2 z-40">
-          <div className="bg-black/80 backdrop-blur-sm rounded-lg border border-gray-600 p-1 flex gap-1">
-            {getAvailableViews().map((view) => (
-              <button
-                key={view}
-                onClick={() => setCurrentView(view)}
-                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors touch-manipulation ${
-                  currentView === view
-                    ? 'bg-yellow-400 text-black'
-                    : 'text-white hover:bg-gray-700'
-                }`}
-              >
-                {view.charAt(0).toUpperCase() + view.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Main Content Area - Mobile optimized padding */}
+      {/* Main Content Area */}
       <div className="pt-32 sm:pt-16 pb-4 px-4 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         {showZoomedView && selectedPoint ? (
           // Zoomed View with Flashcard
           <div className="max-w-6xl mx-auto">
             {/* Master Your Meridians Title */}
-            <div className="text-center mb-6">
-              <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+            <div className="text-center mb-4 sm:mb-6">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                 Master Your Meridians
               </h1>
-            </div>            <div className="flex flex-col lg:flex-row gap-6 items-start">
+            </div>
+
+            <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-start">
               {/* Zoomed Region View */}
               <div className="flex-1">
                 <div className="relative bg-gray-800 rounded-lg overflow-hidden">
-                  {/* Create a zoomed/cropped view centered on the point */}                  <div className="relative w-full" style={{ height: "500px", overflow: "hidden" }}>
-                    <img
-                      src={getCurrentImagePath()}
-                      alt={`${selectedPoint.region} region zoomed`}
-                      className="absolute object-cover"                      style={{
-                        // Scale the image up for zoom effect (3x zoom for detailed view)
-                        width: "300%",
-                        height: "300%",
-                        // Position image so the selected point appears at center of zoom box
-                        // Formula: center (50%) minus point position scaled by zoom factor
-                        left: `calc(50% - ${selectedPoint.x * 300}%)`,
-                        top: `calc(50% - ${selectedPoint.y * 300}%)`,
-                        imageRendering: "crisp-edges"
-                      }}
-                    />
-                    
-                    {/* Center crosshair to show the exact point location */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-6 h-6 bg-red-500 rounded-full border-3 border-white shadow-lg animate-pulse z-10"></div>
-                    </div>                    {/* Zoom indicator overlay */}
-                    <div className="absolute top-4 right-4 bg-black/80 text-white px-3 py-1 rounded-lg text-sm font-bold">
-                      3x Zoom
-                    </div>
-                  </div>
+                  <img
+                    src={getCurrentImagePath()}
+                    alt={`${selectedPoint.region} region`}
+                    className="w-full h-auto block"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                  
+                  {/* Highlight the selected point - position based on region image */}
+                  <div
+                    className="absolute w-4 h-4 sm:w-6 sm:h-6 bg-red-500 rounded-full border-2 sm:border-4 border-white shadow-lg z-10 animate-pulse"
+                    style={{
+                      left: `${selectedPoint.x * 100}%`,
+                      top: `${selectedPoint.y * 100}%`,
+                      transform: "translate(-50%, -50%)"
+                    }}
+                  />
                 </div>
-              </div>              {/* Flashcard */}
-              <div className="flex-1 max-w-xl lg:max-w-2xl">
+              </div>
+
+              {/* Flashcard */}
+              <div className="flex-1 max-w-md">
                 {(() => {
                   const flashcardData = getFlashcardData(selectedPoint);
-                  return (                    <div
-                      className={`relative w-full h-[600px] sm:h-[500px] transition-transform duration-700 transform-style-preserve-3d cursor-pointer ${isFlipped ? "rotate-y-180" : ""}`}
-                      onClick={flipCard}
+                  const colors = getElementColors();
+                  return (
+                    <div
+                      className={`relative w-full h-80 sm:h-96 transition-transform duration-700 transform-style-preserve-3d ${isFlipped ? "rotate-y-180" : ""}`}
                     >
                       {/* Front Side */}
                       <div className="absolute inset-0 w-full h-full backface-hidden">
-                        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-red-600 rounded-xl h-full flex flex-col justify-center items-center p-8 relative">                          {/* Meridian badge */}
-                          <div className={`absolute top-6 left-1/2 transform -translate-x-1/2 ${getElementColors().bg} ${getElementColors().text} px-6 py-3 rounded-lg border-2 ${getElementColors().border}`}>
-                            <span className="text-base font-bold">
+                        <div className={`bg-gradient-to-br from-gray-900 to-black border-2 ${colors.border} rounded-xl h-full flex flex-col justify-center items-center p-4 sm:p-6 relative`}>
+                          {/* Meridian badge */}
+                          <div className={`absolute top-3 sm:top-4 left-1/2 transform -translate-x-1/2 ${colors.bg} ${colors.text} px-3 py-1 sm:px-4 sm:py-2 rounded-lg border-2 ${colors.border}`}>
+                            <span className="text-xs sm:text-sm font-bold">
                               {getMeridianAbbreviation(selectedMeridian, selectedPoint.id)} • {getElementName()}
                             </span>
                           </div>
 
                           {/* Korean Hangul */}
-                          <div className="text-5xl font-bold text-yellow-400 mb-6 text-center mt-20">
+                          <div className="text-2xl sm:text-4xl font-bold text-yellow-400 mb-2 sm:mb-4 text-center mt-12 sm:mt-16">
                             {flashcardData?.nameHangul || flashcardData?.hangul || selectedPoint.name}
                           </div>
                           
                           {/* English translation */}
-                          <div className="text-2xl text-white text-center font-medium mb-3">
+                          <div className="text-lg sm:text-xl text-white text-center font-medium">
                             {flashcardData?.nameEnglish || flashcardData?.englishTranslation || selectedPoint.name}
                           </div>
                           
                           {/* Romanized Korean */}
-                          <div className="text-lg text-gray-300 text-center">
+                          <div className="text-sm sm:text-base text-gray-300 text-center mt-1 sm:mt-2">
                             {flashcardData?.nameRomanized || selectedPoint.name}
                           </div>
 
                           {/* Flip indicator */}
-                          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-gray-400 text-base">
+                          <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 text-gray-400 text-xs sm:text-sm">
                             Tap card to flip
                           </div>
                         </div>
-                      </div>                      {/* Back Side - Real flashcard back */}
+                      </div>
+
+                      {/* Back Side - Real flashcard back */}
                       <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180">
-                        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-xl h-full p-6 text-sm flex flex-col overflow-hidden">
+                        <div className={`bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-xl h-full p-3 sm:p-4 text-xs flex flex-col overflow-hidden`}>
                           {/* Header */}
-                          <div className="text-center mb-4 border-b border-gray-700 pb-3 flex-shrink-0">
-                            <h2 className="text-lg font-bold text-yellow-400 mb-2">
+                          <div className="text-center mb-2 sm:mb-3 border-b border-gray-700 pb-2 flex-shrink-0">
+                            <h2 className="text-xs sm:text-sm font-bold text-yellow-400 mb-1">
                               {flashcardData?.nameRomanized || selectedPoint.name}
                             </h2>
-                            <p className="text-gray-300 text-base">
+                            <p className="text-gray-300 text-xs">
                               {flashcardData?.nameHangul || selectedPoint.name}
                             </p>
-                            <p className="text-gray-400 text-sm">
+                            <p className="text-gray-400 text-xs">
                               {getMeridianAbbreviation(selectedMeridian, selectedPoint.id)} {selectedMeridian} Meridian
                             </p>
                           </div>
 
                           {/* Information sections - scrollable */}
-                          <div className="flex-1 space-y-3 overflow-y-auto min-h-0">
+                          <div className="flex-1 space-y-2 overflow-y-auto min-h-0">
                             {/* Location */}
                             {flashcardData?.location && (
-                              <div className="bg-yellow-600 text-black p-3 rounded">
-                                <h3 className="font-bold text-sm mb-2">LOCATION:</h3>
-                                <p className="text-sm leading-relaxed">{flashcardData.location}</p>
+                              <div className="bg-yellow-600 text-black p-2 rounded">
+                                <h3 className="font-bold text-xs mb-1">LOCATION:</h3>
+                                <p className="text-xs leading-relaxed">{flashcardData.location}</p>
                               </div>
                             )}
 
                             {/* Striking Effect */}
-                            <div className="bg-yellow-600 text-black p-3 rounded">
-                              <h3 className="font-bold text-sm mb-2">STRIKING EFFECT:</h3>
-                              <p className="text-sm leading-relaxed">
+                            <div className="bg-yellow-600 text-black p-2 rounded">
+                              <h3 className="font-bold text-xs mb-1">STRIKING EFFECT:</h3>
+                              <p className="text-xs leading-relaxed">
                                 {flashcardData?.martialApplication || 
                                  "The point is usually struck to an upward direction with a blunt edge."}
                               </p>
                             </div>
 
                             {/* Observed Effects */}
-                            <div className="bg-yellow-600 text-black p-3 rounded">
-                              <h3 className="font-bold text-sm mb-2">OBSERVED EFFECTS:</h3>
-                              <p className="text-sm leading-relaxed">
+                            <div className="bg-yellow-600 text-black p-2 rounded">
+                              <h3 className="font-bold text-xs mb-1">OBSERVED EFFECTS:</h3>
+                              <p className="text-xs leading-relaxed">
                                 {flashcardData?.healingFunction || 
                                  "Light to moderate knockout. Liver dysfunction in theory. Be responsible."}
                               </p>
                             </div>
 
                             {/* Insight */}
-                            <div className="bg-yellow-600 text-black p-3 rounded">
-                              <h3 className="font-bold text-sm mb-2">INSIGHT:</h3>
-                              <p className="text-sm leading-relaxed">
-                                {flashcardData?.insightText && flashcardData.insightText.length > 200
-                                  ? flashcardData.insightText.substring(0, 200) + "..."
+                            <div className="bg-yellow-600 text-black p-2 rounded">
+                              <h3 className="font-bold text-xs mb-1">INSIGHT:</h3>
+                              <p className="text-xs leading-relaxed">
+                                {flashcardData?.insightText && flashcardData.insightText.length > 150
+                                  ? flashcardData.insightText.substring(0, 150) + "..."
                                   : flashcardData?.insightText || 
                                     "This point has the potential to affect the associated meridian. Be responsible."}
                               </p>
                             </div>
                           </div>
-                                     <p className="text-gray-300 text-lg">
-                  {selectedMeridian 
-                    ? `${selectedMeridian} Meridian ${hasMultipleViews() ? `(${currentView} view)` : ''} - ${getPointsForCurrentView().length} points - Click a point to zoom in`
-                    : "Select a meridian on the right to begin exploring pressure points"}
-                </p> className="flex justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Card controls */}
+                <div className="flex justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
                   <button
                     onClick={flipCard}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
@@ -492,12 +460,15 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
           // Home View - Body Model with Meridian Selector on Right
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
             {/* Main content area with title and body model */}
-            <div c                  {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
-                {selectedMeridian && getPointsForCurrentView().map((point, index) => {
-                  // Transform point coordinates for correct positioning
-                  const { x, y } = transformCoordinates(point, selectedMeridian);
-                  return (dMeridian 
-                    ? `${selectedMeridian} Meridian Points - Click a point to zoom in`
+            <div className="flex-1">
+              {/* Body Map Title */}
+              <div className="text-center mb-6">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                  Master Your Meridians
+                </h1>
+                <p className="text-gray-300 text-lg">
+                  {selectedMeridian 
+                    ? `${selectedMeridian} Meridian ${hasMultipleViews() ? `(${currentView} view)` : ''} - ${getPointsForCurrentView().length} points - Click a point to zoom in`
                     : "Select a meridian on the right to begin exploring pressure points"}
                 </p>
               </div>
@@ -515,8 +486,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     imageRendering: "auto"
                   }}
                 />
-                  {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
-                {selectedMeridian && points.map((point, index) => {
+                
+                {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
+                {selectedMeridian && getPointsForCurrentView().map((point, index) => {
                   // Transform point coordinates for correct positioning
                   const { x, y } = transformCoordinates(point, selectedMeridian);
                   return (
@@ -536,7 +508,28 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   );
                 })}
               </div>
-            </div>            {/* Meridian Selector - Right side - Mobile optimized */}
+              
+              {/* View Toggle Buttons - Only show for meridians with multiple views */}
+              {hasMultipleViews() && (
+                <div className="flex justify-center gap-2 mt-4">
+                  {getAvailableViews().map(view => (
+                    <button
+                      key={view}
+                      onClick={() => setCurrentView(view)}
+                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                        currentView === view 
+                          ? 'bg-yellow-400 text-black' 
+                          : 'bg-gray-700 text-white hover:bg-gray-600'
+                      }`}
+                    >
+                      {view.charAt(0).toUpperCase() + view.slice(1)} View
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {/* Meridian Selector - Right side - Mobile optimized */}
             <div className="lg:w-64 lg:flex-shrink-0">
               <div className="lg:sticky lg:top-4">
                 <h2 className="text-base sm:text-lg font-bold text-yellow-400 mb-4 text-center lg:text-left">
@@ -556,10 +549,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   ))}
                 </div>
               </div>
-            </div>          </div>
+            </div>
+          </div>
         )}
       </div>
-        {/* Dynamic Point Popup */}
+      
+      {/* Dynamic Point Popup */}
       {showHT9Popup && popupPoint && popupPoint.popup && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className={`bg-gradient-to-br ${popupPoint.popup.type === 'warning' ? 'from-red-900 to-black border-2 border-red-500' : 'from-gray-900 to-black border-2 border-gray-500'} rounded-xl max-w-md w-full p-6 relative`}>
@@ -579,13 +574,15 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               <h2 className={`text-xl font-bold ${popupPoint.popup.type === 'warning' ? 'text-red-400' : 'text-gray-400'} mb-2`}>
                 {popupPoint.id} • {getElementName()}
               </h2>
-              <h3 className="text-lg text-white font-semibold">{popupPoint.popup.title}</h3>
+              <h3 className="text-lg text-white font-medium">
+                {popupPoint.name}
+              </h3>
             </div>
             
-            {/* Message content */}
-            <div className={`${popupPoint.popup.type === 'warning' ? 'bg-red-600/20 border border-red-500/50' : 'bg-gray-600/20 border border-gray-500/50'} rounded-lg p-4 mb-6`}>
-              <p className="text-white text-center leading-relaxed">
-                {popupPoint.popup.message}
+            {/* Content */}
+            <div className="mb-6">
+              <p className={`text-sm leading-relaxed ${popupPoint.popup.type === 'warning' ? 'text-red-200' : 'text-gray-300'}`}>
+                {popupPoint.popup.content}
               </p>
             </div>
             
@@ -596,12 +593,17 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   setShowHT9Popup(false);
                   setPopupPoint(null);
                 }}
-                className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                className={`flex-1 ${popupPoint.popup.type === 'warning' ? 'bg-gray-600 hover:bg-gray-700' : 'bg-gray-600 hover:bg-gray-700'} text-white font-bold py-3 px-4 rounded-lg transition-colors`}
               >
                 Close
               </button>
               <button
-                onClick={() => closePopupAndZoom(popupPoint)}
+                onClick={() => {
+                  setShowHT9Popup(false);
+                  setSelectedPoint(popupPoint);
+                  setShowZoomedView(true);
+                  setPopupPoint(null);
+                }}
                 className={`flex-1 ${popupPoint.popup.type === 'warning' ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'} text-white font-bold py-3 px-4 rounded-lg transition-colors`}
               >
                 View Point
