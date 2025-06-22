@@ -42,11 +42,18 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       // Reset to side view when no meridian selected (home state)
       setCurrentView("side");
     }
-  }, [selectedMeridian]);
-  // Load meridian data when meridian is selected
+  }, [selectedMeridian]);  // Load meridian data when meridian is selected
   useEffect(() => {
     if (selectedMeridian) {
-      const filename = `${selectedMeridian.toLowerCase()}_meridian_with_regions.json`;
+      // Map meridian names to filenames
+      const filenameMap = {
+        "Lung": "lung_meridian_with_regions.json",
+        "LargeIntestine": "large_intestine_meridian_with_regions.json",
+        "Large Intestine": "large_intestine_meridian_with_regions.json"
+      };
+      
+      const filename = filenameMap[selectedMeridian] || `${selectedMeridian.toLowerCase()}_meridian_with_regions.json`;
+      
       fetch(`/improved/${filename}`)
         .then(res => res.json())
         .then(data => {
@@ -194,19 +201,20 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               {/* Zoomed Region View */}
               <div className="flex-1">
                 <div className="relative bg-gray-800 rounded-lg overflow-hidden">
-                  {/* Create a zoomed/cropped view centered on the point */}
-                  <div className="relative w-full" style={{ height: "500px", overflow: "hidden" }}>
+                  {/* Create a zoomed/cropped view centered on the point */}                  <div className="relative w-full" style={{ height: "500px", overflow: "hidden" }}>
                     <img
                       src={getCurrentImagePath()}
                       alt={`${selectedPoint.region} region zoomed`}
                       className="absolute object-cover"
                       style={{
-                        // Scale the image up for zoom effect (2x zoom instead of 3x)
-                        width: "200%",
-                        height: "200%",
-                        // Center the image on the selected point
-                        left: `${50 - (selectedPoint.x * 200)}%`,
-                        top: `${50 - (selectedPoint.y * 200)}%`,
+                        // Scale the image up for zoom effect (3x zoom for better detail)
+                        width: "300%",
+                        height: "300%",
+                        // Center the image on the selected point - corrected calculation
+                        // We want to center the point at 50% of the container, so:
+                        // left = 50% - (point_x_percent * image_scale)
+                        left: `${50 - (selectedPoint.x * 300)}%`,
+                        top: `${50 - (selectedPoint.y * 300)}%`,
                         imageRendering: "crisp-edges"
                       }}
                     />
@@ -215,10 +223,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-6 h-6 bg-red-500 rounded-full border-3 border-white shadow-lg animate-pulse z-10"></div>
                     </div>
-                    
-                    {/* Zoom indicator overlay */}
+                      {/* Zoom indicator overlay */}
                     <div className="absolute top-4 right-4 bg-black/80 text-white px-3 py-1 rounded-lg text-sm font-bold">
-                      2x Zoom
+                      3x Zoom
                     </div>
                   </div>
                 </div>
