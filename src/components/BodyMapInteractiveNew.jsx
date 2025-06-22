@@ -203,13 +203,13 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       src={getCurrentImagePath()}
                       alt={`${selectedPoint.region} region zoomed`}
                       className="absolute object-cover"                      style={{
-                        // Scale the image up for zoom effect (2x zoom for better visibility)
-                        width: "200%",
-                        height: "200%",
-                        // Center the image on the selected point - correct calculation
-                        // For a 2x scaled image, move the image so the point appears at center
-                        left: `${50 - (selectedPoint.x * 200)}%`,
-                        top: `${50 - (selectedPoint.y * 200)}%`,
+                        // Scale the image up for zoom effect (3x zoom for detailed view)
+                        width: "300%",
+                        height: "300%",
+                        // Position image so the selected point appears at center of zoom box
+                        // Formula: center (50%) minus point position scaled by zoom factor
+                        left: `calc(50% - ${selectedPoint.x * 300}%)`,
+                        top: `calc(50% - ${selectedPoint.y * 300}%)`,
                         imageRendering: "crisp-edges"
                       }}
                     />
@@ -219,7 +219,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       <div className="w-6 h-6 bg-red-500 rounded-full border-3 border-white shadow-lg animate-pulse z-10"></div>
                     </div>                    {/* Zoom indicator overlay */}
                     <div className="absolute top-4 right-4 bg-black/80 text-white px-3 py-1 rounded-lg text-sm font-bold">
-                      2x Zoom
+                      3x Zoom
                     </div>
                   </div>
                 </div>
