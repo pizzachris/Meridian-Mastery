@@ -7,14 +7,14 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   const [selectedMeridian, setSelectedMeridian] = useState("");
   const [points, setPoints] = useState([]);
   const [selectedPoint, setSelectedPoint] = useState(null);
-  const [showZoomedView, setShowZoomedView] = useState(false);
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [showZoomedView, setShowZoomedView] = useState(false);  const [isFlipped, setIsFlipped] = useState(false);
   const [allFlashcardData, setAllFlashcardData] = useState([]);
-
+  const [showHT9Popup, setShowHT9Popup] = useState(false);
   // Available meridians - only complete ones
   const availableMeridians = [
     { id: "Lung", name: "Lung", element: "element-metal", view: "front" },
-    { id: "LargeIntestine", name: "Large Intestine", element: "element-metal", view: "front" }
+    { id: "LargeIntestine", name: "Large Intestine", element: "element-metal", view: "front" },
+    { id: "Heart", name: "Heart", element: "element-fire", view: "front" }
   ];
 
   // Load all flashcard data on component mount
@@ -111,10 +111,16 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     setShowZoomedView(false);
     setIsFlipped(false);
   };
-
   // Handle point click - zoom to that region
   const handlePointClick = (point) => {
     console.log("Point clicked:", point);
+    
+    // Special handling for HT9 - show popup first
+    if (point.id === "HT9" || point.name?.toLowerCase().includes("ht9")) {
+      setShowHT9Popup(true);
+      return;
+    }
+    
     setSelectedPoint(point);
     setShowZoomedView(true);
     setIsFlipped(false); // Start with front side of flashcard
@@ -131,33 +137,51 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   const flipCard = () => {
     setIsFlipped(!isFlipped);
   };
-
   // Clear selection and return to home view
   const clearSelection = () => {
     setSelectedMeridian("");
     setSelectedPoint(null);
     setShowZoomedView(false);
     setIsFlipped(false);
+    setShowHT9Popup(false);
   };
 
+  // Handle HT9 popup close and proceed to zoom
+  const closeHT9PopupAndZoom = (point) => {
+    setShowHT9Popup(false);
+    setSelectedPoint(point);
+    setShowZoomedView(true);
+    setIsFlipped(false);
+  };
   // Get meridian abbreviation for badge
   const getMeridianAbbreviation = (meridianName, pointNumber) => {
     const abbrevMap = {
       Lung: "LU",
       LargeIntestine: "LI",
-      "Large Intestine": "LI"
+      "Large Intestine": "LI",
+      Heart: "HT"
     };
     const abbrev = abbrevMap[meridianName] || "UN";
     const number = pointNumber?.replace(/[A-Z]+/, '') || '';
     return `${abbrev}${number}`;
   };
-
-  // Get element colors for Metal element
-  const getElementColors = () => ({
-    bg: "bg-gray-600",
-    text: "text-white",
-    border: "border-gray-400"
-  });
+  // Get element colors for meridians
+  const getElementColors = () => {
+    const meridian = availableMeridians.find(m => m.id === selectedMeridian);
+    if (meridian?.element === "element-fire") {
+      return {
+        bg: "bg-red-600",
+        text: "text-white", 
+        border: "border-red-400"
+      };
+    }
+    // Default to Metal colors
+    return {
+      bg: "bg-gray-600",
+      text: "text-white",
+      border: "border-gray-400"
+    };
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">      {/* Header with Logo and Back Button - Mobile optimized positioning */}
@@ -233,11 +257,10 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     >
                       {/* Front Side */}
                       <div className="absolute inset-0 w-full h-full backface-hidden">
-                        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-red-600 rounded-xl h-full flex flex-col justify-center items-center p-8 relative">
-                          {/* Meridian badge */}
+                        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-red-600 rounded-xl h-full flex flex-col justify-center items-center p-8 relative">                          {/* Meridian badge */}
                           <div className={`absolute top-6 left-1/2 transform -translate-x-1/2 ${getElementColors().bg} ${getElementColors().text} px-6 py-3 rounded-lg border-2 ${getElementColors().border}`}>
                             <span className="text-base font-bold">
-                              {getMeridianAbbreviation(selectedMeridian, selectedPoint.id)} • METAL
+                              {getMeridianAbbreviation(selectedMeridian, selectedPoint.id)} • {selectedMeridian === "Heart" ? "FIRE" : "METAL"}
                             </span>
                           </div>
 
@@ -403,10 +426,59 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   ))}
                 </div>
               </div>
-            </div>
-          </div>
+            </div>          </div>
         )}
       </div>
+      
+      {/* HT9 Special Popup */}
+      {showHT9Popup && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gradient-to-br from-red-900 to-black border-2 border-red-500 rounded-xl max-w-md w-full p-6 relative">
+            {/* Close button */}
+            <button
+              onClick={() => setShowHT9Popup(false)}
+              className="absolute top-4 right-4 text-red-400 hover:text-red-300 text-2xl font-bold transition-colors"
+            >
+              ×
+            </button>
+            
+            {/* Header */}
+            <div className="text-center mb-4">
+              <h2 className="text-xl font-bold text-red-400 mb-2">HT9 • FIRE</h2>
+              <h3 className="text-lg text-white font-semibold">Special Location Note</h3>
+            </div>
+            
+            {/* Warning content */}
+            <div className="bg-red-600/20 border border-red-500/50 rounded-lg p-4 mb-6">
+              <p className="text-white text-center leading-relaxed">
+                <strong className="text-red-400">HT9</strong> is located on the <strong>back of the finger</strong> near the fingernail.
+              </p>
+              <p className="text-gray-300 text-center text-sm mt-2">
+                This point is on the opposite view from the other Heart meridian points shown.
+              </p>
+            </div>
+            
+            {/* Action buttons */}
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowHT9Popup(false)}
+                className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  const ht9Point = points.find(p => p.id === "HT9" || p.name?.toLowerCase().includes("ht9"));
+                  if (ht9Point) closeHT9PopupAndZoom(ht9Point);
+                }}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+              >
+                View Point
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

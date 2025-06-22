@@ -1,0 +1,77 @@
+{
+  "points": [
+    {
+      "id": "HT1",
+      "name": "Geuk Chuhn",
+      "meridian": "Heart",
+      "description": "",
+      "x": 0.3362,
+      "y": 0.2808
+    },
+    {
+      "id": "HT2",
+      "name": "Chuhng Yuhng ",
+      "meridian": "Heart",
+      "description": "",
+      "x": 0.3232,
+      "y": 0.3382
+    },
+    {
+      "id": "HT3",
+      "name": "Soh Hae",
+      "meridian": "Heart",
+      "description": "",
+      "x": 0.3001,
+      "y": 0.3774
+    },
+    {
+      "id": "HT4",
+      "name": "Yuhng Doh",
+      "meridian": "Heart",
+      "description": "",
+      "x": 0.2439,
+      "y": 0.4583
+    },
+    {
+      "id": "HT5",
+      "name": "Tohng Nee",
+      "meridian": "Heart",
+      "description": "",
+      "x": 0.2395,
+      "y": 0.4662
+    },
+    {
+      "id": "HT6",
+      "name": "Eum Geuk",
+      "meridian": "Heart",
+      "description": "",
+      "x": 0.2338,
+      "y": 0.4734
+    },
+    {
+      "id": "HT7",
+      "name": "Shin Moon",
+      "meridian": "Heart",
+      "description": "",
+      "x": 0.228,
+      "y": 0.4801
+    },
+    {
+      "id": "HT8",
+      "name": "Soh Boo",
+      "meridian": "Heart",
+      "description": "",
+      "x": 0.2237,
+      "y": 0.5139
+    },
+    {
+      "id": "HT9",
+      "name": "Soh Choong",
+      "meridian": "Heart",
+      "description": "Located on the back side of the pinky finger, near the nail on the radial edge.",
+      "x": 0.2266,
+      "y": 0.5507
+    }
+  ],
+  "regions": []
+}
