@@ -62,16 +62,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     };
     loadFlashcardData();
   }, []);
-
-  // Auto-switch view when meridian is selected
+  // Auto-switch view when meridian is selected - REMOVED AUTO-SWITCHING
+  // View switching is now controlled by user via toggle buttons only
   useEffect(() => {
-    if (selectedMeridian) {
-      const meridian = availableMeridians.find(m => m.id === selectedMeridian);
-      if (meridian && meridian.view !== currentView) {
-        setCurrentView(meridian.view);
-      }
-    } else {
-      // Reset to side view when no meridian selected (home state)
+    // Only reset to side view when no meridian is selected (home state)
+    if (!selectedMeridian) {
       setCurrentView("side");
     }
   }, [selectedMeridian, availableMeridians]);
@@ -175,7 +170,6 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     
     return flashcard;
   };
-
   // Handle meridian selection
   const handleMeridianSelect = (meridianId) => {
     setSelectedMeridian(meridianId);
@@ -183,10 +177,22 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     setShowZoomedView(false);
     setIsFlipped(false);
     
-    // Set appropriate view for the meridian
+    // Set starting view based on where the first point is located
+    // This ensures users see points in order (SI1, SI2, etc.)
     const meridian = availableMeridians.find(m => m.id === meridianId);
     if (meridian) {
-      setCurrentView(meridian.view);
+      if (meridian.views && meridian.views.length > 1) {
+        // For multi-view meridians, start with the view that contains the first point
+        // Small Intestine starts on "side" view where SI1 is located
+        if (meridianId === "SmallIntestine") {
+          setCurrentView("side"); // SI1 is on side view
+        } else {
+          setCurrentView(meridian.views[0]); // Default to first view in array
+        }
+      } else {
+        // Single view meridians use their designated view
+        setCurrentView(meridian.view);
+      }
     }
   };
 
