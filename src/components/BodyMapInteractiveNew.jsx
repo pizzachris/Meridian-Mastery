@@ -228,6 +228,30 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     };
   };
 
+  // Transform coordinates for meridians that were calibrated for different image versions
+  const transformCoordinates = (point, meridianName) => {
+    // Lung and Large Intestine appear to have coordinates for unpadded images
+    // Apply transformation to adjust for padded images
+    if (meridianName === "Lung" || meridianName === "LargeIntestine") {
+      // The padded images have extra space, so we need to adjust the coordinates
+      // Based on the padding, points need to be shifted and scaled
+      const paddingAdjustment = {
+        x: 0.15, // Shift right to account for left padding
+        y: 0.1,  // Shift down to account for top padding
+        scaleX: 0.7, // Scale down X to fit the narrower body area
+        scaleY: 0.8  // Scale down Y to fit the shorter body area
+      };
+      
+      return {
+        x: paddingAdjustment.x + (point.x * paddingAdjustment.scaleX),
+        y: paddingAdjustment.y + (point.y * paddingAdjustment.scaleY)
+      };
+    }
+    
+    // Heart and Stomach coordinates appear to be correct for padded images
+    return { x: point.x, y: point.y };
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">      {/* Header with Logo and Back Button - Mobile optimized positioning */}
       <div className="absolute top-16 sm:top-4 left-4 right-4 z-50 flex items-center">
@@ -435,21 +459,25 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   }}
                 />
                   {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
-                {selectedMeridian && points.map((point, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handlePointClick(point)}
-                    className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 touch-manipulation"
-                    style={{
-                      left: `${point.x * 100}%`,
-                      top: `${point.y * 100}%`,
-                      transform: "translate(-50%, -50%)",
-                      minHeight: "32px", // Minimum touch target for mobile
-                      minWidth: "32px"   // Minimum touch target for mobile
-                    }}
-                    title={`${point.id}: ${point.name}`}
-                  />
-                ))}
+                {selectedMeridian && points.map((point, index) => {
+                  // Transform point coordinates for correct positioning
+                  const { x, y } = transformCoordinates(point, selectedMeridian);
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handlePointClick(point)}
+                      className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 touch-manipulation"
+                      style={{
+                        left: `${x * 100}%`,
+                        top: `${y * 100}%`,
+                        transform: "translate(-50%, -50%)",
+                        minHeight: "32px", // Minimum touch target for mobile
+                        minWidth: "32px"   // Minimum touch target for mobile
+                      }}
+                      title={`${point.id}: ${point.name}`}
+                    />
+                  );
+                })}
               </div>
             </div>            {/* Meridian Selector - Right side - Mobile optimized */}
             <div className="lg:w-64 lg:flex-shrink-0">
