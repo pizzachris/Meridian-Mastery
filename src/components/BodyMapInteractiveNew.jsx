@@ -202,16 +202,14 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     <img
                       src={getCurrentImagePath()}
                       alt={`${selectedPoint.region} region zoomed`}
-                      className="absolute object-cover"
-                      style={{
-                        // Scale the image up for zoom effect (3x zoom for better detail)
-                        width: "300%",
-                        height: "300%",
-                        // Center the image on the selected point - corrected calculation
-                        // We want to center the point at 50% of the container, so:
-                        // left = 50% - (point_x_percent * image_scale)
-                        left: `${50 - (selectedPoint.x * 300)}%`,
-                        top: `${50 - (selectedPoint.y * 300)}%`,
+                      className="absolute object-cover"                      style={{
+                        // Scale the image up for zoom effect (2x zoom for better visibility)
+                        width: "200%",
+                        height: "200%",
+                        // Center the image on the selected point - correct calculation
+                        // For a 2x scaled image, move the image so the point appears at center
+                        left: `${50 - (selectedPoint.x * 200)}%`,
+                        top: `${50 - (selectedPoint.y * 200)}%`,
                         imageRendering: "crisp-edges"
                       }}
                     />
@@ -219,10 +217,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     {/* Center crosshair to show the exact point location */}
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-6 h-6 bg-red-500 rounded-full border-3 border-white shadow-lg animate-pulse z-10"></div>
-                    </div>
-                      {/* Zoom indicator overlay */}
+                    </div>                    {/* Zoom indicator overlay */}
                     <div className="absolute top-4 right-4 bg-black/80 text-white px-3 py-1 rounded-lg text-sm font-bold">
-                      3x Zoom
+                      2x Zoom
                     </div>
                   </div>
                 </div>
