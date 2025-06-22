@@ -87,12 +87,10 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     } else {
       setPoints([]);
     }
-  }, [selectedMeridian]);
-  // Check if current meridian has multiple views
+  }, [selectedMeridian]);  // Check if current meridian has multiple views
   const hasMultipleViews = () => {
     const meridian = availableMeridians.find(m => m.id === selectedMeridian);
-    // Only Small Intestine should have multiple views
-    return meridian && meridian.id === "SmallIntestine" && meridian.views && meridian.views.length > 1;
+    return meridian && meridian.views && meridian.views.length > 1;
   };
 
   // Get available views for current meridian
@@ -165,16 +163,15 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       if (regionImage) {
         return regionImage;
       }
-    }
-      switch (currentView) {
+    }    switch (currentView) {
       case "front":
-        return "/body-images/front.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/front_view_model_wide_padded.png";
       case "back":
-        return "/body-images/back.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/back_view_model_wide_padded.png";
       case "side":
-        return "/body-images/side.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
       default:
-        return "/body-images/side.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
     }
   };
 
