@@ -24,13 +24,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
         try {
           const response = await fetch(`/improved/${meridianFile}_meridian_with_regions.json`);
           const data = await response.json();
-          
-          meridianData.push({
+            meridianData.push({
             id: data.meridian.replace(/\s+/g, ''), // Remove spaces for ID (e.g., "Large Intestine" -> "LargeIntestine")
             name: data.meridian,
             element: `element-${data.element}`,
-            view: data.view,
-            views: data.views || [data.view] // Support multi-view or default to single view
+            view: data.view || (data.views ? data.views[0] : "front"), // Primary view
+            views: data.views || [data.view || "front"] // Support multi-view or default to single view
           });
         } catch (error) {
           console.error(`Failed to load ${meridianFile} meridian metadata:`, error);
@@ -105,15 +104,46 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Filter points by current view
   const getPointsForCurrentView = () => {
     if (!hasMultipleViews()) return points;
-    return points.filter(point => point.view === currentView);
+    // Filter by region field in the point data
+    return points.filter(point => {
+      // For points with region specified, match the current view
+      if (point.region) {
+        return point.region === currentView;
+      }
+      // For points without region, include them in all views (fallback)
+      return true;
+    });
   };
-
   // Transform coordinates for different views
   const transformCoordinates = (point, meridianId) => {
-    // For multi-view meridians, coordinates are already correct for their specific view
-    return { x: point.x, y: point.y };
+    // For Small Intestine side view, coordinates might be in percentage format
+    if (meridianId === "SmallIntestine" && point.region === "side" && currentView === "side") {
+      // If coordinates are greater than 1, they're already in pixel format
+      // If they're between 0-1, they're in percentage format and need conversion
+      if (point.x <= 1 && point.y <= 1) {
+        return { 
+          x: point.x, // Keep as percentage (0-1)
+          y: point.y 
+        };
+      }
+      // If coordinates are large numbers, normalize them to 0-1 range
+      if (point.x > 1 || point.y > 1) {
+        // Assume image dimensions for normalization
+        const maxX = 400; // Approximate side view width
+        const maxY = 600; // Approximate side view height
+        return {
+          x: Math.min(point.x / maxX, 1),
+          y: Math.min(point.y / maxY, 1)
+        };
+      }
+    }
+    
+    // For other meridians and views, coordinates should already be in 0-1 format
+    return { 
+      x: point.x <= 1 ? point.x : point.x / 1000, // Normalize if needed
+      y: point.y <= 1 ? point.y : point.y / 1000 
+    };
   };
-
   // Get current image path
   const getCurrentImagePath = () => {
     if (showZoomedView && selectedPoint) {
@@ -139,13 +169,13 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     
     switch (currentView) {
       case "front":
-        return "/body-images/front_view_model_wide_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/front_view_model_wide_padded.png";
       case "back":
-        return "/body-images/back_view_model_wide_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/back_view_model_wide_padded.png";
       case "side":
-        return "/body-images/side_full_cleaned_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
       default:
-        return "/body-images/side_full_cleaned_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
     }
   };
 
@@ -169,8 +199,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     }
     
     return flashcard;
-  };
-  // Handle meridian selection
+  };  // Handle meridian selection
   const handleMeridianSelect = (meridianId) => {
     setSelectedMeridian(meridianId);
     setSelectedPoint(null);
@@ -191,7 +220,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
         }
       } else {
         // Single view meridians use their designated view
-        setCurrentView(meridian.view);
+        setCurrentView(meridian.view || meridian.views[0] || "front");
       }
     }
   };
@@ -492,8 +521,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     imageRendering: "auto"
                   }}
                 />
-                
-                {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
+                  {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
                 {selectedMeridian && getPointsForCurrentView().map((point, index) => {
                   // Transform point coordinates for correct positioning
                   const { x, y } = transformCoordinates(point, selectedMeridian);
@@ -501,13 +529,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     <button
                       key={index}
                       onClick={() => handlePointClick(point)}
-                      className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 touch-manipulation"
+                      className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 touch-manipulation"
                       style={{
                         left: `${x * 100}%`,
                         top: `${y * 100}%`,
-                        transform: "translate(-50%, -50%)",
-                        minHeight: "32px", // Minimum touch target for mobile
-                        minWidth: "32px"   // Minimum touch target for mobile
+                        transform: "translate(-50%, -50%)"
                       }}
                       title={`${point.id}: ${point.name}`}
                     />
