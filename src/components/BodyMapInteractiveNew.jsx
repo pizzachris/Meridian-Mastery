@@ -14,7 +14,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Load available meridians dynamically from JSON files
   useEffect(() => {
     const loadMeridianMetadata = async () => {
-      const meridianFiles = ['lung', 'large_intestine', 'heart', 'stomach'];
+      const meridianFiles = ['lung', 'large_intestine', 'heart', 'stomach', 'spleen'];
       const meridianData = [];
       
       for (const meridianFile of meridianFiles) {
@@ -179,13 +179,13 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     setShowZoomedView(true);
     setIsFlipped(false);
   };  // Get meridian abbreviation for badge
-  const getMeridianAbbreviation = (meridianName, pointNumber) => {
-    const abbrevMap = {
+  const getMeridianAbbreviation = (meridianName, pointNumber) => {    const abbrevMap = {
       Lung: "LU",
       LargeIntestine: "LI",
       "Large Intestine": "LI",
       Heart: "HT",
-      Stomach: "ST"
+      Stomach: "ST",
+      Spleen: "SP"
     };
     const abbrev = abbrevMap[meridianName] || "UN";
     const number = pointNumber?.replace(/[A-Z]+/, '') || '';
@@ -227,7 +227,6 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       border: "border-gray-400"
     };
   };
-
   // Transform coordinates for meridians that were calibrated for different image versions
   const transformCoordinates = (point, meridianName) => {
     // Lung and Large Intestine appear to have coordinates for unpadded images
@@ -248,7 +247,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       };
     }
     
-    // Heart and Stomach coordinates appear to be correct for padded images
+    // Heart, Stomach, and Spleen coordinates appear to be correct for padded images
     return { x: point.x, y: point.y };
   };
 
