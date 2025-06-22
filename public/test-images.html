@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Body Model Images</title>
+    <style>
+        img { max-width: 300px; margin: 10px; border: 2px solid red; }
+        .container { display: flex; flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+    <h1>Testing Body Model Images</h1>
+    <div class="container">
+        <div>
+            <h3>Front View</h3>
+            <img src="/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/front_view_model_wide_padded.png" alt="Front View" onerror="this.style.border='2px solid red'; this.alt='FAILED TO LOAD';">
+        </div>
+        <div>
+            <h3>Back View</h3>
+            <img src="/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/back_view_model_wide_padded.png" alt="Back View" onerror="this.style.border='2px solid red'; this.alt='FAILED TO LOAD';">
+        </div>
+        <div>
+            <h3>Side View</h3>
+            <img src="/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png" alt="Side View" onerror="this.style.border='2px solid red'; this.alt='FAILED TO LOAD';">
+        </div>
+    </div>
+    
+    <script>
+        // Log any image loading issues
+        document.querySelectorAll('img').forEach(img => {
+            img.onload = () => console.log(`✅ Loaded: ${img.src}`);
+            img.onerror = () => console.error(`❌ Failed to load: ${img.src}`);
+        });
+    </script>
+</body>
+</html>
