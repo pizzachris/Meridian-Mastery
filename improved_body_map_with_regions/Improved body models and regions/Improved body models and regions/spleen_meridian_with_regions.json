@@ -1,0 +1,173 @@
+{
+  "points": [
+    {
+      "id": "SP1",
+      "name": "Eun Baek",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.2919,
+      "y": 0.8521
+    },
+    {
+      "id": "SP2",
+      "name": "Tae Doh",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.3076,
+      "y": 0.8521
+    },
+    {
+      "id": "SP3",
+      "name": "Tae Baek",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.3293,
+      "y": 0.8509
+    },
+    {
+      "id": "SP4",
+      "name": "Kohng Sohn",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.3583,
+      "y": 0.8407
+    },
+    {
+      "id": "SP5",
+      "name": "Sahng Goo",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4029,
+      "y": 0.8203
+    },
+    {
+      "id": "SP6",
+      "name": "Sahm Eum Kyo",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4186,
+      "y": 0.7941
+    },
+    {
+      "id": "SP7",
+      "name": "Loo Gohk",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4222,
+      "y": 0.7444
+    },
+    {
+      "id": "SP8",
+      "name": "Jee Gi",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4186,
+      "y": 0.6953
+    },
+    {
+      "id": "SP9",
+      "name": "Yahng Neung Chuhn",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4138,
+      "y": 0.638
+    },
+    {
+      "id": "SP10",
+      "name": "Hyul Hae",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4162,
+      "y": 0.6029
+    },
+    {
+      "id": "SP11",
+      "name": "Kee Moon",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4138,
+      "y": 0.5507
+    },
+    {
+      "id": "SP12",
+      "name": "Choong Moon",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4704,
+      "y": 0.4806
+    },
+    {
+      "id": "SP13",
+      "name": "Boo Sah",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4849,
+      "y": 0.4653
+    },
+    {
+      "id": "SP14",
+      "name": "Bohk Gyuhl",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4837,
+      "y": 0.4353
+    },
+    {
+      "id": "SP15",
+      "name": "Dae Hoeng",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4849,
+      "y": 0.4226
+    },
+    {
+      "id": "SP16",
+      "name": "Bohk Ae",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4849,
+      "y": 0.3811
+    },
+    {
+      "id": "SP17",
+      "name": "Shik Doo",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.4885,
+      "y": 0.3461
+    },
+    {
+      "id": "SP18",
+      "name": "Chuhn Gyea",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.5247,
+      "y": 0.3193
+    },
+    {
+      "id": "SP19",
+      "name": "Hyoong Hyahng",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.5283,
+      "y": 0.3034
+    },
+    {
+      "id": "SP20",
+      "name": "Joo Hyung",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.5464,
+      "y": 0.2913
+    },
+    {
+      "id": "SP21",
+      "name": "Dae Po",
+      "meridian": "Spleen",
+      "description": "",
+      "x": 0.5887,
+      "y": 0.3537
+    }
+  ],
+  "regions": []
+}
