@@ -27,17 +27,20 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
             name: data.meridian,
             element: `element-${data.element}`,
             view: data.view
-          });
-        } catch (error) {
+          });        } catch (error) {
           console.error(`Failed to load ${meridianFile} meridian metadata:`, error);
         }
       }
       
       setAvailableMeridians(meridianData);
       console.log('Loaded meridian metadata:', meridianData);
-    };
-    
-    loadMeridianMetadata();
+      console.log('Meridian count:', meridianData.length);
+      meridianData.forEach(m => console.log(`- ${m.id}: ${m.name} (${m.element})`));
+        // Set the first meridian as default if none selected
+      if (meridianData.length > 0 && selectedMeridian === "") {
+        setSelectedMeridian(meridianData[0].id);
+      }
+    };    loadMeridianMetadata();
   }, []);
 
   // Load all flashcard data on component mount
