@@ -230,7 +230,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">      {/* Header with Logo and Back Button - Mobile optimized positioning */}
-      <div className="absolute top-8 sm:top-4 left-4 right-4 z-50 flex items-center">
+      <div className="absolute top-16 sm:top-4 left-4 right-4 z-50 flex items-center">
         {/* Logo - Home Button - Always on left */}
         <button
           onClick={() => navigateTo("home")}
@@ -254,7 +254,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
           </button>
         )}
       </div>      {/* Main Content Area - Mobile optimized padding */}
-      <div className="pt-20 sm:pt-16 pb-4 px-4 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <div className="pt-32 sm:pt-16 pb-4 px-4 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         {showZoomedView && selectedPoint ? (
           // Zoomed View with Flashcard
           <div className="max-w-6xl mx-auto">
@@ -293,11 +293,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   </div>
                 </div>
               </div>              {/* Flashcard */}
-              <div className="flex-1 max-w-lg">
+              <div className="flex-1 max-w-xl lg:max-w-2xl">
                 {(() => {
                   const flashcardData = getFlashcardData(selectedPoint);
                   return (                    <div
-                      className={`relative w-full h-[500px] transition-transform duration-700 transform-style-preserve-3d cursor-pointer ${isFlipped ? "rotate-y-180" : ""}`}
+                      className={`relative w-full h-[600px] sm:h-[500px] transition-transform duration-700 transform-style-preserve-3d cursor-pointer ${isFlipped ? "rotate-y-180" : ""}`}
                       onClick={flipCard}
                     >
                       {/* Front Side */}
@@ -439,7 +439,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   <button
                     key={index}
                     onClick={() => handlePointClick(point)}
-                    className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 touch-manipulation"
+                    className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 touch-manipulation"
                     style={{
                       left: `${point.x * 100}%`,
                       top: `${point.y * 100}%`,
