@@ -251,6 +251,35 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     return { x: point.x, y: point.y };
   };
 
+  // Get available views for the selected meridian
+  const getAvailableViews = () => {
+    const meridian = availableMeridians.find(m => m.id === selectedMeridian);
+    if (!meridian) return [];
+    
+    // If meridian has views array, use it; otherwise default to single view
+    return meridian.views || [meridian.view];
+  };
+
+  // Check if selected meridian has multiple views
+  const hasMultipleViews = () => {
+    return getAvailableViews().length > 1;
+  };
+
+  // Get default view for selected meridian (view containing point 1)
+  const getDefaultView = () => {
+    if (!selectedMeridian || points.length === 0) return currentView;
+    
+    // Find point 1 (or first point) and return its view
+    const firstPoint = points.find(p => p.id.endsWith('1')) || points[0];
+    return firstPoint?.view || currentView;
+  };
+
+  // Filter points by current view
+  const getPointsForCurrentView = () => {
+    if (!hasMultipleViews()) return points;
+    return points.filter(point => point.view === currentView);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">      {/* Header with Logo and Back Button - Mobile optimized positioning */}
       <div className="absolute top-16 sm:top-4 left-4 right-4 z-50 flex items-center">
@@ -276,7 +305,30 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
             ← {showZoomedView ? "Full View" : "Back"}
           </button>
         )}
-      </div>      {/* Main Content Area - Mobile optimized padding */}
+      </div>
+
+      {/* View Toggle - only show for multi-view meridians */}
+      {selectedMeridian && hasMultipleViews() && (
+        <div className="absolute top-28 sm:top-16 left-1/2 transform -translate-x-1/2 z-40">
+          <div className="bg-black/80 backdrop-blur-sm rounded-lg border border-gray-600 p-1 flex gap-1">
+            {getAvailableViews().map((view) => (
+              <button
+                key={view}
+                onClick={() => setCurrentView(view)}
+                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors touch-manipulation ${
+                  currentView === view
+                    ? 'bg-yellow-400 text-black'
+                    : 'text-white hover:bg-gray-700'
+                }`}
+              >
+                {view.charAt(0).toUpperCase() + view.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Main Content Area - Mobile optimized padding */}
       <div className="pt-32 sm:pt-16 pb-4 px-4 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         {showZoomedView && selectedPoint ? (
           // Zoomed View with Flashcard
