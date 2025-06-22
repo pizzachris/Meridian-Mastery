@@ -7,15 +7,37 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   const [selectedMeridian, setSelectedMeridian] = useState("");
   const [points, setPoints] = useState([]);
   const [selectedPoint, setSelectedPoint] = useState(null);
-  const [showZoomedView, setShowZoomedView] = useState(false);  const [isFlipped, setIsFlipped] = useState(false);
-  const [allFlashcardData, setAllFlashcardData] = useState([]);
-  const [showHT9Popup, setShowHT9Popup] = useState(false);
-  // Available meridians - only complete ones
-  const availableMeridians = [
-    { id: "Lung", name: "Lung", element: "element-metal", view: "front" },
-    { id: "LargeIntestine", name: "Large Intestine", element: "element-metal", view: "front" },
-    { id: "Heart", name: "Heart", element: "element-fire", view: "front" }
-  ];
+  const [showZoomedView, setShowZoomedView] = useState(false);  const [isFlipped, setIsFlipped] = useState(false);  const [allFlashcardData, setAllFlashcardData] = useState([]);
+  const [showHT9Popup, setShowHT9Popup] = useState(false);  const [availableMeridians, setAvailableMeridians] = useState([]);
+
+  // Load available meridians dynamically from JSON files
+  useEffect(() => {
+    const loadMeridianMetadata = async () => {
+      const meridianFiles = ['lung', 'large_intestine', 'heart'];
+      const meridianData = [];
+      
+      for (const meridianFile of meridianFiles) {
+        try {
+          const response = await fetch(`/improved/${meridianFile}_meridian_with_regions.json`);
+          const data = await response.json();
+          
+          meridianData.push({
+            id: data.meridian.replace(' ', ''), // Remove spaces for ID (e.g., "Large Intestine" -> "LargeIntestine")
+            name: data.meridian,
+            element: `element-${data.element}`,
+            view: data.view
+          });
+        } catch (error) {
+          console.error(`Failed to load ${meridianFile} meridian metadata:`, error);
+        }
+      }
+      
+      setAvailableMeridians(meridianData);
+      console.log('Loaded meridian metadata:', meridianData);
+    };
+    
+    loadMeridianMetadata();
+  }, []);
 
   // Load all flashcard data on component mount
   useEffect(() => {

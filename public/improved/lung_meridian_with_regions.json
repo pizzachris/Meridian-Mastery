@@ -1,6 +1,7 @@
 {
   "meridian": "Lung",
   "view": "front",
+  "element": "metal",
   "points": [
     {
       "id": "LU1",
