@@ -14,7 +14,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Load available meridians dynamically from JSON files
   useEffect(() => {
     const loadMeridianMetadata = async () => {
-      const meridianFiles = ['lung', 'large_intestine', 'heart'];
+      const meridianFiles = ['lung', 'large_intestine', 'heart', 'stomach'];
       const meridianData = [];
       
       for (const meridianFile of meridianFiles) {
@@ -175,20 +175,32 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     setSelectedPoint(point);
     setShowZoomedView(true);
     setIsFlipped(false);
-  };
-  // Get meridian abbreviation for badge
+  };  // Get meridian abbreviation for badge
   const getMeridianAbbreviation = (meridianName, pointNumber) => {
     const abbrevMap = {
       Lung: "LU",
       LargeIntestine: "LI",
       "Large Intestine": "LI",
-      Heart: "HT"
+      Heart: "HT",
+      Stomach: "ST"
     };
     const abbrev = abbrevMap[meridianName] || "UN";
     const number = pointNumber?.replace(/[A-Z]+/, '') || '';
     return `${abbrev}${number}`;
   };
-  // Get element colors for meridians
+
+  // Get element name for display
+  const getElementName = () => {
+    const meridian = availableMeridians.find(m => m.id === selectedMeridian);
+    const elementMap = {
+      "element-fire": "FIRE",
+      "element-earth": "EARTH", 
+      "element-metal": "METAL",
+      "element-water": "WATER",
+      "element-wood": "WOOD"
+    };
+    return elementMap[meridian?.element] || "UNKNOWN";
+  };// Get element colors for meridians
   const getElementColors = () => {
     const meridian = availableMeridians.find(m => m.id === selectedMeridian);
     if (meridian?.element === "element-fire") {
@@ -196,6 +208,13 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
         bg: "bg-red-600",
         text: "text-white", 
         border: "border-red-400"
+      };
+    }
+    if (meridian?.element === "element-earth") {
+      return {
+        bg: "bg-yellow-600",
+        text: "text-black", 
+        border: "border-yellow-400"
       };
     }
     // Default to Metal colors
@@ -283,7 +302,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                         <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-red-600 rounded-xl h-full flex flex-col justify-center items-center p-8 relative">                          {/* Meridian badge */}
                           <div className={`absolute top-6 left-1/2 transform -translate-x-1/2 ${getElementColors().bg} ${getElementColors().text} px-6 py-3 rounded-lg border-2 ${getElementColors().border}`}>
                             <span className="text-base font-bold">
-                              {getMeridianAbbreviation(selectedMeridian, selectedPoint.id)} • {selectedMeridian === "Heart" ? "FIRE" : "METAL"}
+                              {getMeridianAbbreviation(selectedMeridian, selectedPoint.id)} • {getElementName()}
                             </span>
                           </div>
 
@@ -470,7 +489,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
             {/* Header */}
             <div className="text-center mb-4">
               <h2 className={`text-xl font-bold ${popupPoint.popup.type === 'warning' ? 'text-red-400' : 'text-gray-400'} mb-2`}>
-                {popupPoint.id} • {selectedMeridian === "Heart" ? "FIRE" : "METAL"}
+                {popupPoint.id} • {getElementName()}
               </h2>
               <h3 className="text-lg text-white font-semibold">{popupPoint.popup.title}</h3>
             </div>
