@@ -4,11 +4,12 @@
 ## ✅ ARCHIVING STATUS - COMPLETED ACTIONS
 
 ### Archive Folders Created ✅
-- archive/old-body-images/ ✅
+- archive/old-body-images/ ✅  
 - archive/old-components/ ✅  
 - archive/old-data/ ✅
 - archive/development-scripts/ ✅
 - archive/development-docs/ ✅
+- archive/old-body-maps/ ✅ **NEW - June 22, 2025**
 
 ### Files Successfully Moved to Archive ✅
 
@@ -22,6 +23,11 @@
 
 **Development Documentation:**
 - ✅ Various *DEPLOY*.md, *DEPLOYMENT*.md, *GUIDE*.md, *SUMMARY*.md, *COMPLETE*.md files moved
+
+**Old Body Maps (June 22, 2025):** ✅
+- ✅ public/body_*.svg → archive/old-body-maps/
+- ✅ public/body_*.png → archive/old-body-maps/
+- ✅ src/components/bodySvgData.js → archive/old-body-maps/
 
 ### Body Map Component Fixes ✅
 - ✅ Fixed logo position and slogan display
