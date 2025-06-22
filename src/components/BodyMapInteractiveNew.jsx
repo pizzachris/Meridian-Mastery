@@ -160,15 +160,15 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">      {/* Header with Logo and Back Button */}
-      <div className="absolute top-4 left-4 right-4 z-50 flex items-center">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">      {/* Header with Logo and Back Button - Mobile optimized positioning */}
+      <div className="absolute top-8 sm:top-4 left-4 right-4 z-50 flex items-center">
         {/* Logo - Home Button - Always on left */}
         <button
           onClick={() => navigateTo("home")}
-          className="bg-black/80 backdrop-blur-sm rounded-lg p-2 border border-yellow-400/30 hover:border-yellow-400 transition-colors"
+          className="bg-black/80 backdrop-blur-sm rounded-lg p-3 sm:p-2 border border-yellow-400/30 hover:border-yellow-400 transition-colors touch-manipulation"
           title="Return to Home"
         >
-          <Logo className="w-8 h-8 text-yellow-400" />
+          <Logo className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400" />
         </button>
 
         {/* Spacer to push back button to right */}
@@ -178,16 +178,14 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
         {(selectedMeridian || showZoomedView) && (
           <button
             onClick={showZoomedView ? closeZoom : clearSelection}
-            className="bg-black/80 backdrop-blur-sm rounded-lg px-4 py-2 border border-blue-400/30 text-blue-400 font-bold text-sm hover:text-blue-300 hover:bg-black/90 transition-colors"
+            className="bg-black/80 backdrop-blur-sm rounded-lg px-4 py-3 sm:px-4 sm:py-2 border border-blue-400/30 text-blue-400 font-bold text-sm hover:text-blue-300 hover:bg-black/90 transition-colors touch-manipulation"
             title={showZoomedView ? "Back to Body Map" : "Back to Home"}
           >
             ← {showZoomedView ? "Full View" : "Back"}
           </button>
         )}
-      </div>
-
-      {/* Main Content Area */}
-      <div className="pt-16 pb-4 px-4 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      </div>      {/* Main Content Area - Mobile optimized padding */}
+      <div className="pt-20 sm:pt-16 pb-4 px-4 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         {showZoomedView && selectedPoint ? (
           // Zoomed View with Flashcard
           <div className="max-w-6xl mx-auto">
@@ -325,17 +323,17 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       </div>
                     </div>
                   );
-                })()}                {/* Card controls */}
-                <div className="flex justify-center gap-6 mt-6">
+                })()}                {/* Card controls - Mobile optimized */}
+                <div className="flex justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
                   <button
                     onClick={flipCard}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-base transition-colors"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
                   >
                     Flip Card
                   </button>
                   <button
                     onClick={closeZoom}
-                    className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg text-base transition-colors"
+                    className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
                   >
                     Close
                   </button>
@@ -371,28 +369,27 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     imageRendering: "auto"
                   }}
                 />
-                
-                {/* Points Overlay - only show when meridian is selected */}
+                  {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
                 {selectedMeridian && points.map((point, index) => (
                   <button
                     key={index}
                     onClick={() => handlePointClick(point)}
-                    className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-125 transition-all shadow-lg cursor-pointer w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6"
+                    className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 touch-manipulation"
                     style={{
                       left: `${point.x * 100}%`,
                       top: `${point.y * 100}%`,
-                      transform: "translate(-50%, -50%)"
+                      transform: "translate(-50%, -50%)",
+                      minHeight: "32px", // Minimum touch target for mobile
+                      minWidth: "32px"   // Minimum touch target for mobile
                     }}
                     title={`${point.id}: ${point.name}`}
                   />
                 ))}
               </div>
-            </div>
-
-            {/* Meridian Selector - Right side */}
+            </div>            {/* Meridian Selector - Right side - Mobile optimized */}
             <div className="lg:w-64 lg:flex-shrink-0">
               <div className="lg:sticky lg:top-4">
-                <h2 className="text-lg font-bold text-yellow-400 mb-4 text-center lg:text-left">
+                <h2 className="text-base sm:text-lg font-bold text-yellow-400 mb-4 text-center lg:text-left">
                   {selectedMeridian ? "Switch Meridian" : "Select Meridian"}
                 </h2>
                 <div className="flex flex-col gap-3">
@@ -400,7 +397,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     <button
                       key={meridian.id}
                       onClick={() => handleMeridianSelect(meridian.id)}
-                      className={`${meridian.element} font-semibold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 text-center ${
+                      className={`${meridian.element} font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 text-center text-sm sm:text-base touch-manipulation ${
                         selectedMeridian === meridian.id ? 'ring-2 ring-yellow-400' : ''
                       }`}
                     >
