@@ -40,10 +40,10 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       setAvailableMeridians(meridianData);
       console.log('Loaded meridian metadata:', meridianData);
       
-      // Set the first meridian as default if none selected
-      if (meridianData.length > 0 && selectedMeridian === "") {
-        setSelectedMeridian(meridianData[0].id);
-      }
+      // Remove auto-select: do NOT set first meridian as default
+      // if (meridianData.length > 0 && selectedMeridian === "") {
+      //   setSelectedMeridian(meridianData[0].id);
+      // }
     };
     
     loadMeridianMetadata();
@@ -98,11 +98,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     }
   }, [selectedMeridian]);
 
-  // Check if current meridian has multiple views
-  const hasMultipleViews = () => {
-    const meridian = availableMeridians.find(m => m.id === selectedMeridian);
-    return meridian && meridian.views && meridian.views.length > 1;
-  };
+  // Only Small Intestine should have a toggle
+  const hasMultipleViews = () => selectedMeridian === "SmallIntestine";
 
   // Get available views for current meridian
   const getAvailableViews = () => {
@@ -335,7 +332,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     src={getCurrentImagePath()}
                     alt={`${selectedPoint.region} region`}
                     className="w-full h-auto block"
-                    style={{ maxWidth: "100%", height: "auto" }}
+                    style={{ maxWidth: "100%", height: "auto", aspectRatio: "400/800" }}
                   />
                   
                   {/* Highlight the selected point - position based on region image */}
@@ -493,11 +490,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 <img
                   src={getCurrentImagePath()}
                   alt={`${currentView} view`}
-                  className="w-full h-auto block"
+                  className="w-full h-auto block object-contain"
                   style={{
                     maxWidth: "100%",
                     height: "auto",
-                    imageRendering: "auto"
+                    imageRendering: "auto",
+                    aspectRatio: "400/800"
                   }}
                 />
                 
