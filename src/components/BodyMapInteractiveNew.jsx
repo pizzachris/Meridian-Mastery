@@ -74,15 +74,23 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Load meridian data when meridian is selected
   useEffect(() => {
     if (selectedMeridian) {
-      const filename = `${selectedMeridian.toLowerCase()}_meridian_with_regions.json`;
+      // Proper filename mapping for meridian JSONs
+      const filenameMap = {
+        'Lung': 'lung',
+        'LargeIntestine': 'large_intestine',
+        'Heart': 'heart',
+        'Stomach': 'stomach',
+        'Spleen': 'spleen',
+        'SmallIntestine': 'small_intestine',
+        'Pericardium': 'pericardium'
+      };
+      const filename = `${filenameMap[selectedMeridian] || selectedMeridian.toLowerCase()}_meridian_with_regions.json`;
       fetch(`/improved/${filename}`)
         .then(res => res.json())
         .then(data => {
-          console.log(`Loaded meridian data for ${selectedMeridian}:`, data);
           setPoints(data.points || []);
         })
         .catch(err => {
-          console.error(`Failed to load meridian data: ${filename}`, err);
           setPoints([]);
         });
     } else {
