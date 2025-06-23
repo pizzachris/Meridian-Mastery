@@ -487,18 +487,19 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               {/* Body Map Container */}
               <div className="relative bg-gray-800 rounded-lg overflow-hidden">
                 {/* Body Image */}
-                <img
-                  src={getCurrentImagePath()}
-                  alt={`${currentView} view`}
-                  className="w-full h-auto block object-contain"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    imageRendering: "auto",
-                    aspectRatio: "400/800"
-                  }}
-                />
-                
+                {selectedMeridian && (
+                  <img
+                    src={getCurrentImagePath()}
+                    alt={`${currentView} view`}
+                    className="w-full h-auto block object-contain"
+                    style={{
+                      maxWidth: "100%",
+                      height: "auto",
+                      imageRendering: "auto",
+                      aspectRatio: "400/800"
+                    }}
+                  />
+                )}
                 {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
                 {selectedMeridian && getPointsForCurrentView().map((point, index) => {
                   // Transform point coordinates for correct positioning
