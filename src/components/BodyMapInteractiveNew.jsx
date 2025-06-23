@@ -24,12 +24,13 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
         try {
           const response = await fetch(`/improved/${meridianFile}_meridian_with_regions.json`);
           const data = await response.json();
-            meridianData.push({
+          
+          meridianData.push({
             id: data.meridian.replace(/\s+/g, ''), // Remove spaces for ID (e.g., "Large Intestine" -> "LargeIntestine")
             name: data.meridian,
             element: `element-${data.element}`,
-            view: data.view || (data.views ? data.views[0] : "front"), // Primary view
-            views: data.views || [data.view || "front"] // Support multi-view or default to single view
+            view: data.view,
+            views: data.views || [data.view] // Support multi-view or default to single view
           });
         } catch (error) {
           console.error(`Failed to load ${meridianFile} meridian metadata:`, error);
@@ -69,20 +70,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       setCurrentView("side");
     }
   }, [selectedMeridian, availableMeridians]);
+
   // Load meridian data when meridian is selected
   useEffect(() => {
     if (selectedMeridian) {
-      // Convert meridian ID to filename format
-      const filenameMap = {
-        'Lung': 'lung',
-        'LargeIntestine': 'large_intestine',
-        'Heart': 'heart',
-        'Stomach': 'stomach',
-        'Spleen': 'spleen',
-        'SmallIntestine': 'small_intestine',
-        'Pericardium': 'pericardium'
-      };
-      const filename = `${filenameMap[selectedMeridian]}_meridian_with_regions.json`;
+      const filename = `${selectedMeridian.toLowerCase()}_meridian_with_regions.json`;
       fetch(`/improved/${filename}`)
         .then(res => res.json())
         .then(data => {
@@ -96,7 +88,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     } else {
       setPoints([]);
     }
-  }, [selectedMeridian]);  // Check if current meridian has multiple views
+  }, [selectedMeridian]);
+
+  // Check if current meridian has multiple views
   const hasMultipleViews = () => {
     const meridian = availableMeridians.find(m => m.id === selectedMeridian);
     return meridian && meridian.views && meridian.views.length > 1;
@@ -111,24 +105,15 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Filter points by current view
   const getPointsForCurrentView = () => {
     if (!hasMultipleViews()) return points;
-    // Filter by region field in the point data
-    return points.filter(point => {
-      // For points with region specified, match the current view
-      if (point.region) {
-        return point.region === currentView;
-      }
-      // For points without region, include them in all views (fallback)
-      return true;
-    });
-  };  // Transform coordinates for different views
-  const transformCoordinates = (point, meridianId) => {
-    // All coordinates in the JSON files are already in 0-1 format
-    // No transformation needed, just return as-is
-    return { 
-      x: point.x,
-      y: point.y
-    };
+    return points.filter(point => point.view === currentView);
   };
+
+  // Transform coordinates for different views
+  const transformCoordinates = (point, meridianId) => {
+    // For multi-view meridians, coordinates are already correct for their specific view
+    return { x: point.x, y: point.y };
+  };
+
   // Get current image path
   const getCurrentImagePath = () => {
     if (showZoomedView && selectedPoint) {
@@ -150,15 +135,17 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       if (regionImage) {
         return regionImage;
       }
-    }    switch (currentView) {
+    }
+    
+    switch (currentView) {
       case "front":
-        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/front_view_model_wide_padded.png";
+        return "/body-images/front_view_model_wide_padded.png";
       case "back":
-        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/back_view_model_wide_padded.png";
+        return "/body-images/back_view_model_wide_padded.png";
       case "side":
-        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
+        return "/body-images/side_full_cleaned_padded.png";
       default:
-        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
+        return "/body-images/side_full_cleaned_padded.png";
     }
   };
 
@@ -182,7 +169,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     }
     
     return flashcard;
-  };  // Handle meridian selection
+  };
+  // Handle meridian selection
   const handleMeridianSelect = (meridianId) => {
     setSelectedMeridian(meridianId);
     setSelectedPoint(null);
@@ -203,7 +191,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
         }
       } else {
         // Single view meridians use their designated view
-        setCurrentView(meridian.view || meridian.views[0] || "front");
+        setCurrentView(meridian.view);
       }
     }
   };
@@ -504,7 +492,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     imageRendering: "auto"
                   }}
                 />
-                  {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
+                
+                {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
                 {selectedMeridian && getPointsForCurrentView().map((point, index) => {
                   // Transform point coordinates for correct positioning
                   const { x, y } = transformCoordinates(point, selectedMeridian);
@@ -512,11 +501,13 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     <button
                       key={index}
                       onClick={() => handlePointClick(point)}
-                      className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 touch-manipulation"
+                      className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 touch-manipulation"
                       style={{
                         left: `${x * 100}%`,
                         top: `${y * 100}%`,
-                        transform: "translate(-50%, -50%)"
+                        transform: "translate(-50%, -50%)",
+                        minHeight: "32px", // Minimum touch target for mobile
+                        minWidth: "32px"   // Minimum touch target for mobile
                       }}
                       title={`${point.id}: ${point.name}`}
                     />
@@ -569,8 +560,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
         )}
       </div>
       
-      {/* Dynamic Point Popup */}
-      {showHT9Popup && popupPoint && popupPoint.popup && (
+      {/* Dynamic Point Popup for HT9 only */}
+      {showHT9Popup && popupPoint && popupPoint.id === "HT9" && popupPoint.popup && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className={`bg-gradient-to-br ${popupPoint.popup.type === 'warning' ? 'from-red-900 to-black border-2 border-red-500' : 'from-gray-900 to-black border-2 border-gray-500'} rounded-xl max-w-md w-full p-6 relative`}>
             {/* Close button */}
@@ -583,25 +574,19 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
             >
               ×
             </button>
-            
             {/* Header */}
             <div className="text-center mb-4">
               <h2 className={`text-xl font-bold ${popupPoint.popup.type === 'warning' ? 'text-red-400' : 'text-gray-400'} mb-2`}>
-                {popupPoint.id} • {getElementName()}
+                {popupPoint.popup.title}
               </h2>
-              <h3 className="text-lg text-white font-medium">
-                {popupPoint.name}
-              </h3>
             </div>
-            
             {/* Content */}
             <div className="mb-6">
               <p className={`text-sm leading-relaxed ${popupPoint.popup.type === 'warning' ? 'text-red-200' : 'text-gray-300'}`}>
-                {popupPoint.popup.content}
+                {popupPoint.popup.message}
               </p>
             </div>
-            
-            {/* Action buttons */}
+            {/* Action button */}
             <div className="flex gap-4">
               <button
                 onClick={() => {
@@ -611,17 +596,6 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 className={`flex-1 ${popupPoint.popup.type === 'warning' ? 'bg-gray-600 hover:bg-gray-700' : 'bg-gray-600 hover:bg-gray-700'} text-white font-bold py-3 px-4 rounded-lg transition-colors`}
               >
                 Close
-              </button>
-              <button
-                onClick={() => {
-                  setShowHT9Popup(false);
-                  setSelectedPoint(popupPoint);
-                  setShowZoomedView(true);
-                  setPopupPoint(null);
-                }}
-                className={`flex-1 ${popupPoint.popup.type === 'warning' ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'} text-white font-bold py-3 px-4 rounded-lg transition-colors`}
-              >
-                View Point
               </button>
             </div>
           </div>
