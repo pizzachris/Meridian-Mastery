@@ -325,25 +325,33 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-start">
-              {/* Zoomed Region View */}
+              {/* Body Model and Points Overlay */}
               <div className="flex-1">
-                <div className="relative bg-gray-800 rounded-lg overflow-hidden">
+                <div className="relative bg-gray-800 rounded-lg overflow-hidden mx-auto" style={{ aspectRatio: "400/800", maxWidth: 400 }}>
                   <img
                     src={getCurrentImagePath()}
-                    alt={`${selectedPoint.region} region`}
-                    className="w-full h-auto block"
-                    style={{ maxWidth: "100%", height: "auto", aspectRatio: "400/800" }}
+                    alt="Body Model"
+                    className="w-full h-full object-contain block"
+                    style={{ aspectRatio: "400/800" }}
                   />
-                  
-                  {/* Highlight the selected point - position based on region image */}
-                  <div
-                    className="absolute w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full border border-white shadow-lg z-10 animate-pulse"
-                    style={{
-                      left: `${selectedPoint.x * 100}%`,
-                      top: `${selectedPoint.y * 100}%`,
-                      transform: "translate(-50%, -50%)"
-                    }}
-                  />
+                  {/* Only render points if a meridian is selected */}
+                  {selectedMeridian && getPointsForCurrentView().map((point, idx) => {
+                    const { x, y } = transformCoordinates(point, selectedMeridian);
+                    return (
+                      <button
+                        key={point.id || idx}
+                        className="absolute w-1 h-1 sm:w-1.5 sm:h-1.5 bg-red-500 rounded-full border border-white shadow-lg z-10 animate-pulse"
+                        style={{
+                          left: `${x * 100}%`,
+                          top: `${y * 100}%`,
+                          transform: "translate(-50%, -50%)"
+                        }}
+                        onClick={() => handlePointClick(point)}
+                        title={point.name}
+                        aria-label={point.name}
+                      />
+                    );
+                  })}
                 </div>
               </div>
 
