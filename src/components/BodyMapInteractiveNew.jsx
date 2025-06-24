@@ -121,36 +121,16 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
 
   // Get current image path
   const getCurrentImagePath = () => {
-    if (showZoomedView && selectedPoint) {
-      // Get region-specific image for true zoom
-      const regionMap = {
-        "Trunk Front": "/region images final/trunk_front_manual_v1.png",
-        "Trunk Back": "/region images final/trunk_back_manual_v1.png", 
-        "Arms Front": "/region images final/arms_front_manual_v6.png",
-        "Arms Back": "/region images final/arms_back_manual_v1.png",
-        "Legs Front": "/region images final/legs_front_manual_v4.png",
-        "Legs Back": "/region images final/legs_back_manual_v1.png",
-        "Feet Front": "/region images final/feet_front_manual_v4.png",
-        "Feet Back": "/region images final/feet_back_manual_final.png",
-        "Head Front": "/region images final/head_neck_front_manual_v4.png",
-        "Head Back": "/region images final/head_neck_back_manual_v1.png"
-      };
-      
-      const regionImage = regionMap[selectedPoint.region];
-      if (regionImage) {
-        return regionImage;
-      }
-    }
-    
+    // Only use the improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/ images
     switch (currentView) {
       case "front":
-        return "/improved_body_map_with_regions/Improved body models and regions/front_view_model_wide_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/front_view_model_wide_padded.png";
       case "back":
-        return "/improved_body_map_with_regions/Improved body models and regions/back_view_model_wide_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/back_view_model_wide_padded.png";
       case "side":
-        return "/improved_body_map_with_regions/Improved body models and regions/side_full_cleaned_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
       default:
-        return "/improved_body_map_with_regions/Improved body models and regions/side_full_cleaned_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
     }
   };
 
