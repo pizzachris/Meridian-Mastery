@@ -340,7 +340,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     return (
                       <button
                         key={point.id || idx}
-                        className="absolute w-1 h-1 sm:w-1.5 sm:h-1.5 bg-red-500 rounded-full border border-white shadow-lg z-10 animate-pulse"
+                        className="absolute w-1 h-1 bg-red-500 rounded-full border border-white shadow-lg z-10 animate-pulse"
                         style={{
                           left: `${x * 100}%`,
                           top: `${y * 100}%`,
@@ -516,7 +516,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     <button
                       key={index}
                       onClick={() => handlePointClick(point)}
-                      className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 touch-manipulation"
+                      className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-1 h-1 touch-manipulation"
                       style={{
                         left: `${x * 100}%`,
                         top: `${y * 100}%`,
