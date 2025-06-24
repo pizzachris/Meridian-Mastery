@@ -144,13 +144,13 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     
     switch (currentView) {
       case "front":
-        return "/body-images/front_view_model_wide_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/front_view_model_wide_padded.png";
       case "back":
-        return "/body-images/back_view_model_wide_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/back_view_model_wide_padded.png";
       case "side":
-        return "/body-images/side_full_cleaned_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
       default:
-        return "/body-images/side_full_cleaned_padded.png";
+        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
     }
   };
 
@@ -337,7 +337,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   
                   {/* Highlight the selected point - position based on region image */}
                   <div
-                    className="absolute w-4 h-4 sm:w-6 sm:h-6 bg-red-500 rounded-full border-2 sm:border-4 border-white shadow-lg z-10 animate-pulse"
+                    className="absolute w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 bg-red-500 rounded-full border border-white shadow-lg z-10 animate-pulse"
                     style={{
                       left: `${selectedPoint.x * 100}%`,
                       top: `${selectedPoint.y * 100}%`,
