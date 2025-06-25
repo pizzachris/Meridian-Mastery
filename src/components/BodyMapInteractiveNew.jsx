@@ -275,19 +275,19 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-      {/* Sticky Header for mobile */}
-      <div className="sticky top-0 z-50 flex items-center bg-black/80 backdrop-blur-md px-2 py-2 sm:py-2 border-b border-yellow-400/30">
+      {/* Header with Logo and Back Button */}
+      <div className="absolute top-16 left-4 right-4 z-50 flex items-center">
         <button
           onClick={() => navigateTo("home")}
-          className="bg-black/80 rounded-lg p-2 border border-yellow-400/30 hover:border-yellow-400 transition-colors touch-manipulation"
+          className="bg-black/80 backdrop-blur-sm rounded-lg p-3 border border-yellow-400/30 hover:border-yellow-400 transition-colors"
           title="Return to Home"
         >
-          <Logo className="w-7 h-7 sm:w-8 sm:h-8 text-yellow-400" />
+          <Logo className="w-6 h-6 text-yellow-400" />
         </button>
         {(selectedMeridian || showZoomedView) && (
           <button
             onClick={showZoomedView ? closeZoom : clearSelection}
-            className="ml-auto bg-black/80 rounded-lg px-4 py-2 border border-blue-400/30 text-blue-400 font-bold text-base hover:text-blue-300 hover:bg-black/90 transition-colors touch-manipulation"
+            className="ml-auto bg-black/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-blue-400/30 text-blue-400 font-bold text-xs hover:text-blue-300 hover:bg-black/90 transition-colors"
             title={showZoomedView ? "Back to Body Map" : "Back to Home"}
           >
             ← {showZoomedView ? "Full View" : "Back"}
@@ -296,7 +296,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       </div>
 
       {/* Main Content Area */}
-      <div className="pt-24 sm:pt-16 pb-4 px-2 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <div className="pt-32 pb-4 px-4 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         {showZoomedView && selectedPoint ? (
           // Zoomed View with Flashcard
           <div className="max-w-6xl mx-auto">
@@ -500,27 +500,29 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
             {/* Main content area with title and body model */}
             <div className="flex-1">
               {/* Body Map Title */}
-              <div className="text-center mb-6">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                  Master Your Meridians
-                </h1>
-                <p className="text-gray-300 text-base sm:text-lg">
-                  {selectedMeridian 
-                    ? `${selectedMeridian} Meridian ${hasMultipleViews() ? `(${currentView} view)` : ''} - ${getPointsForCurrentView().length} points - Tap a point to zoom in`
-                    : "Select a meridian below to begin exploring pressure points"}
-                </p>
-              </div>
+            <div className="text-center mb-6">
+              <h1 className="text-xl lg:text-3xl font-bold mb-2 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                Master Your Meridians
+              </h1>
+              <p className="text-gray-300 text-lg">
+                {selectedMeridian 
+                  ? `${selectedMeridian} Meridian ${hasMultipleViews() ? `(${currentView} view)` : ''} - ${getPointsForCurrentView().length} points - Click a point to zoom in`
+                  : "Select a meridian on the right to begin exploring pressure points"}
+              </p>
+            </div>
 
               {/* Responsive Body Map Container */}
               {(() => {
                 let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
                 return (
                   <div
-                    className="relative bg-gray-800 rounded-lg overflow-auto mx-auto"
+                    className="relative bg-gray-800 rounded-lg mx-auto"
                     style={{
-                      width: '100%',
-                      maxWidth: dims.width + 'px',
+                      width: dims.width + 'px',
+                      height: dims.height + 'px',
+                      maxWidth: '100vw',
                       maxHeight: '80vh',
+                      overflow: 'auto',
                     }}
                   >
                     {selectedMeridian && (
@@ -528,13 +530,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                         src={getCurrentImagePath()}
                         alt={`${currentView} view`}
                         style={{
-                          width: '100%',
-                          height: 'auto',
+                          width: dims.width + 'px',
+                          height: dims.height + 'px',
                           objectFit: 'contain',
                           display: 'block',
                         }}
                         draggable={false}
-                        srcSet={getCurrentImagePath() + ' 1x, ' + getCurrentImagePath() + ' 2x'}
                       />
                     )}
                     {/* Points Overlay - only show when meridian is selected */}
@@ -581,26 +582,10 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               )}
             </div>
 
-            {/* Collapsible Meridian Selector for mobile */}
-            <div className="lg:w-64 lg:flex-shrink-0 w-full mt-6 lg:mt-0">
-              <details className="block lg:hidden mb-4" open>
-                <summary className="text-base sm:text-lg font-bold text-yellow-400 mb-2 cursor-pointer">{selectedMeridian ? "Switch Meridian" : "Select Meridian"}</summary>
-                <div className="flex flex-col gap-3">
-                  {availableMeridians.map((meridian) => (
-                    <button
-                      key={meridian.id}
-                      onClick={() => handleMeridianSelect(meridian.id)}
-                      className={`${meridian.element} font-semibold py-3 px-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 text-center text-base touch-manipulation ${
-                        selectedMeridian === meridian.id ? 'ring-2 ring-yellow-400' : ''
-                      }`}
-                    >
-                      {meridian.name}
-                    </button>
-                  ))}
-                </div>
-              </details>
-              <div className="hidden lg:block">
-                <h2 className="text-base sm:text-lg font-bold text-yellow-400 mb-4 text-center lg:text-left">
+            {/* Meridian Selector - Right side */}
+            <div className="lg:w-64 lg:flex-shrink-0">
+              <div className="lg:sticky lg:top-4">
+                <h2 className="text-base lg:text-lg font-bold text-yellow-400 mb-4 text-center lg:text-left">
                   {selectedMeridian ? "Switch Meridian" : "Select Meridian"}
                 </h2>
                 <div className="flex flex-col gap-3">
@@ -608,7 +593,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     <button
                       key={meridian.id}
                       onClick={() => handleMeridianSelect(meridian.id)}
-                      className={`${meridian.element} font-semibold py-3 px-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 text-center text-base touch-manipulation ${
+                      className={`${meridian.element} font-semibold py-3 px-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 text-center text-base ${
                         selectedMeridian === meridian.id ? 'ring-2 ring-yellow-400' : ''
                       }`}
                     >
