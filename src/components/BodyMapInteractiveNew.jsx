@@ -4,51 +4,11 @@ const IMAGE_DIMENSIONS = {
   back: { width: 773, height: 1776 },  // back_view_model_wide_padded.png
   side: { width: 829, height: 1569 },  // side_full_cleaned_padded.png
 };
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "./Logo";
 import { getAllPoints } from "../utils/dataLoaderOptimized";
 
 const BodyMapInteractiveNew = ({ navigateTo }) => {
-  // For pinch-to-zoom and pan
-  const mapContainerRef = useRef(null);
-  const [zoom, setZoom] = useState(1);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [dragging, setDragging] = useState(false);
-  const [lastTouch, setLastTouch] = useState(null);
-
-  // Touch event handlers for pinch-to-zoom and pan
-  const handleTouchStart = (e) => {
-    if (e.touches.length === 1) {
-      setDragging(true);
-      setLastTouch({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-    }
-  };
-  const handleTouchMove = (e) => {
-    if (dragging && e.touches.length === 1 && lastTouch) {
-      const dx = e.touches[0].clientX - lastTouch.x;
-      const dy = e.touches[0].clientY - lastTouch.y;
-      setOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
-      setLastTouch({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-    } else if (e.touches.length === 2) {
-      // Pinch zoom
-      const dist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      if (mapContainerRef.current && mapContainerRef.current.lastDist) {
-        const scale = dist / mapContainerRef.current.lastDist;
-        setZoom((z) => Math.max(1, Math.min(z * scale, 3)));
-      }
-      mapContainerRef.current.lastDist = dist;
-    }
-  };
-  const handleTouchEnd = (e) => {
-    setDragging(false);
-    setLastTouch(null);
-    if (e.touches.length < 2 && mapContainerRef.current) {
-      mapContainerRef.current.lastDist = null;
-    }
-  };
   const [currentView, setCurrentView] = useState("side");
   const [selectedMeridian, setSelectedMeridian] = useState("");
   const [points, setPoints] = useState([]);
@@ -556,18 +516,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
                 return (
                   <div
-                    ref={mapContainerRef}
-                    className="relative bg-gray-800 rounded-lg overflow-auto mx-auto touch-pan-x touch-pan-y"
+                    className="relative bg-gray-800 rounded-lg overflow-auto mx-auto"
                     style={{
                       width: '100%',
                       maxWidth: dims.width + 'px',
                       maxHeight: '80vh',
-                      touchAction: 'none',
-                      transform: `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)`
                     }}
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
                   >
                     {selectedMeridian && (
                       <img
@@ -593,26 +547,14 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                           className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer"
                           style={{
                             width: '8px', height: '8px',
-                            left: `calc(${x * 100}% - 4px)`,
-                            top: `calc(${y * 100}% - 4px)`,
-                            transform: "none",
+                            left: `${x * dims.width}px`,
+                            top: `${y * dims.height}px`,
+                            transform: "translate(-50%, -50%)",
                             padding: 0,
                             touchAction: 'manipulation',
                           }}
-                        >
-                          <span style={{
-                            position: 'absolute',
-                            left: '-12px',
-                            top: '-12px',
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '50%',
-                            background: 'transparent',
-                            zIndex: 1,
-                            pointerEvents: 'auto',
-                            opacity: 0
-                          }} />
-                        </button>
+                          title={`${point.id}: ${point.name}`}
+                        />
                       );
                     })}
                   </div>
