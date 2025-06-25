@@ -557,11 +557,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 return (
                   <div
                     ref={mapContainerRef}
-                    className="relative bg-gray-800 rounded-lg overflow-hidden mx-auto touch-pan-x touch-pan-y"
+                    className="relative bg-gray-800 rounded-lg overflow-auto mx-auto touch-pan-x touch-pan-y"
                     style={{
                       width: '100%',
                       maxWidth: dims.width + 'px',
-                      height: `min(${dims.height}px, 60vh)`,
+                      maxHeight: '80vh',
                       touchAction: 'none',
                       transform: `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)`
                     }}
