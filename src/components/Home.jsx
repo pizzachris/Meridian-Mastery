@@ -9,8 +9,13 @@ const Home = ({ navigateTo }) => {
           <h1 className="text-4xl font-bold mb-4 text-yellow-400">
             MERIDIAN MASTERY
           </h1>
-          <p className="text-lg text-gray-300 mb-8">
+          <p className="text-lg text-gray-300 mb-4">
             Master the Ancient Art of Pressure Points
+          </p>
+          {/* Dedication restored */}
+          <p className="text-xs sm:text-sm text-center text-yellow-300 mt-2 mb-4 px-4 italic leading-relaxed">
+            With gratitude to <strong className="text-yellow-400">Grandmaster In-Hyuk Suh (Kuk Sa Nym)</strong>, Master Barry Harmon,<br />
+            and my teachers for lighting the way.
           </p>
         </header>
 
