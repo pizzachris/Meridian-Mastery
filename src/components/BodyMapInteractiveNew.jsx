@@ -307,32 +307,42 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
             <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-start">
               {/* Body Model and Points Overlay */}
               <div className="flex-1">
-                <div className="relative bg-gray-800 rounded-lg overflow-hidden mx-auto" style={{ aspectRatio: "400/800", maxWidth: 400 }}>
-                  <img
-                    src={getCurrentImagePath()}
-                    alt="Body Model"
-                    className="w-full h-full object-contain block"
-                    style={{ aspectRatio: "400/800" }}
-                  />
-                  {/* Only render points if a meridian is selected */}
-                  {selectedMeridian && getPointsForCurrentView().map((point, idx) => {
-                    const { x, y } = transformCoordinates(point, selectedMeridian);
-                    return (
-                      <button
-                        key={point.id || idx}
-                        className="absolute w-1 h-1 bg-red-500 rounded-full border border-white shadow-lg z-10 animate-pulse"
-                        style={{
-                          left: `${x * 100}%`,
-                          top: `${y * 100}%`,
-                          transform: "translate(-50%, -50%)"
-                        }}
-                        onClick={() => handlePointClick(point)}
-                        title={point.name}
-                        aria-label={point.name}
-                      />
-                    );
-                  })}
-                </div>
+          <div className="relative bg-gray-800 rounded-lg overflow-hidden mx-auto" style={{ aspectRatio: "400/800", maxWidth: 400, minHeight: 400 }}>
+            <img
+              src={getCurrentImagePath()}
+              alt="Body Model"
+              className="w-full h-full object-contain block"
+              style={{ aspectRatio: "400/800" }}
+            />
+            {/* Always render the side view image if no meridian is selected */}
+            {!selectedMeridian && (
+              <img
+                src="/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png"
+                alt="Body Model Side View"
+                className="absolute inset-0 w-full h-full object-contain block"
+                style={{ pointerEvents: 'none' }}
+              />
+            )}
+            {/* Only render points if a meridian is selected, and use smallest supported size */}
+            {selectedMeridian && getPointsForCurrentView().map((point, idx) => {
+              const { x, y } = transformCoordinates(point, selectedMeridian);
+              return (
+                <button
+                  key={point.id || idx}
+                  className="absolute bg-red-500 rounded-full border border-white shadow-lg z-10 animate-pulse"
+                  style={{
+                    width: '8px', height: '8px',
+                    left: `${x * 100}%`,
+                    top: `${y * 100}%`,
+                    transform: "translate(-50%, -50%)"
+                  }}
+                  onClick={() => handlePointClick(point)}
+                  title={point.name}
+                  aria-label={point.name}
+                />
+              );
+            })}
+          </div>
               </div>
 
               {/* Flashcard */}
