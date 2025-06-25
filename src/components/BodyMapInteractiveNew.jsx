@@ -1,3 +1,9 @@
+// Exact image dimensions for each view
+const IMAGE_DIMENSIONS = {
+  front: { width: 693, height: 1656 }, // front_view_model_wide_padded.png
+  back: { width: 773, height: 1776 },  // back_view_model_wide_padded.png
+  side: { width: 829, height: 1569 },  // side_full_cleaned_padded.png
+};
 import React, { useState, useEffect } from "react";
 import Logo from "./Logo";
 import { getAllPoints } from "../utils/dataLoaderOptimized";
@@ -307,42 +313,68 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
             <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-start">
               {/* Body Model and Points Overlay */}
               <div className="flex-1">
-          <div className="relative bg-gray-800 rounded-lg overflow-hidden mx-auto" style={{ aspectRatio: "400/800", maxWidth: 400, minHeight: 400 }}>
-            <img
-              src={getCurrentImagePath()}
-              alt="Body Model"
-              className="w-full h-full object-contain block"
-              style={{ aspectRatio: "400/800" }}
-            />
-            {/* Always render the side view image if no meridian is selected */}
-            {!selectedMeridian && (
-              <img
-                src="/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png"
-                alt="Body Model Side View"
-                className="absolute inset-0 w-full h-full object-contain block"
-                style={{ pointerEvents: 'none' }}
-              />
-            )}
-            {/* Only render points if a meridian is selected, and use smallest supported size */}
-            {selectedMeridian && getPointsForCurrentView().map((point, idx) => {
-              const { x, y } = transformCoordinates(point, selectedMeridian);
-              return (
-                <button
-                  key={point.id || idx}
-                  className="absolute bg-red-500 rounded-full border border-white shadow-lg z-10 animate-pulse"
+          {/* Use exact pixel dimensions for zoomed view */}
+          {(() => {
+            let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
+            return (
+              <div
+                className="relative bg-gray-800 rounded-lg overflow-hidden mx-auto"
+                style={{
+                  width: dims.width + 'px',
+                  height: dims.height + 'px',
+                  maxWidth: '100%',
+                  maxHeight: '90vh',
+                }}
+              >
+                <img
+                  src={getCurrentImagePath()}
+                  alt="Body Model"
                   style={{
-                    width: '8px', height: '8px',
-                    left: `${x * 100}%`,
-                    top: `${y * 100}%`,
-                    transform: "translate(-50%, -50%)"
+                    width: dims.width + 'px',
+                    height: dims.height + 'px',
+                    objectFit: 'contain',
+                    display: 'block',
                   }}
-                  onClick={() => handlePointClick(point)}
-                  title={point.name}
-                  aria-label={point.name}
+                  draggable={false}
                 />
-              );
-            })}
-          </div>
+                {/* Always render the side view image if no meridian is selected */}
+                {!selectedMeridian && (
+                  <img
+                    src="/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png"
+                    alt="Body Model Side View"
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      width: dims.width + 'px',
+                      height: dims.height + 'px',
+                      objectFit: 'contain',
+                      pointerEvents: 'none',
+                    }}
+                    draggable={false}
+                  />
+                )}
+                {/* Only render points if a meridian is selected, and use smallest supported size */}
+                {selectedMeridian && getPointsForCurrentView().map((point, idx) => {
+                  const { x, y } = transformCoordinates(point, selectedMeridian);
+                  return (
+                    <button
+                      key={point.id || idx}
+                      className="absolute bg-red-500 rounded-full border border-white shadow-lg z-10 animate-pulse"
+                      style={{
+                        width: '8px', height: '8px',
+                        left: `${x * dims.width}px`,
+                        top: `${y * dims.height}px`,
+                        transform: "translate(-50%, -50%)"
+                      }}
+                      onClick={() => handlePointClick(point)}
+                      title={point.name}
+                      aria-label={point.name}
+                    />
+                  );
+                })}
+              </div>
+            );
+          })()}
               </div>
 
               {/* Flashcard */}
@@ -483,42 +515,53 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               </div>
               
               {/* Body Map Container */}
-              <div className="relative bg-gray-800 rounded-lg overflow-hidden">
-                {/* Body Image */}
-                {selectedMeridian && (
-                  <img
-                    src={getCurrentImagePath()}
-                    alt={`${currentView} view`}
-                    className="w-full h-auto block object-contain"
+              {/* Use exact pixel dimensions for main body map */}
+              {(() => {
+                let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
+                return (
+                  <div
+                    className="relative bg-gray-800 rounded-lg overflow-hidden mx-auto"
                     style={{
-                      maxWidth: "100%",
-                      height: "auto",
-                      imageRendering: "auto",
-                      aspectRatio: "400/800"
+                      width: dims.width + 'px',
+                      height: dims.height + 'px',
+                      maxWidth: '100%',
+                      maxHeight: '90vh',
                     }}
-                  />
-                )}
-                {/* Points Overlay - only show when meridian is selected - Mobile optimized sizing */}
-                {selectedMeridian && getPointsForCurrentView().map((point, index) => {
-                  // Transform point coordinates for correct positioning
-                  const { x, y } = transformCoordinates(point, selectedMeridian);
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => handlePointClick(point)}
-                      className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer w-1 h-1 touch-manipulation"
-                      style={{
-                        left: `${x * 100}%`,
-                        top: `${y * 100}%`,
-                        transform: "translate(-50%, -50%)",
-                        minHeight: "32px", // Minimum touch target for mobile
-                        minWidth: "32px"   // Minimum touch target for mobile
-                      }}
-                      title={`${point.id}: ${point.name}`}
-                    />
-                  );
-                })}
-              </div>
+                  >
+                    {selectedMeridian && (
+                      <img
+                        src={getCurrentImagePath()}
+                        alt={`${currentView} view`}
+                        style={{
+                          width: dims.width + 'px',
+                          height: dims.height + 'px',
+                          objectFit: 'contain',
+                          display: 'block',
+                        }}
+                        draggable={false}
+                      />
+                    )}
+                    {/* Points Overlay - only show when meridian is selected */}
+                    {selectedMeridian && getPointsForCurrentView().map((point, index) => {
+                      const { x, y } = transformCoordinates(point, selectedMeridian);
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => handlePointClick(point)}
+                          className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer"
+                          style={{
+                            width: '8px', height: '8px',
+                            left: `${x * dims.width}px`,
+                            top: `${y * dims.height}px`,
+                            transform: "translate(-50%, -50%)"
+                          }}
+                          title={`${point.id}: ${point.name}`}
+                        />
+                      );
+                    })}
+                  </div>
+                );
+              })()}
               
               {/* View Toggle Buttons - Only show for meridians with multiple views */}
               {hasMultipleViews() && (
