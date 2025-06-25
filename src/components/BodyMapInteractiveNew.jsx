@@ -1,40 +1,12 @@
+import React, { useState, useEffect, useRef } from "react";
+import Logo from "./Logo";
+import { getAllPoints } from "../utils/dataLoaderOptimized";
 
 const IMAGE_DIMENSIONS = {
   front: { width: 693, height: 1656 }, // front_view_model_wide_padded.png
   back: { width: 773, height: 1776 },  // back_view_model_wide_padded.png
   side: { width: 829, height: 1569 },  // side_full_cleaned_padded.png
 };
-import React, { useState, useEffect, useRef } from "react";
-  // Refs for image and container
-  const imgRef = useRef(null);
-  const containerRef = useRef(null);
-  const [imgDims, setImgDims] = useState({ width: 0, height: 0 });
-  // Update image dimensions and force re-render of points on resize or image load
-  const handleResize = () => {
-    const img = imgRef.current;
-    if (img) {
-      const rect = img.getBoundingClientRect();
-      setImgDims({ width: rect.width, height: rect.height });
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-import Logo from "./Logo";
-import { getAllPoints } from "../utils/dataLoaderOptimized";
-
-// Exact image dimensions for each view
-const IMAGE_DIMENSIONS = {
-  front: { width: 693, height: 1656 }, // front_view_model_wide_padded.png
-  back: { width: 773, height: 1776 },  // back_view_model_wide_padded.png
-  side: { width: 829, height: 1569 },  // side_full_cleaned_padded.png
-};
-import React, { useState, useEffect, useRef } from "react";
-import Logo from "./Logo";
-import { getAllPoints } from "../utils/dataLoaderOptimized";
 const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Refs for image and container
   const imgRef = useRef(null);
