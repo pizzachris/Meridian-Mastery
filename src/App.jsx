@@ -8,7 +8,7 @@ import Progress from "./components/Progress";
 import Quiz from "./components/Quiz";
 import QuizSelection from "./components/QuizSelection";
 import FlaggedIssues from "./components/FlaggedIssues";
-import DisclaimerModalSimple from "./components/DisclaimerModalSimple";
+import DisclaimerModal from "./components/DisclaimerModal";
 import { SettingsProvider } from "./context/SettingsContext";
 import { OptimizationTester } from "./utils/optimizationTester";
 
@@ -142,7 +142,7 @@ function App() {
           {renderCurrentPage()}
         </div>
         {/* Disclaimer Modal */}
-        <DisclaimerModalSimple
+        <DisclaimerModal
           isOpen={showDisclaimer}
           onAccept={handleDisclaimerAccept}
         />
