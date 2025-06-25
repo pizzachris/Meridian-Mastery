@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import HomeSimple from "./components/HomeSimple";
+import Home from "./components/Home";
 import DailySession from "./components/DailySession";
 import FlashcardSession from "./components/FlashcardSession";
 import BodyMapInteractiveNew from "./components/BodyMapInteractiveNew";
@@ -76,7 +76,7 @@ function App() {
     try {
       switch (currentPage) {
         case "home":
-          return <HomeSimple navigateTo={navigateTo} />;
+          return <Home navigateTo={navigateTo} />;
         case "session":
           return <DailySession navigateTo={navigateTo} />;
         case "flashcards":
@@ -112,7 +112,7 @@ function App() {
         case "flagged-issues":
           return <FlaggedIssues navigateTo={navigateTo} />;
         default:
-          return <HomeSimple navigateTo={navigateTo} />;
+          return <Home navigateTo={navigateTo} />;
       }
     } catch (error) {
       console.error("Error rendering page:", error);
