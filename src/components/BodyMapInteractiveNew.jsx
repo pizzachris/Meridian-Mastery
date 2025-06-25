@@ -1,5 +1,4 @@
 
-// Exact image dimensions for each view
 const IMAGE_DIMENSIONS = {
   front: { width: 693, height: 1656 }, // front_view_model_wide_padded.png
   back: { width: 773, height: 1776 },  // back_view_model_wide_padded.png
@@ -27,7 +26,21 @@ import React, { useState, useEffect, useRef } from "react";
 import Logo from "./Logo";
 import { getAllPoints } from "../utils/dataLoaderOptimized";
 
+// Exact image dimensions for each view
+const IMAGE_DIMENSIONS = {
+  front: { width: 693, height: 1656 }, // front_view_model_wide_padded.png
+  back: { width: 773, height: 1776 },  // back_view_model_wide_padded.png
+  side: { width: 829, height: 1569 },  // side_full_cleaned_padded.png
+};
+import React, { useState, useEffect, useRef } from "react";
+import Logo from "./Logo";
+import { getAllPoints } from "../utils/dataLoaderOptimized";
 const BodyMapInteractiveNew = ({ navigateTo }) => {
+  // Refs for image and container
+  const imgRef = useRef(null);
+  const containerRef = useRef(null);
+  const [imgDims, setImgDims] = useState({ width: 0, height: 0 });
+
   // For pinch-to-zoom and pan
   const mapContainerRef = useRef(null);
   const [zoom, setZoom] = useState(1);
@@ -68,6 +81,16 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       mapContainerRef.current.lastDist = null;
     }
   };
+
+  // Update image dimensions and force re-render of points on resize or image load
+  const handleResize = () => {
+    const img = imgRef.current;
+    if (img) {
+      const rect = img.getBoundingClientRect();
+      setImgDims({ width: rect.width, height: rect.height });
+    }
+  };
+
   const [currentView, setCurrentView] = useState("side");
   const [selectedMeridian, setSelectedMeridian] = useState("");
   const [points, setPoints] = useState([]);
@@ -78,6 +101,14 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   const [showHT9Popup, setShowHT9Popup] = useState(false);
   const [popupPoint, setPopupPoint] = useState(null);
   const [availableMeridians, setAvailableMeridians] = useState([]);
+
+  // Update image dimensions on window resize and image load
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+    // eslint-disable-next-line
+  }, []);
 
   // Load available meridians dynamically from JSON files
   useEffect(() => {
@@ -104,13 +135,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       
       setAvailableMeridians(meridianData);
       console.log('Loaded meridian metadata:', meridianData);
-      
       // Remove auto-select: do NOT set first meridian as default
       // if (meridianData.length > 0 && selectedMeridian === "") {
       //   setSelectedMeridian(meridianData[0].id);
       // }
     };
-    
     loadMeridianMetadata();
   }, []);
 
@@ -127,6 +156,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     };
     loadFlashcardData();
   }, []);
+
   // Auto-switch view when meridian is selected - REMOVED AUTO-SWITCHING
   // View switching is now controlled by user via toggle buttons only
   useEffect(() => {
@@ -220,6 +250,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     
     return flashcard;
   };
+
   // Handle meridian selection
   const handleMeridianSelect = (meridianId) => {
     setSelectedMeridian(meridianId);
