@@ -23,6 +23,18 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   const [dragging, setDragging] = useState(false);
   const [lastTouch, setLastTouch] = useState(null);
 
+  // CRITICAL: Restore all required state variables for Body Map logic
+  const [currentView, setCurrentView] = useState("side");
+  const [selectedMeridian, setSelectedMeridian] = useState("");
+  const [points, setPoints] = useState([]);
+  const [selectedPoint, setSelectedPoint] = useState(null);
+  const [showZoomedView, setShowZoomedView] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [allFlashcardData, setAllFlashcardData] = useState([]);
+  const [showHT9Popup, setShowHT9Popup] = useState(false);
+  const [popupPoint, setPopupPoint] = useState(null);
+  const [availableMeridians, setAvailableMeridians] = useState([]);
+
   // Touch event handlers for pinch-to-zoom and pan
   const handleTouchStart = (e) => {
     if (e.touches.length === 1) {
@@ -568,10 +580,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               {/* Responsive Body Map Container */}
               {(() => {
                 let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
-                // Use actual rendered image size for point placement
                 const width = imgDims.width || dims.width;
                 const height = imgDims.height || dims.height;
-                const circleSize = Math.max(16, width * 0.03); // Minimum 16px for accessibility
+                const circleSize = Math.max(16, width * 0.03);
                 return (
                   <div
                     ref={containerRef}
@@ -587,24 +598,24 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
                   >
-                    {selectedMeridian && (
-                      <img
-                        ref={imgRef}
-                        src={getCurrentImagePath()}
-                        alt={`${currentView} view`}
-                        style={{
-                          width: '100%',
-                          height: 'auto',
-                          objectFit: 'contain',
-                          display: 'block',
-                        }}
-                        draggable={false}
-                        srcSet={getCurrentImagePath() + ' 1x, ' + getCurrentImagePath() + ' 2x'}
-                        onLoad={handleResize}
-                      />
-                    )}
-                    {/* Points Overlay - only show when meridian is selected */}
-                    {selectedMeridian && getPointsForCurrentView().map((point, index) => {
+                    {/* Always show the side view image as a fallback background */}
+                    <img
+                      ref={imgRef}
+                      src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png"}
+                      alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
+                      style={{
+                        width: '100%',
+                        height: 'auto',
+                        objectFit: 'contain',
+                        display: 'block',
+                        opacity: 1
+                      }}
+                      draggable={false}
+                      srcSet={(selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png") + ' 1x, ' + (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png") + ' 2x'}
+                      onLoad={handleResize}
+                    />
+                    {/* Points Overlay - only show when meridian is selected and points exist */}
+                    {selectedMeridian && getPointsForCurrentView().length > 0 && getPointsForCurrentView().map((point, index) => {
                       const { x, y } = transformCoordinates(point, selectedMeridian);
                       const xPx = x * width;
                       const yPx = y * height;
@@ -624,7 +635,6 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                           tabIndex={0}
                           aria-label={point.name}
                         >
-                          {/* Visually small dot, but large tap area */}
                           <span style={{
                             display: 'block',
                             width: Math.max(8, circleSize * 0.5),
