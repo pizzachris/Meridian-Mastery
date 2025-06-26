@@ -569,10 +569,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               {/* Responsive Body Map Container */}
               {(() => {
                 let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
-                const width = imgDims.width || dims.width;
-                const height = imgDims.height || dims.height;
-                const circleSize = Math.max(16, width * 0.03);
-                // Five Element color map for lines/points
+                // Use the image's natural pixel dimensions for accurate point placement
+                const width = dims.width;
+                const height = dims.height;
+                const circleSize = 16; // Always use the smaller size
+                // Five Element color map for points
                 const colorMap = {
                   'element-metal': '#a3a3a3',
                   'element-fire': '#ef4444',
@@ -597,8 +598,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     ref={containerRef}
                     className="relative bg-gray-800 rounded-lg overflow-auto mx-auto touch-pan-x touch-pan-y"
                     style={{
-                      width: '100%',
-                      maxWidth: dims.width + 'px',
+                      width: width + 'px',
+                      height: height + 'px',
+                      maxWidth: '100%',
                       maxHeight: '80vh',
                       touchAction: 'none',
                       transform: `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)`
@@ -613,8 +615,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png"}
                       alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
                       style={{
-                        width: '100%',
-                        height: 'auto',
+                        width: width + 'px',
+                        height: height + 'px',
                         objectFit: 'contain',
                         display: 'block',
                         opacity: 1
@@ -623,22 +625,6 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       srcSet={(selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png") + ' 1x, ' + (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png") + ' 2x'}
                       onLoad={handleResize}
                     />
-                    {/* Draw meridian line path if a meridian is selected and has points */}
-                    {selectedMeridian && orderedPoints.length > 1 && (
-                      <svg
-                        width={width}
-                        height={height}
-                        style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none', zIndex: 2 }}
-                      >
-                        <polyline
-                          fill="none"
-                          stroke={meridianColor}
-                          strokeWidth={3}
-                          strokeLinejoin="round"
-                          points={orderedPoints.map(pt => `${pt.x * width},${pt.y * height}`).join(' ')}
-                        />
-                      </svg>
-                    )}
                     {/* Points Overlay - only show when meridian is selected and points exist */}
                     {selectedMeridian && orderedPoints.length > 0 && orderedPoints.map((point, index) => {
                       const { x, y } = transformCoordinates(point, selectedMeridian);
@@ -664,8 +650,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                         >
                           <span style={{
                             display: 'block',
-                            width: Math.max(8, circleSize * 0.5),
-                            height: Math.max(8, circleSize * 0.5),
+                            width: 8,
+                            height: 8,
                             background: meridianColor,
                             borderRadius: '50%',
                             margin: 'auto',
