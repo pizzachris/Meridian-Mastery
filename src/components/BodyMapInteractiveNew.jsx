@@ -384,12 +384,15 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
           {/* Use exact pixel dimensions for zoomed view */}
           {(() => {
             let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
+            const width = dims.width;
+            const height = dims.height;
+            // Show the selected point as a highlighted marker
             return (
               <div
                 className="relative bg-gray-800 rounded-lg overflow-hidden mx-auto"
                 style={{
-                  width: dims.width + 'px',
-                  height: dims.height + 'px',
+                  width: width + 'px',
+                  height: height + 'px',
                   maxWidth: '100%',
                   maxHeight: '90vh',
                 }}
@@ -398,8 +401,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   src={getCurrentImagePath()}
                   alt="Body Model"
                   style={{
-                    width: dims.width + 'px',
-                    height: dims.height + 'px',
+                    width: width + 'px',
+                    height: height + 'px',
                     objectFit: 'contain',
                     display: 'block',
                   }}
@@ -413,17 +416,51 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     style={{
                       position: 'absolute',
                       inset: 0,
-                      width: dims.width + 'px',
-                      height: dims.height + 'px',
+                      width: width + 'px',
+                      height: height + 'px',
                       objectFit: 'contain',
                       pointerEvents: 'none',
                     }}
                     draggable={false}
                   />
                 )}
-                {/* Only render points if a meridian is selected, and use smallest supported size */}
-                {/* This block is now handled by the new orderedPoints logic below. Remove any duplicate or out-of-scope references. */}
-                {/* (No duplicate selectedMeridian usage here) */}
+                {/* Show selected point as a highlighted marker */}
+                {selectedPoint && (
+                  (() => {
+                    const { x, y } = transformCoordinates(selectedPoint, selectedMeridian);
+                    const xPx = x * width;
+                    const yPx = y * height;
+                    // Use a larger, animated, or colored marker for highlight
+                    return (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          left: xPx - 12,
+                          top: yPx - 12,
+                          width: 24,
+                          height: 24,
+                          background: 'rgba(255,255,0,0.7)',
+                          borderRadius: '50%',
+                          border: '3px solid #fff',
+                          boxShadow: '0 0 12px 4px #facc15',
+                          zIndex: 10,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <span style={{
+                          width: 10,
+                          height: 10,
+                          background: '#facc15',
+                          borderRadius: '50%',
+                          border: '2px solid #fff',
+                          display: 'block',
+                        }} />
+                      </span>
+                    );
+                  })()
+                )}
               </div>
             );
           })()}
@@ -593,6 +630,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   const getNum = (id) => parseInt((id||'').replace(/\D+/g, ''));
                   return getNum(a.id) - getNum(b.id);
                 });
+                // Only enable pan/zoom and touchAction:none when a meridian is selected
+                const enablePanZoom = !!selectedMeridian;
                 return (
                   <div
                     ref={containerRef}
@@ -602,12 +641,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       maxWidth: dims.width + 'px',
                       aspectRatio: `${dims.width} / ${dims.height}`,
                       maxHeight: '80vh',
-                      touchAction: 'none',
-                      transform: `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)`
+                      touchAction: enablePanZoom ? 'none' : 'auto',
+                      transform: enablePanZoom ? `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)` : undefined
                     }}
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
+                    onTouchStart={enablePanZoom ? handleTouchStart : undefined}
+                    onTouchMove={enablePanZoom ? handleTouchMove : undefined}
+                    onTouchEnd={enablePanZoom ? handleTouchEnd : undefined}
                   >
                     {/* Always show the side view image as a fallback background */}
                     <img
@@ -739,6 +778,10 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               onClick={() => {
                 setShowHT9Popup(false);
                 setPopupPoint(null);
+                // After closing popup, show flashcard for HT9 if it is the selected point
+                if (selectedPoint && selectedPoint.id === 'HT9') {
+                  setShowZoomedView(true);
+                }
               }}
               className={`absolute top-4 right-4 ${popupPoint.popup.type === 'warning' ? 'text-red-400 hover:text-red-300' : 'text-gray-400 hover:text-gray-300'} text-2xl font-bold transition-colors`}
             >
@@ -762,6 +805,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 onClick={() => {
                   setShowHT9Popup(false);
                   setPopupPoint(null);
+                  if (selectedPoint && selectedPoint.id === 'HT9') {
+                    setShowZoomedView(true);
+                  }
                 }}
                 className={`flex-1 ${popupPoint.popup.type === 'warning' ? 'bg-gray-600 hover:bg-gray-700' : 'bg-gray-600 hover:bg-gray-700'} text-white font-bold py-3 px-4 rounded-lg transition-colors`}
               >
