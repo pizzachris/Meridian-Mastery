@@ -16,7 +16,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Refs for image and container
   const imgRef = useRef(null);
   const containerRef = useRef(null);
-  const [imgDims, setImgDims] = useState({ width: 0, height: 0 });
+  const [imgDims, setImgDims] = useState({ width: 0, height: 0, offsetX: 0, offsetY: 0 });
 
   // For pinch-to-zoom and pan
   const mapContainerRef = useRef(null);
@@ -74,12 +74,18 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Update image dimensions and force re-render of points on resize or image load
   const handleResize = () => {
     const img = imgRef.current;
-    if (img) {
-      // Use natural size if possible, fallback to bounding rect
-      const rect = img.getBoundingClientRect();
+    const container = containerRef.current;
+    if (img && container) {
+      const imgRect = img.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      // Calculate offset of image inside container (letterboxing)
+      const offsetX = imgRect.left - containerRect.left;
+      const offsetY = imgRect.top - containerRect.top;
       setImgDims({
-        width: rect.width,
-        height: rect.height
+        width: imgRect.width,
+        height: imgRect.height,
+        offsetX,
+        offsetY
       });
     }
   };
@@ -615,6 +621,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 // Use the actual rendered image size for accurate point placement
                 const width = imgDims.width || dims.width;
                 const height = imgDims.height || dims.height;
+                const offsetX = imgDims.offsetX || 0;
+                const offsetY = imgDims.offsetY || 0;
                 const circleSize = 16;
                 // Five Element color map for points
                 const colorMap = {
@@ -702,8 +710,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     {/* Points Overlay - only show when meridian is selected and points exist */}
                     {selectedMeridian && orderedPoints.length > 0 && orderedPoints.map((point, index) => {
                       const { x, y } = transformCoordinates(point, selectedMeridian);
-                      const xPx = x * width;
-                      const yPx = y * height;
+                      const xPx = x * width + offsetX;
+                      const yPx = y * height + offsetY;
                       return (
                         <button
                           key={index}
