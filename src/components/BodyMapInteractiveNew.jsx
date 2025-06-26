@@ -569,9 +569,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               {/* Responsive Body Map Container */}
               {(() => {
                 let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
-                // Use the image's natural pixel dimensions for accurate point placement
-                const width = dims.width;
-                const height = dims.height;
+                // Use the actual rendered image size for accurate point placement
+                const width = imgDims.width || dims.width;
+                const height = imgDims.height || dims.height;
                 const circleSize = 16; // Always use the smaller size
                 // Five Element color map for points
                 const colorMap = {
@@ -598,9 +598,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     ref={containerRef}
                     className="relative bg-gray-800 rounded-lg overflow-auto mx-auto touch-pan-x touch-pan-y"
                     style={{
-                      width: width + 'px',
-                      height: height + 'px',
-                      maxWidth: '100%',
+                      width: '100%',
+                      maxWidth: dims.width + 'px',
+                      aspectRatio: `${dims.width} / ${dims.height}`,
                       maxHeight: '80vh',
                       touchAction: 'none',
                       transform: `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)`
@@ -615,8 +615,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png"}
                       alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
                       style={{
-                        width: width + 'px',
-                        height: height + 'px',
+                        width: '100%',
+                        height: 'auto',
                         objectFit: 'contain',
                         display: 'block',
                         opacity: 1
