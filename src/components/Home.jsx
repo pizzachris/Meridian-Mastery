@@ -1,61 +1,79 @@
+
 import React from "react";
 import Logo from "./Logo";
 
+// Simplified Home component without hooks to debug React issues
 const Home = ({ navigateTo }) => {
-  return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4 text-yellow-400">
-            MERIDIAN MASTERY
-          </h1>
-          <p className="text-lg text-gray-300 mb-4">
-            Master the Ancient Art of Pressure Points
-          </p>
-          {/* Dedication restored */}
-          <p className="text-xs sm:text-sm text-center text-yellow-300 mt-2 mb-4 px-4 italic leading-relaxed">
-            With gratitude to <strong className="text-yellow-400">Grandmaster In-Hyuk Suh (Kuk Sa Nym)</strong>, Master Barry Harmon,<br />
-            and my teachers for lighting the way.
-          </p>
-        </header>
+  console.log("🏠 Home component rendering with React version:", React.version);
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+      <div className="max-w-4xl mx-auto px-4 py-4 sm:py-8">
+        {/* Header */}
+        <div className="text-center mb-8 sm:mb-12">
+          <Logo className="mx-auto mb-4 sm:mb-6" />
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Meridian Mastery Coach
+          </h1>
+          <p className="text-gray-300 text-sm sm:text-base md:text-lg">
+            Master Traditional Korean Medicine pressure points
+          </p>
+        </div>
+
+        {/* Navigation Grid - Mobile optimized */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {/* Daily Session */}
           <button
             onClick={() => navigateTo("session")}
-            className="bg-red-800 hover:bg-red-700 text-white font-bold py-4 px-6 rounded-lg border border-yellow-600 transition-all duration-200"
+            className="w-full element-metal font-semibold py-4 px-4 sm:py-3 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-base sm:text-sm md:text-base relative group min-h-[56px]"
           >
-            📚 DAILY SESSION
+            <span className="relative z-10">⚡ Daily Session</span>
           </button>
 
+          {/* Flashcard Practice */}
           <button
-            onClick={() => navigateTo("flashcards")}
-            className="bg-blue-800 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg border border-blue-600 transition-all duration-200"
+            onClick={() => navigateTo("flashcards", { sessionMode: "all" })}
+            className="w-full element-wood font-semibold py-4 px-4 sm:py-3 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-base sm:text-sm md:text-base relative group min-h-[56px]"
           >
-            🗃️ FLASHCARDS
+            <span className="relative z-10">🎯 Flashcards</span>
           </button>
 
+          {/* Quiz Mode */}
           <button
             onClick={() => navigateTo("quiz-selection")}
-            className="bg-green-800 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg border border-green-600 transition-all duration-200"
+            className="w-full element-fire font-semibold py-4 px-4 sm:py-3 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-base sm:text-sm md:text-base relative group min-h-[56px]"
           >
-            🧠 QUIZ
+            <span className="relative z-10">� Quiz Mode</span>
           </button>
 
+          {/* Body Map */}
+          <button
+            onClick={() => navigateTo("bodymap")}
+            className="w-full element-water font-semibold py-3 px-4 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base relative group"
+          >
+            <span className="relative z-10">💧 Body Map</span>
+          </button>
+
+          {/* Progress */}
           <button
             onClick={() => navigateTo("progress")}
-            className="bg-purple-800 hover:bg-purple-700 text-white font-bold py-4 px-6 rounded-lg border border-purple-600 transition-all duration-200"
+            className="w-full element-earth font-semibold py-3 px-4 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base relative group"
           >
-            📊 PROGRESS
+            <span className="relative z-10">🌍 Progress</span>
+          </button>
+
+          {/* Settings */}
+          <button
+            onClick={() => navigateTo("settings")}
+            className="w-full bg-gradient-to-r from-gray-600 to-gray-700 font-semibold py-3 px-4 sm:px-6 rounded-2xl shadow-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base relative group"
+          >
+            <span className="relative z-10">⚙️ Settings</span>
           </button>
         </div>
 
-        <div className="text-center mt-8">
-          <button
-            onClick={() => navigateTo("settings")}
-            className="text-gray-400 hover:text-yellow-400 text-sm"
-          >
-            ⚙️ Settings
-          </button>
+        {/* Bottom Note */}
+        <div className="text-center mt-12 text-gray-400 text-sm">
+          <p>Traditional Korean Medicine • Kuk Sool Won</p>
         </div>
       </div>
     </div>
