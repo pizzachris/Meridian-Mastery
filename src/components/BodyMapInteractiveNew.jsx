@@ -227,28 +227,22 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     return flashcard;
   };
 
-  // Handle meridian selection
+  // Handle meridian selection (auto-switch to correct view)
   const handleMeridianSelect = (meridianId) => {
     setSelectedMeridian(meridianId);
     setSelectedPoint(null);
     setShowZoomedView(false);
     setIsFlipped(false);
-    
-    // Set starting view based on where the first point is located
-    // This ensures users see points in order (SI1, SI2, etc.)
+    // Auto-switch to correct view for this meridian
     const meridian = availableMeridians.find(m => m.id === meridianId);
     if (meridian) {
-      if (meridian.views && meridian.views.length > 1) {
-        // For multi-view meridians, start with the view that contains the first point
-        // Small Intestine starts on "side" view where SI1 is located
-        if (meridianId === "SmallIntestine") {
-          setCurrentView("side"); // SI1 is on side view
-        } else {
-          setCurrentView(meridian.views[0]); // Default to first view in array
-        }
-      } else {
-        // Single view meridians use their designated view
+      // If the meridian has a preferred view, use it
+      if (meridian.view) {
         setCurrentView(meridian.view);
+      } else if (meridian.views && meridian.views.length > 0) {
+        setCurrentView(meridian.views[0]);
+      } else {
+        setCurrentView("side");
       }
     }
   };
@@ -350,13 +344,24 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
         >
           <Logo className="w-7 h-7 sm:w-8 sm:h-8 text-yellow-400" />
         </button>
-        {(selectedMeridian || showZoomedView) && (
+        {/* Show back button only when a meridian is selected and not zoomed in */}
+        {selectedMeridian && !showZoomedView && (
           <button
-            onClick={showZoomedView ? closeZoom : clearSelection}
+            onClick={clearSelection}
             className="ml-auto bg-black/80 rounded-lg px-4 py-2 border border-blue-400/30 text-blue-400 font-bold text-base hover:text-blue-300 hover:bg-black/90 transition-colors touch-manipulation"
-            title={showZoomedView ? "Back to Body Map" : "Back to Home"}
+            title="Back to Meridian Selector"
           >
-            ← {showZoomedView ? "Full View" : "Back"}
+            ← Back
+          </button>
+        )}
+        {/* Show close button when zoomed in on a point */}
+        {showZoomedView && (
+          <button
+            onClick={closeZoom}
+            className="ml-auto bg-black/80 rounded-lg px-4 py-2 border border-blue-400/30 text-blue-400 font-bold text-base hover:text-blue-300 hover:bg-black/90 transition-colors touch-manipulation"
+            title="Back to Body Map"
+          >
+            ← Full View
           </button>
         )}
       </div>
@@ -417,24 +422,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   />
                 )}
                 {/* Only render points if a meridian is selected, and use smallest supported size */}
-                {selectedMeridian && getPointsForCurrentView().map((point, idx) => {
-                  const { x, y } = transformCoordinates(point, selectedMeridian);
-                  return (
-                    <button
-                      key={point.id || idx}
-                      className="absolute bg-red-500 rounded-full border border-white shadow-lg z-10 animate-pulse"
-                      style={{
-                        width: '8px', height: '8px',
-                        left: `${x * dims.width}px`,
-                        top: `${y * dims.height}px`,
-                        transform: "translate(-50%, -50%)"
-                      }}
-                      onClick={() => handlePointClick(point)}
-                      title={point.name}
-                      aria-label={point.name}
-                    />
-                  );
-                })}
+                {/* This block is now handled by the new orderedPoints logic below. Remove any duplicate or out-of-scope references. */}
+                {/* (No duplicate selectedMeridian usage here) */}
               </div>
             );
           })()}
@@ -583,6 +572,26 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 const width = imgDims.width || dims.width;
                 const height = imgDims.height || dims.height;
                 const circleSize = Math.max(16, width * 0.03);
+                // Five Element color map for lines/points
+                const colorMap = {
+                  'element-metal': '#a3a3a3',
+                  'element-fire': '#ef4444',
+                  'element-earth': '#eab308',
+                  'element-water': '#3b82f6',
+                  'element-wood': '#22c55e'
+                };
+                let meridianColor = '#ef4444';
+                if (selectedMeridian) {
+                  const meridian = availableMeridians.find(m => m.id === selectedMeridian);
+                  if (meridian && colorMap[meridian.element]) meridianColor = colorMap[meridian.element];
+                }
+                // Sort points by id (e.g., LI1, LI2, ...)
+                let orderedPoints = getPointsForCurrentView();
+                orderedPoints = orderedPoints.slice().sort((a, b) => {
+                  // Extract number from id (e.g., LI1 -> 1)
+                  const getNum = (id) => parseInt((id||'').replace(/\D+/g, ''));
+                  return getNum(a.id) - getNum(b.id);
+                });
                 return (
                   <div
                     ref={containerRef}
@@ -614,8 +623,24 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       srcSet={(selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png") + ' 1x, ' + (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png") + ' 2x'}
                       onLoad={handleResize}
                     />
+                    {/* Draw meridian line path if a meridian is selected and has points */}
+                    {selectedMeridian && orderedPoints.length > 1 && (
+                      <svg
+                        width={width}
+                        height={height}
+                        style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none', zIndex: 2 }}
+                      >
+                        <polyline
+                          fill="none"
+                          stroke={meridianColor}
+                          strokeWidth={3}
+                          strokeLinejoin="round"
+                          points={orderedPoints.map(pt => `${pt.x * width},${pt.y * height}`).join(' ')}
+                        />
+                      </svg>
+                    )}
                     {/* Points Overlay - only show when meridian is selected and points exist */}
-                    {selectedMeridian && getPointsForCurrentView().length > 0 && getPointsForCurrentView().map((point, index) => {
+                    {selectedMeridian && orderedPoints.length > 0 && orderedPoints.map((point, index) => {
                       const { x, y } = transformCoordinates(point, selectedMeridian);
                       const xPx = x * width;
                       const yPx = y * height;
@@ -623,7 +648,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                         <button
                           key={index}
                           onClick={() => handlePointClick(point)}
-                          className="absolute bg-red-500 rounded-full border-2 border-white hover:bg-red-400 hover:scale-110 transition-all shadow-lg cursor-pointer"
+                          className="absolute rounded-full border-2 border-white hover:scale-110 transition-all shadow-lg cursor-pointer"
                           style={{
                             width: circleSize,
                             height: circleSize,
@@ -631,6 +656,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                             top: yPx - circleSize / 2,
                             padding: 0,
                             touchAction: 'manipulation',
+                            background: meridianColor,
+                            zIndex: 3
                           }}
                           tabIndex={0}
                           aria-label={point.name}
@@ -639,7 +666,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                             display: 'block',
                             width: Math.max(8, circleSize * 0.5),
                             height: Math.max(8, circleSize * 0.5),
-                            background: 'red',
+                            background: meridianColor,
                             borderRadius: '50%',
                             margin: 'auto',
                             position: 'relative',
