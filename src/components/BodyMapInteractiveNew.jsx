@@ -1,8 +1,6 @@
 // No changes needed as the current src/components/BodyMapInteractiveNew.jsx is already the latest and correct version.
 
 import React, { useState, useEffect, useRef } from "react";
-  // Debug overlay toggle
-  const [debugMode, setDebugMode] = useState(false);
 import Logo from "./Logo";
 import { getAllPoints } from "../utils/dataLoaderOptimized";
 
@@ -13,6 +11,8 @@ const IMAGE_DIMENSIONS = {
 };
 
 const BodyMapInteractiveNew = ({ navigateTo }) => {
+  // Debug overlay toggle (must be inside component)
+  const [debugMode, setDebugMode] = useState(false);
   // Refs for image and container
   const imgRef = useRef(null);
   const containerRef = useRef(null);
