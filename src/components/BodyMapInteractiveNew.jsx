@@ -813,8 +813,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               onClick={() => {
                 setShowHT9Popup(false);
                 setPopupPoint(null);
-                // After closing popup, show flashcard for HT9 if it is the selected point
-                if (selectedPoint && selectedPoint.id === 'HT9') {
+                // After closing popup, always show flashcard for HT9
+                if (popupPoint && popupPoint.id === 'HT9') {
+                  setSelectedPoint(popupPoint);
                   setShowZoomedView(true);
                 }
               }}
@@ -840,7 +841,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 onClick={() => {
                   setShowHT9Popup(false);
                   setPopupPoint(null);
-                  if (selectedPoint && selectedPoint.id === 'HT9') {
+                  if (popupPoint && popupPoint.id === 'HT9') {
+                    setSelectedPoint(popupPoint);
                     setShowZoomedView(true);
                   }
                 }}
