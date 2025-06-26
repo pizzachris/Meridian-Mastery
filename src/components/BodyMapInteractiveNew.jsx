@@ -634,16 +634,17 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                         <button
                           key={index}
                           onClick={() => handlePointClick(point)}
-                          className="absolute rounded-full border-2 border-white hover:scale-110 transition-all shadow-lg cursor-pointer"
+                          className="absolute hover:scale-110 transition-all cursor-pointer"
                           style={{
-                            width: circleSize,
-                            height: circleSize,
-                            left: xPx - circleSize / 2,
-                            top: yPx - circleSize / 2,
+                            width: 16,
+                            height: 16,
+                            left: xPx - 8,
+                            top: yPx - 8,
                             padding: 0,
                             touchAction: 'manipulation',
-                            background: meridianColor,
-                            zIndex: 3
+                            background: 'transparent',
+                            zIndex: 3,
+                            border: 'none',
                           }}
                           tabIndex={0}
                           aria-label={point.name}
@@ -654,8 +655,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                             height: 8,
                             background: meridianColor,
                             borderRadius: '50%',
-                            margin: 'auto',
-                            position: 'relative',
+                            position: 'absolute',
                             top: '50%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
