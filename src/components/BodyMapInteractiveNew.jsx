@@ -1,6 +1,8 @@
 // No changes needed as the current src/components/BodyMapInteractiveNew.jsx is already the latest and correct version.
 
 import React, { useState, useEffect, useRef } from "react";
+  // Debug overlay toggle
+  const [debugMode, setDebugMode] = useState(false);
 import Logo from "./Logo";
 import { getAllPoints } from "../utils/dataLoaderOptimized";
 
@@ -73,8 +75,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   const handleResize = () => {
     const img = imgRef.current;
     if (img) {
+      // Use natural size if possible, fallback to bounding rect
       const rect = img.getBoundingClientRect();
-      setImgDims({ width: rect.width, height: rect.height });
+      setImgDims({
+        width: rect.width,
+        height: rect.height
+      });
     }
   };
 
@@ -609,7 +615,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 // Use the actual rendered image size for accurate point placement
                 const width = imgDims.width || dims.width;
                 const height = imgDims.height || dims.height;
-                const circleSize = 16; // Always use the smaller size
+                const circleSize = 16;
                 // Five Element color map for points
                 const colorMap = {
                   'element-metal': '#a3a3a3',
@@ -626,7 +632,6 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 // Sort points by id (e.g., LI1, LI2, ...)
                 let orderedPoints = getPointsForCurrentView();
                 orderedPoints = orderedPoints.slice().sort((a, b) => {
-                  // Extract number from id (e.g., LI1 -> 1)
                   const getNum = (id) => parseInt((id||'').replace(/\D+/g, ''));
                   return getNum(a.id) - getNum(b.id);
                 });
@@ -648,6 +653,13 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     onTouchMove={enablePanZoom ? handleTouchMove : undefined}
                     onTouchEnd={enablePanZoom ? handleTouchEnd : undefined}
                   >
+                    {/* Debug overlay toggle button */}
+                    <button
+                      style={{position:'absolute',top:8,right:8,zIndex:20,background:'#222',color:'#fff',padding:'4px 10px',borderRadius:6,border:'1px solid #facc15',fontSize:12,opacity:0.8}}
+                      onClick={e => {e.stopPropagation();setDebugMode(d=>!d);}}
+                    >
+                      {debugMode ? 'Hide Debug' : 'Show Debug'}
+                    </button>
                     {/* Always show the side view image as a fallback background */}
                     <img
                       ref={imgRef}
@@ -664,6 +676,29 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       srcSet={(selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png") + ' 1x, ' + (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png") + ' 2x'}
                       onLoad={handleResize}
                     />
+                    {/* Debug overlay grid and coordinates */}
+                    {debugMode && (
+                      <>
+                        {/* Grid lines */}
+                        {[0.25,0.5,0.75].map(f=>(
+                          <React.Fragment key={f}>
+                            <div style={{position:'absolute',left:`${f*100}%`,top:0,bottom:0,width:1,background:'#facc15',opacity:0.2,zIndex:15}} />
+                            <div style={{position:'absolute',top:`${f*100}%`,left:0,right:0,height:1,background:'#facc15',opacity:0.2,zIndex:15}} />
+                          </React.Fragment>
+                        ))}
+                        {/* Show all point coordinates */}
+                        {orderedPoints.map((point,index)=>{
+                          const {x,y}=transformCoordinates(point,selectedMeridian);
+                          const xPx=x*width;
+                          const yPx=y*height;
+                          return (
+                            <div key={index} style={{position:'absolute',left:xPx+10,top:yPx-10,zIndex:16,fontSize:10,color:'#facc15',background:'#222',padding:'1px 4px',borderRadius:3,opacity:0.8}}>
+                              {point.id} ({x.toFixed(3)}, {y.toFixed(3)})
+                            </div>
+                          );
+                        })}
+                      </>
+                    )}
                     {/* Points Overlay - only show when meridian is selected and points exist */}
                     {selectedMeridian && orderedPoints.length > 0 && orderedPoints.map((point, index) => {
                       const { x, y } = transformCoordinates(point, selectedMeridian);
