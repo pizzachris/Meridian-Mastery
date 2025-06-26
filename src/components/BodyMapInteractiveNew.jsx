@@ -2,11 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import Logo from "./Logo";
 import { getAllPoints } from "../utils/dataLoaderOptimized";
 
+
+import React, { useState, useEffect, useRef } from "react";
+import Logo from "./Logo";
+import { getAllPoints } from "../utils/dataLoaderOptimized";
+
 const IMAGE_DIMENSIONS = {
   front: { width: 693, height: 1656 }, // front_view_model_wide_padded.png
   back: { width: 773, height: 1776 },  // back_view_model_wide_padded.png
   side: { width: 829, height: 1569 },  // side_full_cleaned_padded.png
 };
+
 const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Refs for image and container
   const imgRef = useRef(null);
@@ -62,17 +68,6 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       setImgDims({ width: rect.width, height: rect.height });
     }
   };
-
-  const [currentView, setCurrentView] = useState("side");
-  const [selectedMeridian, setSelectedMeridian] = useState("");
-  const [points, setPoints] = useState([]);
-  const [selectedPoint, setSelectedPoint] = useState(null);
-  const [showZoomedView, setShowZoomedView] = useState(false);
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [allFlashcardData, setAllFlashcardData] = useState([]);
-  const [showHT9Popup, setShowHT9Popup] = useState(false);
-  const [popupPoint, setPopupPoint] = useState(null);
-  const [availableMeridians, setAvailableMeridians] = useState([]);
 
   // Update image dimensions on window resize and image load
   useEffect(() => {
