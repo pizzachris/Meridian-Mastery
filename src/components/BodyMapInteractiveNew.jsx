@@ -272,6 +272,33 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     
     setSelectedPoint(point);
     setShowZoomedView(true);
+    
+    // Center and zoom in on the selected point
+    // Wait for next tick so imgDims is up to date
+    setTimeout(() => {
+      let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
+      const width = imgDims.width || dims.width;
+      const height = imgDims.height || dims.height;
+      const offsetX = imgDims.offsetX || 0;
+      const offsetY = imgDims.offsetY || 0;
+      const { x, y } = transformCoordinates(point, selectedMeridian);
+      const xPx = x * width + offsetX;
+      const yPx = y * height + offsetY;
+      // Center the point in the container
+      const container = containerRef.current;
+      if (container) {
+        const containerRect = container.getBoundingClientRect();
+        const centerX = containerRect.width / 2;
+        const centerY = containerRect.height / 2;
+        // Set zoom to 2x (or keep previous if already zoomed in)
+        setZoom(2);
+        // Pan so the point is centered
+        setOffset({
+          x: centerX - xPx,
+          y: centerY - yPx
+        });
+      }
+    }, 0);
     setIsFlipped(false); // Start with front side of flashcard
   };
 
@@ -280,6 +307,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     setSelectedPoint(null);
     setShowZoomedView(false);
     setIsFlipped(false);
+    setZoom(1);
+    setOffset({ x: 0, y: 0 });
   };
 
   // Flip flashcard
@@ -645,17 +674,34 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 });
                 // Only enable pan/zoom and touchAction:none when a meridian is selected
                 const enablePanZoom = !!selectedMeridian;
+                // Responsive container styles for mobile/desktop
+                // On mobile: fixed aspect ratio, max width 100vw, max height 60vh, scrollable if needed
+                // On desktop: max width and height as before
                 return (
                   <div
                     ref={containerRef}
-                    className="relative bg-gray-800 rounded-lg overflow-auto mx-auto touch-pan-x touch-pan-y"
+                    className="relative bg-gray-800 rounded-lg mx-auto touch-pan-x touch-pan-y"
                     style={{
                       width: '100%',
                       maxWidth: dims.width + 'px',
                       aspectRatio: `${dims.width} / ${dims.height}`,
                       maxHeight: '80vh',
+                      minHeight: 0,
+                      minWidth: 0,
+                      overflow: 'auto',
+                      boxSizing: 'border-box',
                       touchAction: enablePanZoom ? 'none' : 'auto',
-                      transform: enablePanZoom ? `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)` : undefined
+                      transform: enablePanZoom ? `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)` : undefined,
+                      // Mobile-specific: prevent overflow and covering selector
+                      // Use media query for mobile
+                      ...(window.innerWidth < 640 ? {
+                        maxWidth: '100vw',
+                        maxHeight: '60vh',
+                        height: 'auto',
+                        marginBottom: '1rem',
+                        overflowY: 'auto',
+                        overflowX: 'auto',
+                      } : {})
                     }}
                     onTouchStart={enablePanZoom ? handleTouchStart : undefined}
                     onTouchMove={enablePanZoom ? handleTouchMove : undefined}
