@@ -154,20 +154,20 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     }
   }, [selectedMeridian, availableMeridians]);
 
-  // Load meridian data when meridian is selected
+  // Load meridian data when meridian is selected (use mobile JSON for Lung on mobile)
   useEffect(() => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
     if (selectedMeridian) {
-      // Proper filename mapping for meridian JSONs
       const filenameMap = {
-        'Lung': 'lung',
-        'LargeIntestine': 'large_intestine',
-        'Heart': 'heart',
-        'Stomach': 'stomach',
-        'Spleen': 'spleen',
-        'SmallIntestine': 'small_intestine',
-        'Pericardium': 'pericardium'
+        'Lung': isMobile ? 'lung_meridian_mobile' : 'lung_meridian_with_regions',
+        'LargeIntestine': 'large_intestine_meridian_with_regions',
+        'Heart': 'heart_meridian_with_regions',
+        'Stomach': 'stomach_meridian_with_regions',
+        'Spleen': 'spleen_meridian_with_regions',
+        'SmallIntestine': 'small_intestine_meridian_with_regions',
+        'Pericardium': 'pericardium_meridian_with_regions'
       };
-      const filename = `${filenameMap[selectedMeridian] || selectedMeridian.toLowerCase()}_meridian_with_regions.json`;
+      const filename = `${filenameMap[selectedMeridian] || selectedMeridian.toLowerCase() + '_meridian_with_regions'}.json`;
       fetch(`/improved/${filename}`)
         .then(res => res.json())
         .then(data => {
@@ -202,18 +202,31 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     return { x: point.x, y: point.y };
   };
 
-  // Get current image path
+  // Get current image path (use mobile-padded images for mobile, desktop for desktop)
   const getCurrentImagePath = () => {
-    // Only use the improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/ images
-    switch (currentView) {
-      case "front":
-        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/front_view_model_wide_padded.png";
-      case "back":
-        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/back_view_model_wide_padded.png";
-      case "side":
-        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
-      default:
-        return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+    if (selectedMeridian === 'Lung' && isMobile) {
+      switch (currentView) {
+        case "front":
+          return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/front_view_model_wide_padded_mobile.png";
+        case "back":
+          return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/back_view_model_wide_padded_mobile.png";
+        case "side":
+          return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded_mobile.png";
+        default:
+          return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded_mobile.png";
+      }
+    } else {
+      switch (currentView) {
+        case "front":
+          return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/front_view_model_wide_padded.png";
+        case "back":
+          return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/back_view_model_wide_padded.png";
+        case "side":
+          return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
+        default:
+          return "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png";
+      }
     }
   };
 
