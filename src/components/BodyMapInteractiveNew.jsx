@@ -205,8 +205,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Get current image path (use mobile-padded images for mobile, desktop for desktop)
   const getCurrentImagePath = () => {
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-    // All image paths must be URL-encoded and match the actual file location
-    const base = "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/";
+    // Use real file/folder names with spaces, not %20
+    const base = "/improved_body_map_with_regions/Improved body models and regions/";
     if (selectedMeridian === 'Lung' && isMobile) {
       switch (currentView) {
         case "front":
@@ -424,230 +424,211 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       <div className="pt-24 sm:pt-16 pb-4 px-2 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         {showZoomedView && selectedPoint ? (
           // Zoomed View with Flashcard
-          <div className="max-w-6xl mx-auto">
-            {/* Master Your Meridians Title */}
-            <div className="text-center mb-4 sm:mb-6">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                Master Your Meridians
-              </h1>
-            </div>
+          <>
+            <div className="max-w-6xl mx-auto">
+              {/* Master Your Meridians Title */}
+              <div className="text-center mb-4 sm:mb-6">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                  Master Your Meridians
+                </h1>
+              </div>
 
-            <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-start">
-              {/* Body Model and Points Overlay */}
-              <div className="flex-1">
-          {/* Use exact pixel dimensions for zoomed view */}
-          {(() => {
-            let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
-            const width = dims.width;
-            const height = dims.height;
-            // Show the selected point as a highlighted marker
-            return (
-              <div
-                className="relative bg-gray-800 rounded-lg overflow-hidden mx-auto"
-                style={{
-                  width: width + 'px',
-                  height: height + 'px',
-                  maxWidth: '100%',
-                  maxHeight: '90vh',
-                }}
-              >
-                {/* Helper for fallback image path */}
-                {(() => {
-                  const fallbackImagePath = "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png";
-                  return (
-                    <>
-                      <img
-                        src={selectedMeridian ? getCurrentImagePath() : fallbackImagePath}
-                        alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
-                        style={{
-                          width: width + 'px',
-                          height: height + 'px',
-                          objectFit: 'contain',
-                          display: 'block',
-                        }}
-                        draggable={false}
-                      />
-                      {/* Always render the side view image if no meridian is selected (for overlay/fallback) */}
-                      {!selectedMeridian && (
-                        <img
-                          src={fallbackImagePath}
-                          alt="Body Model Side View"
+              <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-start">
+                {/* Body Model and Points Overlay */}
+                <div className="flex-1">
+            {/* Use exact pixel dimensions for zoomed view */}
+            {(() => {
+              let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
+              const width = dims.width;
+              const height = dims.height;
+              // Show the selected point as a highlighted marker
+              return (
+                <div
+                  className="relative bg-gray-800 rounded-lg overflow-hidden mx-auto"
+                  style={{
+                    width: width + 'px',
+                    height: height + 'px',
+                    maxWidth: '100%',
+                    maxHeight: '90vh',
+                  }}
+                >
+                  {/* Main image for zoom/flashcard view */}
+                  <>
+                    <img
+                      src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/side_full_cleaned_padded.png"}
+                      alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
+                      style={{
+                        width: width + 'px',
+                        height: height + 'px',
+                        objectFit: 'contain',
+                        display: 'block',
+                      }}
+                      draggable={false}
+                    />
+                  </>
+                  {/* Show selected point as a highlighted marker */}
+                  {selectedPoint && (
+                    (() => {
+                      const { x, y } = transformCoordinates(selectedPoint, selectedMeridian);
+                      const xPx = x * width;
+                      const yPx = y * height;
+                      // Use a larger, animated, or colored marker for highlight
+                      return (
+                        <span
                           style={{
                             position: 'absolute',
-                            inset: 0,
-                            width: width + 'px',
-                            height: height + 'px',
-                            objectFit: 'contain',
-                            pointerEvents: 'none',
+                            left: xPx - 12,
+                            top: yPx - 12,
+                            width: 24,
+                            height: 24,
+                            background: 'rgba(255,255,0,0.7)',
+                            borderRadius: '50%',
+                            border: '3px solid #fff',
+                            boxShadow: '0 0 12px 4px #facc15',
+                            zIndex: 10,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                           }}
-                          draggable={false}
-                        />
-                      )}
-                    </>
-                  );
-                })()}
-                {/* Show selected point as a highlighted marker */}
-                {selectedPoint && (
-                  (() => {
-                    const { x, y } = transformCoordinates(selectedPoint, selectedMeridian);
-                    const xPx = x * width;
-                    const yPx = y * height;
-                    // Use a larger, animated, or colored marker for highlight
+                        >
+                          <span style={{
+                            width: 10,
+                            height: 10,
+                            background: '#facc15',
+                            borderRadius: '50%',
+                            border: '2px solid #fff',
+                            display: 'block',
+                          }} />
+                        </span>
+                      );
+                    })()
+                  )}
+                </div>
+              );
+            })()}
+                </div>
+
+                {/* Flashcard */}
+                <div className="flex-1 max-w-md">
+                  {(() => {
+                    const flashcardData = getFlashcardData(selectedPoint);
+                    const colors = getElementColors();
                     return (
-                      <span
-                        style={{
-                          position: 'absolute',
-                          left: xPx - 12,
-                          top: yPx - 12,
-                          width: 24,
-                          height: 24,
-                          background: 'rgba(255,255,0,0.7)',
-                          borderRadius: '50%',
-                          border: '3px solid #fff',
-                          boxShadow: '0 0 12px 4px #facc15',
-                          zIndex: 10,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
+                      <div
+                        className={`relative w-full h-80 sm:h-96 transition-transform duration-700 transform-style-preserve-3d ${isFlipped ? "rotate-y-180" : ""}`}
                       >
-                        <span style={{
-                          width: 10,
-                          height: 10,
-                          background: '#facc15',
-                          borderRadius: '50%',
-                          border: '2px solid #fff',
-                          display: 'block',
-                        }} />
-                      </span>
-                    );
-                  })()
-                )}
-              </div>
-            );
-          })()}
-              </div>
+                        {/* Front Side */}
+                        <div className="absolute inset-0 w-full h-full backface-hidden">
+                          <div className={`bg-gradient-to-br from-gray-900 to-black border-2 ${colors.border} rounded-xl h-full flex flex-col justify-center items-center p-4 sm:p-6 relative`}>
+                            {/* Meridian badge */}
+                            <div className={`absolute top-3 sm:top-4 left-1/2 transform -translate-x-1/2 ${colors.bg} ${colors.text} px-3 py-1 sm:px-4 sm:py-2 rounded-lg border-2 ${colors.border}`}>
+                              <span className="text-xs sm:text-sm font-bold">
+                                {getMeridianAbbreviation(selectedMeridian, selectedPoint.id)} • {getElementName()}
+                              </span>
+                            </div>
 
-              {/* Flashcard */}
-              <div className="flex-1 max-w-md">
-                {(() => {
-                  const flashcardData = getFlashcardData(selectedPoint);
-                  const colors = getElementColors();
-                  return (
-                    <div
-                      className={`relative w-full h-80 sm:h-96 transition-transform duration-700 transform-style-preserve-3d ${isFlipped ? "rotate-y-180" : ""}`}
-                    >
-                      {/* Front Side */}
-                      <div className="absolute inset-0 w-full h-full backface-hidden">
-                        <div className={`bg-gradient-to-br from-gray-900 to-black border-2 ${colors.border} rounded-xl h-full flex flex-col justify-center items-center p-4 sm:p-6 relative`}>
-                          {/* Meridian badge */}
-                          <div className={`absolute top-3 sm:top-4 left-1/2 transform -translate-x-1/2 ${colors.bg} ${colors.text} px-3 py-1 sm:px-4 sm:py-2 rounded-lg border-2 ${colors.border}`}>
-                            <span className="text-xs sm:text-sm font-bold">
-                              {getMeridianAbbreviation(selectedMeridian, selectedPoint.id)} • {getElementName()}
-                            </span>
-                          </div>
-
-                          {/* Korean Hangul */}
-                          <div className="text-2xl sm:text-4xl font-bold text-yellow-400 mb-2 sm:mb-4 text-center mt-12 sm:mt-16">
-                            {flashcardData?.nameHangul || flashcardData?.hangul || selectedPoint.name}
-                          </div>
-                          
-                          {/* English translation */}
-                          <div className="text-lg sm:text-xl text-white text-center font-medium">
-                            {flashcardData?.nameEnglish || flashcardData?.englishTranslation || selectedPoint.name}
-                          </div>
-                          
-                          {/* Romanized Korean */}
-                          <div className="text-sm sm:text-base text-gray-300 text-center mt-1 sm:mt-2">
-                            {flashcardData?.nameRomanized || selectedPoint.name}
-                          </div>
-
-                          {/* Flip indicator */}
-                          <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 text-gray-400 text-xs sm:text-sm">
-                            Tap card to flip
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Back Side - Real flashcard back */}
-                      <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180">
-                        <div className={`bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-xl h-full p-3 sm:p-4 text-xs flex flex-col overflow-hidden`}>
-                          {/* Header */}
-                          <div className="text-center mb-2 sm:mb-3 border-b border-gray-700 pb-2 flex-shrink-0">
-                            <h2 className="text-xs sm:text-sm font-bold text-yellow-400 mb-1">
+                            {/* Korean Hangul */}
+                            <div className="text-2xl sm:text-4xl font-bold text-yellow-400 mb-2 sm:mb-4 text-center mt-12 sm:mt-16">
+                              {flashcardData?.nameHangul || flashcardData?.hangul || selectedPoint.name}
+                            </div>
+                            
+                            {/* English translation */}
+                            <div className="text-lg sm:text-xl text-white text-center font-medium">
+                              {flashcardData?.nameEnglish || flashcardData?.englishTranslation || selectedPoint.name}
+                            </div>
+                            
+                            {/* Romanized Korean */}
+                            <div className="text-sm sm:text-base text-gray-300 text-center mt-1 sm:mt-2">
                               {flashcardData?.nameRomanized || selectedPoint.name}
-                            </h2>
-                            <p className="text-gray-300 text-xs">
-                              {flashcardData?.nameHangul || selectedPoint.name}
-                            </p>
-                            <p className="text-gray-400 text-xs">
-                              {getMeridianAbbreviation(selectedMeridian, selectedPoint.id)} {selectedMeridian} Meridian
-                            </p>
+                            </div>
+
+                            {/* Flip indicator */}
+                            <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 text-gray-400 text-xs sm:text-sm">
+                              Tap card to flip
+                            </div>
                           </div>
+                        </div>
 
-                          {/* Information sections - scrollable */}
-                          <div className="flex-1 space-y-2 overflow-y-auto min-h-0">
-                            {/* Location */}
-                            {flashcardData?.location && (
+                        {/* Back Side - Real flashcard back */}
+                        <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180">
+                          <div className={`bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-xl h-full p-3 sm:p-4 text-xs flex flex-col overflow-hidden`}>
+                            {/* Header */}
+                            <div className="text-center mb-2 sm:mb-3 border-b border-gray-700 pb-2 flex-shrink-0">
+                              <h2 className="text-xs sm:text-sm font-bold text-yellow-400 mb-1">
+                                {flashcardData?.nameRomanized || selectedPoint.name}
+                              </h2>
+                              <p className="text-gray-300 text-xs">
+                                {flashcardData?.nameHangul || selectedPoint.name}
+                              </p>
+                              <p className="text-gray-400 text-xs">
+                                {getMeridianAbbreviation(selectedMeridian, selectedPoint.id)} {selectedMeridian} Meridian
+                              </p>
+                            </div>
+
+                            {/* Information sections - scrollable */}
+                            <div className="flex-1 space-y-2 overflow-y-auto min-h-0">
+                              {/* Location */}
+                              {flashcardData?.location && (
+                                <div className="bg-yellow-600 text-black p-2 rounded">
+                                  <h3 className="font-bold text-xs mb-1">LOCATION:</h3>
+                                  <p className="text-xs leading-relaxed">{flashcardData.location}</p>
+                                </div>
+                              )}
+
+                              {/* Striking Effect */}
                               <div className="bg-yellow-600 text-black p-2 rounded">
-                                <h3 className="font-bold text-xs mb-1">LOCATION:</h3>
-                                <p className="text-xs leading-relaxed">{flashcardData.location}</p>
+                                <h3 className="font-bold text-xs mb-1">STRIKING EFFECT:</h3>
+                                <p className="text-xs leading-relaxed">
+                                  {flashcardData?.martialApplication || 
+                                   "The point is usually struck to an upward direction with a blunt edge."}
+                                </p>
                               </div>
-                            )}
 
-                            {/* Striking Effect */}
-                            <div className="bg-yellow-600 text-black p-2 rounded">
-                              <h3 className="font-bold text-xs mb-1">STRIKING EFFECT:</h3>
-                              <p className="text-xs leading-relaxed">
-                                {flashcardData?.martialApplication || 
-                                 "The point is usually struck to an upward direction with a blunt edge."}
-                              </p>
-                            </div>
+                              {/* Observed Effects */}
+                              <div className="bg-yellow-600 text-black p-2 rounded">
+                                <h3 className="font-bold text-xs mb-1">OBSERVED EFFECTS:</h3>
+                                <p className="text-xs leading-relaxed">
+                                  {flashcardData?.healingFunction || 
+                                   "Light to moderate knockout. Liver dysfunction in theory. Be responsible."}
+                                </p>
+                              </div>
 
-                            {/* Observed Effects */}
-                            <div className="bg-yellow-600 text-black p-2 rounded">
-                              <h3 className="font-bold text-xs mb-1">OBSERVED EFFECTS:</h3>
-                              <p className="text-xs leading-relaxed">
-                                {flashcardData?.healingFunction || 
-                                 "Light to moderate knockout. Liver dysfunction in theory. Be responsible."}
-                              </p>
-                            </div>
-
-                            {/* Insight */}
-                            <div className="bg-yellow-600 text-black p-2 rounded">
-                              <h3 className="font-bold text-xs mb-1">INSIGHT:</h3>
-                              <p className="text-xs leading-relaxed">
-                                {flashcardData?.insightText && flashcardData.insightText.length > 150
-                                  ? flashcardData.insightText.substring(0, 150) + "..."
-                                  : flashcardData?.insightText || 
-                                    "This point has the potential to affect the associated meridian. Be responsible."}
-                              </p>
+                              {/* Insight */}
+                              <div className="bg-yellow-600 text-black p-2 rounded">
+                                <h3 className="font-bold text-xs mb-1">INSIGHT:</h3>
+                                <p className="text-xs leading-relaxed">
+                                  {flashcardData?.insightText && flashcardData.insightText.length > 150
+                                    ? flashcardData.insightText.substring(0, 150) + "..."
+                                    : flashcardData?.insightText || 
+                                      "This point has the potential to affect the associated meridian. Be responsible."}
+                                </p>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })()}
+                    );
+                  })()}
 
-                {/* Card controls */}
-                <div className="flex justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
-                  <button
-                    onClick={flipCard}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
-                  >
-                    Flip Card
-                  </button>
-                  <button
-                    onClick={closeZoom}
-                    className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
-                  >
-                    Close
-                  </button>
+                  {/* Card controls */}
+                  <div className="flex justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
+                    <button
+                      onClick={flipCard}
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
+                    >
+                      Flip Card
+                    </button>
+                    <button
+                      onClick={closeZoom}
+                      className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
+                    >
+                      Close
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </>
         ) : (
           // Home View - Body Model with Meridian Selector on Right
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
