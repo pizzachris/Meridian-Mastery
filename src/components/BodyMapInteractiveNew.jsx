@@ -451,33 +451,41 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   maxHeight: '90vh',
                 }}
               >
-                <img
-                  src={getCurrentImagePath()}
-                  alt="Body Model"
-                  style={{
-                    width: width + 'px',
-                    height: height + 'px',
-                    objectFit: 'contain',
-                    display: 'block',
-                  }}
-                  draggable={false}
-                />
-                {/* Always render the side view image if no meridian is selected */}
-                {!selectedMeridian && (
-                  <img
-                    src="/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png"
-                    alt="Body Model Side View"
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      width: width + 'px',
-                      height: height + 'px',
-                      objectFit: 'contain',
-                      pointerEvents: 'none',
-                    }}
-                    draggable={false}
-                  />
-                )}
+                {/* Helper for fallback image path */}
+                {(() => {
+                  const fallbackImagePath = "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png";
+                  return (
+                    <>
+                      <img
+                        src={selectedMeridian ? getCurrentImagePath() : fallbackImagePath}
+                        alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
+                        style={{
+                          width: width + 'px',
+                          height: height + 'px',
+                          objectFit: 'contain',
+                          display: 'block',
+                        }}
+                        draggable={false}
+                      />
+                      {/* Always render the side view image if no meridian is selected (for overlay/fallback) */}
+                      {!selectedMeridian && (
+                        <img
+                          src={fallbackImagePath}
+                          alt="Body Model Side View"
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            width: width + 'px',
+                            height: height + 'px',
+                            objectFit: 'contain',
+                            pointerEvents: 'none',
+                          }}
+                          draggable={false}
+                        />
+                      )}
+                    </>
+                  );
+                })()}
                 {/* Show selected point as a highlighted marker */}
                 {selectedPoint && (
                   (() => {
