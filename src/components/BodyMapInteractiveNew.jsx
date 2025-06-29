@@ -465,7 +465,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 {/* Always render the side view image if no meridian is selected */}
                 {!selectedMeridian && (
                   <img
-                    src="/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png"
+                    src="/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png"
                     alt="Body Model Side View"
                     style={{
                       position: 'absolute',
