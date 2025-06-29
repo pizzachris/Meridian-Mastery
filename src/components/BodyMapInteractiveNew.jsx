@@ -690,6 +690,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 // Responsive container styles for mobile/desktop
                 // On mobile: fixed aspect ratio, max width 100vw, max height 60vh, scrollable if needed
                 // On desktop: max width and height as before
+                const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
                 return (
                   <div
                     ref={containerRef}
@@ -698,27 +699,25 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       width: '100%',
                       maxWidth: dims.width + 'px',
                       aspectRatio: `${dims.width} / ${dims.height}`,
-                      maxHeight: '80vh',
+                      maxHeight: isMobile ? 'none' : '80vh',
                       minHeight: 0,
                       minWidth: 0,
-                      overflow: 'auto',
+                      overflow: isMobile ? 'visible' : 'auto',
                       boxSizing: 'border-box',
-                      touchAction: enablePanZoom ? 'none' : 'auto',
-                      transform: enablePanZoom ? `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)` : undefined,
+                      touchAction: isMobile ? 'auto' : (enablePanZoom ? 'none' : 'auto'),
+                      transform: !isMobile && enablePanZoom ? `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)` : undefined,
                       // Mobile-specific: prevent overflow and covering selector
-                      // Use media query for mobile
-                      ...(window.innerWidth < 640 ? {
+                      ...(isMobile ? {
                         maxWidth: '100vw',
-                        maxHeight: '60vh',
                         height: 'auto',
                         marginBottom: '1rem',
-                        overflowY: 'auto',
-                        overflowX: 'auto',
+                        overflowY: 'visible',
+                        overflowX: 'visible',
                       } : {})
                     }}
-                    onTouchStart={enablePanZoom ? handleTouchStart : undefined}
-                    onTouchMove={enablePanZoom ? handleTouchMove : undefined}
-                    onTouchEnd={enablePanZoom ? handleTouchEnd : undefined}
+                    onTouchStart={!isMobile && enablePanZoom ? handleTouchStart : undefined}
+                    onTouchMove={!isMobile && enablePanZoom ? handleTouchMove : undefined}
+                    onTouchEnd={!isMobile && enablePanZoom ? handleTouchEnd : undefined}
                   >
                     {/* Debug overlay toggle button */}
                     <button
