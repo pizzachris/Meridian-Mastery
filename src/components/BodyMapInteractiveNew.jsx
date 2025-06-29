@@ -205,27 +205,27 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Get current image path (use mobile-padded images for mobile, desktop for desktop)
   const getCurrentImagePath = () => {
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+    // All image paths must be URL-encoded and match the actual file location
+    const base = "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/";
     if (selectedMeridian === 'Lung' && isMobile) {
       switch (currentView) {
         case "front":
-          return "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/front_view_model_wide_padded_mobile.png";
+          return base + "front_view_model_wide_padded_mobile.png";
         case "back":
-          return "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/back_view_model_wide_padded_mobile.png";
+          return base + "back_view_model_wide_padded_mobile.png";
         case "side":
-          return "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded_mobile.png";
         default:
-          return "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded_mobile.png";
+          return base + "side_full_cleaned_padded_mobile.png";
       }
     } else {
       switch (currentView) {
         case "front":
-          return "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/front_view_model_wide_padded.png";
+          return base + "front_view_model_wide_padded.png";
         case "back":
-          return "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/back_view_model_wide_padded.png";
+          return base + "back_view_model_wide_padded.png";
         case "side":
-          return "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png";
         default:
-          return "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png";
+          return base + "side_full_cleaned_padded.png";
       }
     }
   };
@@ -729,7 +729,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     {/* Always show the side view image as a fallback background */}
                     <img
                       ref={imgRef}
-                      src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png"}
+                      src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png"}
                       alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
                       style={{
                         width: '100%',
@@ -739,7 +739,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                         opacity: 1
                       }}
                       draggable={false}
-                      srcSet={(selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png") + ' 1x, ' + (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/Improved body models and regions/side_full_cleaned_padded.png") + ' 2x'}
+                      srcSet={
+                        (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png") +
+                        ' 1x, ' +
+                        (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png") + ' 2x'
+                      }
                       onLoad={handleResize}
                     />
                     {/* Debug overlay grid and coordinates */}
