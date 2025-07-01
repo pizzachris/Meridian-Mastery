@@ -456,7 +456,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   {/* Main image for zoom/flashcard view */}
                   <>
                     <img
-                      src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved body models and regions/side_full_cleaned_padded.png"}
+                      src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png"}
                       alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
                       style={{
                         width: width + 'px',
