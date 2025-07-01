@@ -205,8 +205,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Get current image path (use mobile-padded images for mobile, desktop for desktop)
   const getCurrentImagePath = () => {
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-    // Use encoded spaces in folder names to avoid path issues (double-nested folder)
-    const base = "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/Improved%20body%20models%20and%20regions/";
+    // Use new folder name with underscores and no double nesting
+    const base = "/improved_body_map_with_regions/improved_body_models_and_regions/";
 
     if (selectedMeridian === 'Lung' && isMobile) {
       switch (currentView) {
