@@ -5,9 +5,18 @@ import Logo from "./Logo";
 import { getAllPoints } from "../utils/dataLoaderOptimized";
 
 const IMAGE_DIMENSIONS = {
-  front: { width: 693, height: 1656 }, // front_view_model_wide_padded.png
-  back: { width: 773, height: 1776 },  // back_view_model_wide_padded.png
-  side: { width: 829, height: 1569 },  // side_full_cleaned_padded.png
+  front: {
+    desktop: { width: 693, height: 1656 }, // front_view_model_wide_padded.png
+    mobile: { width: 693, height: 1656 }   // update if mobile image is different size
+  },
+  back: {
+    desktop: { width: 773, height: 1776 },
+    mobile: { width: 773, height: 1776 }
+  },
+  side: {
+    desktop: { width: 829, height: 1569 },
+    mobile: { width: 829, height: 1569 }
+  }
 };
 
 const BodyMapInteractiveNew = ({ navigateTo }) => {
@@ -158,16 +167,20 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   useEffect(() => {
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
     if (selectedMeridian) {
-      const filenameMap = {
-        'Lung': isMobile ? 'lung_meridian_mobile' : 'lung_meridian_with_regions',
-        'LargeIntestine': 'large_intestine_meridian_with_regions',
-        'Heart': 'heart_meridian_with_regions',
-        'Stomach': 'stomach_meridian_with_regions',
-        'Spleen': 'spleen_meridian_with_regions',
-        'SmallIntestine': 'small_intestine_meridian_with_regions',
-        'Pericardium': 'pericardium_meridian_with_regions'
-      };
-      const filename = `${filenameMap[selectedMeridian] || selectedMeridian.toLowerCase() + '_meridian_with_regions'}.json`;
+      let filename = '';
+      if (selectedMeridian === 'Lung') {
+        filename = isMobile ? 'lung_meridian_mobile.json' : 'lung_meridian_with_regions.json';
+      } else {
+        const filenameMap = {
+          'LargeIntestine': 'large_intestine_meridian_with_regions.json',
+          'Heart': 'heart_meridian_with_regions.json',
+          'Stomach': 'stomach_meridian_with_regions.json',
+          'Spleen': 'spleen_meridian_with_regions.json',
+          'SmallIntestine': 'small_intestine_meridian_with_regions.json',
+          'Pericardium': 'pericardium_meridian_with_regions.json'
+        };
+        filename = filenameMap[selectedMeridian] || `${selectedMeridian.toLowerCase()}_meridian_with_regions.json`;
+      }
       fetch(`/improved/${filename}`)
         .then(res => res.json())
         .then(data => {
@@ -205,9 +218,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Get current image path (use mobile-padded images for mobile, desktop for desktop)
   const getCurrentImagePath = () => {
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-    // Use new folder name with underscores and no double nesting
     const base = "/improved_body_map_with_regions/improved_body_models_and_regions/";
-
     if (selectedMeridian === 'Lung' && isMobile) {
       switch (currentView) {
         case "front":
@@ -649,10 +660,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
 
               {/* Responsive Body Map Container */}
               {(() => {
-                let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
-                // Use the actual rendered image size for accurate point placement
-                const width = imgDims.width || dims.width;
-                const height = imgDims.height || dims.height;
+                const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+                let dims = IMAGE_DIMENSIONS[currentView] ? (isMobile ? IMAGE_DIMENSIONS[currentView].mobile : IMAGE_DIMENSIONS[currentView].desktop) : (isMobile ? IMAGE_DIMENSIONS.side.mobile : IMAGE_DIMENSIONS.side.desktop);
+                // Use fixed pixel size for both desktop and mobile
+                const width = dims.width;
+                const height = dims.height;
                 const offsetX = imgDims.offsetX || 0;
                 const offsetY = imgDims.offsetY || 0;
                 const circleSize = 16;
@@ -677,37 +689,25 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 });
                 // Only enable pan/zoom and touchAction:none when a meridian is selected
                 const enablePanZoom = !!selectedMeridian;
-                // Responsive container styles for mobile/desktop
-                // On mobile: fixed aspect ratio, max width 100vw, max height 60vh, scrollable if needed
-                // On desktop: max width and height as before
-                const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
                 return (
                   <div
                     ref={containerRef}
                     className="relative bg-gray-800 rounded-lg mx-auto touch-pan-x touch-pan-y"
                     style={{
-                      width: '100%',
-                      maxWidth: dims.width + 'px',
-                      aspectRatio: `${dims.width} / ${dims.height}`,
-                      maxHeight: isMobile ? 'none' : '80vh',
+                      width: width + 'px',
+                      height: height + 'px',
+                      maxWidth: width + 'px',
+                      maxHeight: height + 'px',
                       minHeight: 0,
                       minWidth: 0,
-                      overflow: isMobile ? 'visible' : 'auto',
+                      overflow: 'auto',
                       boxSizing: 'border-box',
-                      touchAction: isMobile ? 'auto' : (enablePanZoom ? 'none' : 'auto'),
-                      transform: !isMobile && enablePanZoom ? `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)` : undefined,
-                      // Mobile-specific: prevent overflow and covering selector
-                      ...(isMobile ? {
-                        maxWidth: '100vw',
-                        height: 'auto',
-                        marginBottom: '1rem',
-                        overflowY: 'visible',
-                        overflowX: 'visible',
-                      } : {})
+                      touchAction: enablePanZoom ? 'none' : 'auto',
+                      transform: enablePanZoom ? `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)` : undefined
                     }}
-                    onTouchStart={!isMobile && enablePanZoom ? handleTouchStart : undefined}
-                    onTouchMove={!isMobile && enablePanZoom ? handleTouchMove : undefined}
-                    onTouchEnd={!isMobile && enablePanZoom ? handleTouchEnd : undefined}
+                    onTouchStart={enablePanZoom ? handleTouchStart : undefined}
+                    onTouchMove={enablePanZoom ? handleTouchMove : undefined}
+                    onTouchEnd={enablePanZoom ? handleTouchEnd : undefined}
                   >
                     {/* Debug overlay toggle button */}
                     <button
@@ -719,7 +719,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     {/* Always show the side view image as a fallback background */}
                     <img
                       ref={imgRef}
-                      src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png"}
+                      src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png"}
                       alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
                       style={{
                         width: '100%',
@@ -730,9 +730,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       }}
                       draggable={false}
                       srcSet={
-                        (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png") +
+                        (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png") +
                         ' 1x, ' +
-                        (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png") + ' 2x'
+                        (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png") + ' 2x'
                       }
                       onLoad={handleResize}
                     />
