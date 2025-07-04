@@ -1,0 +1,117 @@
+{
+  "meridian": "Lung",
+  "view": "front",
+  "element": "metal",
+  "points": [
+    {
+      "id": "LU1",
+      "name": "Joong Boo",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.3709,
+      "y": 0.2591,
+      "view": "front",
+      "region": "Trunk Front"
+    },
+    {
+      "id": "LU2",
+      "name": "Oon Moon",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.3709,
+      "y": 0.2415,
+      "view": "front",
+      "region": "Arms Front"
+    },
+    {
+      "id": "LU3",
+      "name": "Chuhn Boo",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.2785,
+      "y": 0.3213,
+      "view": "front",
+      "region": "Arms Front"
+    },
+    {
+      "id": "LU4",
+      "name": "Hyup Baek",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.2771,
+      "y": 0.3364,
+      "view": "front",
+      "region": "Arms Front"
+    },
+    {
+      "id": "LU5",
+      "name": "Chuk Taek",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.2626,
+      "y": 0.3816,
+      "view": "front",
+      "region": "Arms Front"
+    },
+    {
+      "id": "LU6",
+      "name": "Kohng Choe",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.2193,
+      "y": 0.4275,
+      "view": "front",
+      "region": "Arms Front"
+    },
+    {
+      "id": "LU7",
+      "name": "Yuhl Gyuhl",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.1876,
+      "y": 0.4656,
+      "view": "front",
+      "region": "Arms Front"
+    },
+    {
+      "id": "LU8",
+      "name": "Kyuhng Guh",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.1991,
+      "y": 0.4734,
+      "view": "front",
+      "region": "Arms Front"
+    },
+    {
+      "id": "LU9",
+      "name": "Tae Yuhn",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.1847,
+      "y": 0.4789,
+      "view": "front",
+      "region": "Arms Front"
+    },
+    {
+      "id": "LU10",
+      "name": "Uh Jae",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.1472,
+      "y": 0.494,
+      "view": "front",
+      "region": "Arms Front"
+    },
+    {
+      "id": "LU11",
+      "name": "Soh Sahng",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.1227,
+      "y": 0.5139,
+      "view": "front",
+      "region": "Arms Front"
+    }
+  ]
+}
