@@ -1,3 +1,28 @@
+# Key Files for Meridian Mastery Body Map (June 2025)
+
+## Main React Component
+- src/components/BodyMapInteractiveNew.jsx
+
+## Meridian Data (Desktop)
+- public/improved/lung_meridian_with_regions.json
+- public/improved/large_intestine_meridian_with_regions.json
+- public/improved/small_intestine_meridian_with_regions.json
+
+## Mobile-Specific Data
+- public/improved/lung_meridian_mobile.json
+- (add *_mobile.json for other meridians as needed)
+
+## Mobile-Padded Images
+- public/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/front_view_model_wide_padded_mobile.png
+- public/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/back_view_model_wide_padded_mobile.png
+- public/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded_mobile.png
+
+## Desktop-Padded Images
+- public/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/front_view_model_wide_padded.png
+- public/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/back_view_model_wide_padded.png
+- public/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/side_full_cleaned_padded.png
+
+See README.md for full dev/build instructions and alignment workflow.
 # 📁 Complete File List for GitHub Repository Upload
 
 ## 🚀 Essential Files (MUST UPLOAD)

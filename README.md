@@ -1,3 +1,41 @@
+# Interactive Body Map: Development & Alignment Guide
+
+## Key Features (as of June 2025)
+- **Perfect Point Alignment:** Points are rendered using the image’s actual rendered size and offset, ensuring perfect alignment on all screens.
+- **Mobile/Desktop Support:**
+  - For the Lung meridian, mobile uses special padded images and a mobile-specific JSON (`lung_meridian_mobile.json`).
+  - Desktop uses the original padded images and desktop JSON.
+  - The code auto-selects the correct image/JSON based on screen width and meridian.
+- **No Polylines:** Only elemental-colored points are rendered (no lines or polylines).
+- **Single Marker Per Point:** Each point is rendered as a single, small, colored circle. In zoom/flashcard view, the selected point is highlighted.
+- **Debug Overlay:** Toggleable overlay shows a grid and all point coordinates for visual alignment verification.
+- **Mobile Scroll & Layout:**
+  - On mobile, the image is fixed in the container and the page scrolls to reveal the full image.
+  - Pan/zoom is only enabled on desktop when a meridian is selected.
+- **HT9 Popup Logic:** Closing the HT9 popup will show the flashcard for HT9 if it is the selected point.
+- **Data Files:**
+  - `public/improved/lung_meridian_with_regions.json` (desktop)
+  - `public/improved/lung_meridian_mobile.json` (mobile)
+  - Similar files for Large Intestine and Small Intestine.
+  - Mobile-padded images are in `public/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/`.
+
+## Point Alignment & Debugging
+1. Use the debug overlay (toggle button on the body map) to verify point alignment.
+2. For mobile, ensure the correct mobile image and JSON are loaded (see code in `BodyMapInteractiveNew.jsx`).
+3. Update JSON coordinates as needed for perfect alignment.
+4. Commit and force push after each major update for live testing.
+
+## Adding/Editing Meridian Data
+- To add or update a meridian, edit the relevant JSON in `public/improved/`.
+- For mobile, create a `*_mobile.json` and ensure a matching padded image exists.
+- Use the debug overlay to check alignment on both desktop and mobile.
+
+## Development Notes
+- All image paths must be URL-encoded.
+- The main React component is `src/components/BodyMapInteractiveNew.jsx`.
+- See the code for logic on image/JSON switching and point rendering.
+
+---
 # Meridian Mastery - Interactive Korean Acupuncture Learning Platform
 
 A comprehensive Progressive Web Application (PWA) for learning Korean meridian pressure points through interactive body maps, dynamic flashcard systems, and mobile-optimized interfaces.
