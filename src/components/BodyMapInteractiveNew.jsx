@@ -232,7 +232,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       }
     } else if (selectedMeridian === 'Lung' && currentView === 'front') {
       // Use the new meridian-specific image for desktop Lung front view
-      return "/lung_meridian_desktop_test.png";
+      return "/improved/Lung_Meridian.png";
     } else {
       switch (currentView) {
         case "front":
