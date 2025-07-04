@@ -170,9 +170,10 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       let filename = '';
       if (selectedMeridian === 'Lung') {
         filename = isMobile ? 'lung_meridian_mobile.json' : 'lung_meridian_with_regions.json';
+      } else if (selectedMeridian === 'LargeIntestine') {
+        filename = isMobile ? 'large_intestine_meridian_mobile.json' : 'large_intestine_meridian_with_regions.json';
       } else {
         const filenameMap = {
-          'LargeIntestine': 'large_intestine_meridian_with_regions.json',
           'Heart': 'heart_meridian_with_regions.json',
           'Stomach': 'stomach_meridian_with_regions.json',
           'Spleen': 'spleen_meridian_with_regions.json',
@@ -219,7 +220,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   const getCurrentImagePath = () => {
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
     const base = "/improved_body_map_with_regions/improved_body_models_and_regions/";
-    if (selectedMeridian === 'Lung' && isMobile) {
+    if ((selectedMeridian === 'Lung' || selectedMeridian === 'LargeIntestine') && isMobile) {
       switch (currentView) {
         case "front":
           return base + "front_view_model_wide_padded_mobile.png";

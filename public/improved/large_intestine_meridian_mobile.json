@@ -1,0 +1,168 @@
+{
+  "meridian": "Large Intestine",
+  "view": "front",
+  "element": "metal",
+  "points": [
+    {
+      "id": "LI1",
+      "name": "Sahng Yahng",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8642,
+      "y": 0.5447
+    },
+    {
+      "id": "LI2",
+      "name": "Ee Gahn",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8613,
+      "y": 0.5278
+    },
+    {
+      "id": "LI3",
+      "name": "Sahm Gahn",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8584,
+      "y": 0.5133
+    },
+    {
+      "id": "LI4",
+      "name": "Hahp Ghok",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8353,
+      "y": 0.5012
+    },
+    {
+      "id": "LI5",
+      "name": "Yahng Gyea",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8353,
+      "y": 0.4819
+    },
+    {
+      "id": "LI6",
+      "name": "Pyuhn Yuhk",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8468,
+      "y": 0.4577
+    },
+    {
+      "id": "LI7",
+      "name": "Ohn Lyoo",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.841,
+      "y": 0.4372
+    },
+    {
+      "id": "LI8",
+      "name": "Hah Yuhm",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8324,
+      "y": 0.4179
+    },
+    {
+      "id": "LI9",
+      "name": "Sahng Yuhm",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8295,
+      "y": 0.4046
+    },
+    {
+      "id": "LI10",
+      "name": "Soo Sahm Nee",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8266,
+      "y": 0.3925
+    },
+    {
+      "id": "LI11",
+      "name": "Gohk Jee",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8006,
+      "y": 0.372
+    },
+    {
+      "id": "LI12",
+      "name": "Joo Ryoh",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8035,
+      "y": 0.3514
+    },
+    {
+      "id": "LI13",
+      "name": "Oh Rae",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.8006,
+      "y": 0.3357
+    },
+    {
+      "id": "LI14",
+      "name": "Bee Noe",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.789,
+      "y": 0.2923
+    },
+    {
+      "id": "LI15",
+      "name": "Kyuhn Oo",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.7803,
+      "y": 0.2488
+    },
+    {
+      "id": "LI16",
+      "name": "Kuh Gohl",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.6908,
+      "y": 0.2234
+    },
+    {
+      "id": "LI17",
+      "name": "Chuhn Jung",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.5751,
+      "y": 0.2198
+    },
+    {
+      "id": "LI18",
+      "name": "Boo Dohl",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.5694,
+      "y": 0.2017
+    },
+    {
+      "id": "LI19",
+      "name": "Hwah Ryoh",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.5462,
+      "y": 0.1582
+    },
+    {
+      "id": "LI20",
+      "name": "Yuhng Hyang",
+      "meridian": "Large Intestine",
+      "description": "",
+      "x": 0.4971,
+      "y": 0.1486
+    }
+  ],
+  "regions": []
+}
