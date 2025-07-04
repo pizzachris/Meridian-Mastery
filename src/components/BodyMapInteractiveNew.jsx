@@ -206,6 +206,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
 
   // Filter points by current view
   const getPointsForCurrentView = () => {
+    // For Lung, always show all points (since all are front view)
+    if (selectedMeridian === 'Lung') return points;
     if (!hasMultipleViews()) return points;
     return points.filter(point => point.view === currentView);
   };
