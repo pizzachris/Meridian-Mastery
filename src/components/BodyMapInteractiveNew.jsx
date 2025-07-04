@@ -165,12 +165,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
 
   // Load meridian data when meridian is selected (use mobile JSON for Lung on mobile)
   useEffect(() => {
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
     if (selectedMeridian) {
       let filename = '';
       if (selectedMeridian === 'Lung') {
-        filename = isMobile ? 'lung_meridian_mobile.json' : 'lung_meridian_with_regions.json';
+        filename = 'lung_meridian_with_regions.json';
       } else if (selectedMeridian === 'LargeIntestine') {
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
         filename = isMobile ? 'large_intestine_meridian_mobile.json' : 'large_intestine_meridian_with_regions.json';
       } else {
         const filenameMap = {
