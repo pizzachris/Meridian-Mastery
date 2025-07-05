@@ -673,8 +673,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 // Use the image's natural pixel size for both desktop and mobile
                 const width = dims.width;
                 const height = dims.height;
-                const offsetX = 0;
-                const offsetY = 0;
+                const offsetX = imgDims.offsetX || 0;
+                const offsetY = imgDims.offsetY || 0;
                 const circleSize = 16;
                 // Five Element color map for points
                 const colorMap = {
@@ -744,69 +744,69 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       }
                       onLoad={handleResize}
                     />
-                    {/* Debug overlay grid and coordinates */}
-                    {debugMode && (
-                      <>
-                        {/* Grid lines */}
-                        {[0.25,0.5,0.75].map(f=>(
-                          <React.Fragment key={f}>
-                            <div style={{position:'absolute',left:`${f*100}%`,top:0,bottom:0,width:1,background:'#facc15',opacity:0.2,zIndex:15}} />
-                            <div style={{position:'absolute',top:`${f*100}%`,left:0,right:0,height:1,background:'#facc15',opacity:0.2,zIndex:15}} />
-                          </React.Fragment>
-                        ))}
-                        {/* Show all point coordinates */}
-                        {orderedPoints.map((point,index)=>{
-                          const {x,y}=transformCoordinates(point,selectedMeridian);
-                          const xPx=x*width;
-                          const yPx=y*height;
-                          return (
-                            <div key={index} style={{position:'absolute',left:xPx+10,top:yPx-10,zIndex:16,fontSize:10,color:'#facc15',background:'#222',padding:'1px 4px',borderRadius:3,opacity:0.8}}>
-                              {point.id} ({x.toFixed(3)}, {y.toFixed(3)})
-                            </div>
-                          );
-                        })}
-                      </>
-                    )}
-                    {/* Points Overlay - only show when meridian is selected and points exist */}
-                    {selectedMeridian && orderedPoints.length > 0 && orderedPoints.map((point, index) => {
-                      const { x, y } = transformCoordinates(point, selectedMeridian);
-                      const xPx = x * width + offsetX;
-                      const yPx = y * height + offsetY;
+                {/* Debug overlay grid and coordinates */}
+                {debugMode && (
+                  <>
+                    {/* Grid lines */}
+                    {[0.25,0.5,0.75].map(f=>(
+                      <React.Fragment key={f}>
+                        <div style={{position:'absolute',left:`${f*100}%`,top:0,bottom:0,width:1,background:'#facc15',opacity:0.2,zIndex:15}} />
+                        <div style={{position:'absolute',top:`${f*100}%`,left:0,right:0,height:1,background:'#facc15',opacity:0.2,zIndex:15}} />
+                      </React.Fragment>
+                    ))}
+                    {/* Show all point coordinates */}
+                    {orderedPoints.map((point,index)=>{
+                      const {x,y}=transformCoordinates(point,selectedMeridian);
+                      const xPx=x*width+offsetX;
+                      const yPx=y*height+offsetY;
                       return (
-                        <button
-                          key={index}
-                          onClick={() => handlePointClick(point)}
-                          className="absolute hover:scale-110 transition-all cursor-pointer"
-                          style={{
-                            width: 16,
-                            height: 16,
-                            left: xPx - 8,
-                            top: yPx - 8,
-                            padding: 0,
-                            touchAction: 'manipulation',
-                            background: 'transparent',
-                            zIndex: 3,
-                            border: 'none',
-                          }}
-                          tabIndex={0}
-                          aria-label={point.name}
-                        >
-                          <span style={{
-                            display: 'block',
-                            width: 8,
-                            height: 8,
-                            background: meridianColor,
-                            borderRadius: '50%',
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            border: '2px solid white',
-                            boxShadow: '0 0 4px #000',
-                          }} />
-                        </button>
+                        <div key={index} style={{position:'absolute',left:xPx+10,top:yPx-10,zIndex:16,fontSize:10,color:'#facc15',background:'#222',padding:'1px 4px',borderRadius:3,opacity:0.8}}>
+                          {point.id} ({x.toFixed(3)}, {y.toFixed(3)})
+                        </div>
                       );
                     })}
+                  </>
+                )}
+                    {/* Points Overlay - only show when meridian is selected and points exist */}
+                {selectedMeridian && orderedPoints.length > 0 && orderedPoints.map((point, index) => {
+                  const { x, y } = transformCoordinates(point, selectedMeridian);
+                  const xPx = x * width + offsetX;
+                  const yPx = y * height + offsetY;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handlePointClick(point)}
+                      className="absolute hover:scale-110 transition-all cursor-pointer"
+                      style={{
+                        width: 16,
+                        height: 16,
+                        left: xPx - 8,
+                        top: yPx - 8,
+                        padding: 0,
+                        touchAction: 'manipulation',
+                        background: 'transparent',
+                        zIndex: 3,
+                        border: 'none',
+                      }}
+                      tabIndex={0}
+                      aria-label={point.name}
+                    >
+                      <span style={{
+                        display: 'block',
+                        width: 8,
+                        height: 8,
+                        background: meridianColor,
+                        borderRadius: '50%',
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        border: '2px solid white',
+                        boxShadow: '0 0 4px #000',
+                      }} />
+                    </button>
+                  );
+                })}
                   </div>
                 );
               })()}
