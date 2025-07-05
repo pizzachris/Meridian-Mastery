@@ -1,13 +1,10 @@
 // No changes needed as the current src/components/BodyMapInteractiveNew.jsx is already the latest and correct version.
 
-import React, { useState, useEffect, useRef } from "react";
-import Logo from "./Logo";
-import { getAllPoints } from "../utils/dataLoaderOptimized";
-
+// Correct IMAGE_DIMENSIONS object
 const IMAGE_DIMENSIONS = {
   front: {
-    desktop: { width: 693, height: 1656 }, // front_view_model_wide_padded.png
-    mobile: { width: 693, height: 1656 }   // update if mobile image is different size
+    desktop: { width: 693, height: 1656 },
+    mobile: { width: 693, height: 1656 }
   },
   back: {
     desktop: { width: 773, height: 1776 },
@@ -18,6 +15,8 @@ const IMAGE_DIMENSIONS = {
     mobile: { width: 829, height: 1569 }
   }
 };
+
+// ...existing code...
 
 const BodyMapInteractiveNew = ({ navigateTo }) => {
   // Debug overlay toggle (must be inside component)
@@ -668,11 +667,11 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               {(() => {
                 const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
                 let dims = IMAGE_DIMENSIONS[currentView] ? (isMobile ? IMAGE_DIMENSIONS[currentView].mobile : IMAGE_DIMENSIONS[currentView].desktop) : (isMobile ? IMAGE_DIMENSIONS.side.mobile : IMAGE_DIMENSIONS.side.desktop);
-                // Use fixed pixel size for both desktop and mobile
+                // Use the image's natural pixel size for both desktop and mobile
                 const width = dims.width;
                 const height = dims.height;
-                const offsetX = imgDims.offsetX || 0;
-                const offsetY = imgDims.offsetY || 0;
+                const offsetX = 0;
+                const offsetY = 0;
                 const circleSize = 16;
                 // Five Element color map for points
                 const colorMap = {
