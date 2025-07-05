@@ -3,16 +3,94 @@
   "view": "front",
   "element": "metal",
   "points": [
-    { "id": "LU1", "name": "Joong Boo", "meridian": "Lung", "description": "", "x": 0.5469, "y": 0.4004, "view": "front", "region": "Trunk Front" },
-    { "id": "LU2", "name": "Oon Moon", "meridian": "Lung", "description": "", "x": 0.5469, "y": 0.377, "view": "front", "region": "Arms Front" },
-    { "id": "LU3", "name": "Chuhn Boo", "meridian": "Lung", "description": "", "x": 0.4648, "y": 0.4668, "view": "front", "region": "Arms Front" },
-    { "id": "LU4", "name": "Hyup Baek", "meridian": "Lung", "description": "", "x": 0.4629, "y": 0.4811, "view": "front", "region": "Arms Front" },
-    { "id": "LU5", "name": "Chuk Taek", "meridian": "Lung", "description": "", "x": 0.4414, "y": 0.5749, "view": "front", "region": "Arms Front" },
-    { "id": "LU6", "name": "Kohng Choe", "meridian": "Lung", "description": "", "x": 0.3838, "y": 0.6491, "view": "front", "region": "Arms Front" },
-    { "id": "LU7", "name": "Yuhl Guyhl", "meridian": "Lung", "description": "", "x": 0.3145, "y": 0.7376, "view": "front", "region": "Arms Front" },
-    { "id": "LU8", "name": "Kyuhng Guh", "meridian": "Lung", "description": "", "x": 0.3154, "y": 0.748, "view": "front", "region": "Arms Front" },
-    { "id": "LU9", "name": "Tae Yuhn", "meridian": "Lung", "description": "", "x": 0.2969, "y": 0.7546, "view": "front", "region": "Arms Front" },
-    { "id": "LU10", "name": "Uh Jae", "meridian": "Lung", "description": "", "x": 0.249, "y": 0.7793, "view": "front", "region": "Arms Front" },
-    { "id": "LU11", "name": "Soh Sahng", "meridian": "Lung", "description": "", "x": 0.21, "y": 0.8118, "view": "front", "region": "Arms Front" }
-  ]
+    {
+      "id": "LU1",
+      "name": "Joong Boo",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.5469,
+      "y": 0.4004
+    },
+    {
+      "id": "LU2",
+      "name": "Oon Moon",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.5469,
+      "y": 0.377
+    },
+    {
+      "id": "LU3",
+      "name": "Chuhn Boo",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.4648,
+      "y": 0.4668
+    },
+    {
+      "id": "LU4",
+      "name": "Hyup Baek",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.4629,
+      "y": 0.4811
+    },
+    {
+      "id": "LU5",
+      "name": "Chuk Taek",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.4414,
+      "y": 0.5749
+    },
+    {
+      "id": "LU6",
+      "name": "Kohng Choe",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.3838,
+      "y": 0.6491
+    },
+    {
+      "id": "LU7",
+      "name": "Yuhl Guyhl",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.3145,
+      "y": 0.7376
+    },
+    {
+      "id": "LU8",
+      "name": "Kyuhng Guh",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.3154,
+      "y": 0.748
+    },
+    {
+      "id": "LU9 ",
+      "name": "Tae Yuhn",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.2969,
+      "y": 0.7546
+    },
+    {
+      "id": "LU10",
+      "name": "Uh Jae",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.249,
+      "y": 0.7793
+    },
+    {
+      "id": "LU11",
+      "name": "Soh Sahng",
+      "meridian": "Lung",
+      "description": "",
+      "x": 0.21,
+      "y": 0.8118
+    }
+  ],
+  "regions": []
 }
