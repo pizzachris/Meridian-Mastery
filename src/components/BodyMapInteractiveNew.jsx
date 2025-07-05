@@ -1,4 +1,5 @@
-// No changes needed as the current src/components/BodyMapInteractiveNew.jsx is already the latest and correct version.
+
+import React, { useState, useEffect, useRef } from "react";
 
 // Correct IMAGE_DIMENSIONS object
 const IMAGE_DIMENSIONS = {
