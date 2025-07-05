@@ -730,8 +730,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png"}
                       alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
                       style={{
-                        width: '100%',
-                        height: 'auto',
+                        width: width + 'px',
+                        height: height + 'px',
                         objectFit: 'contain',
                         display: 'block',
                         opacity: 1
