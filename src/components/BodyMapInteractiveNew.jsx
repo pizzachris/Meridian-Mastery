@@ -748,6 +748,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     />
                 {/* Debug overlay grid and coordinates */}
                 {debugMode && (
+                  <>
                     {/* Image natural bounds and (0,0) origin marker */}
                     {showImageBounds && (
                       <>
@@ -779,7 +780,6 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                         {imgRef.current && console.log('Image natural size:', imgRef.current.naturalWidth, imgRef.current.naturalHeight)}
                       </>
                     )}
-                  <>
                     {/* Grid lines */}
                     {[0.25,0.5,0.75].map(f=>(
                       <React.Fragment key={f}>
