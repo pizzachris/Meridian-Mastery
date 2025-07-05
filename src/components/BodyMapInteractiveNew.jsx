@@ -1,5 +1,7 @@
 
+
 import React, { useState, useEffect, useRef } from "react";
+import Logo from "./Logo";
 
 // Correct IMAGE_DIMENSIONS object
 const IMAGE_DIMENSIONS = {
