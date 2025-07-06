@@ -249,6 +249,9 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     if (selectedMeridian === 'Lung' && isMobile && currentView === 'front') {
       // Use the new meridian-specific mobile image for Lung front view
       return "/improved/Lung_Meridian_Mobile.png";
+    } else if (selectedMeridian === 'Heart' && currentView === 'front') {
+      // Use the new meridian-specific image for Heart front view (desktop and mobile)
+      return "/improved/Heart_Meridian.png";
     } else if ((selectedMeridian === 'LargeIntestine') && isMobile) {
       switch (currentView) {
         case "front":
