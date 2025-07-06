@@ -751,64 +751,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   <>
                     {/* Image natural bounds and (0,0) origin marker */}
                     {showImageBounds && (
-                      <>
-                        {/* Red border for image bounds */}
-                        <div style={{
-                          position: 'absolute',
-                          left: offsetX,
-                          top: offsetY,
-                          width: width,
-                          height: height,
-                          border: '2px solid red',
-                          pointerEvents: 'none',
-                          zIndex: 30
-                        }} />
-                        {/* (0,0) origin marker */}
-                        <div style={{
-                          position: 'absolute',
-                          left: offsetX - 4,
-                          top: offsetY - 4,
-                          width: 8,
-                          height: 8,
-                          background: 'red',
-                          borderRadius: '50%',
-                          border: '2px solid #fff',
-                          zIndex: 31,
-                          pointerEvents: 'none',
-                        }} title="Image (0,0) origin" />
-                        {/* Debug readout overlay */}
-                        <div style={{
-                          position: 'absolute',
-                          left: 12,
-                          top: 12,
-                          background: 'rgba(0,0,0,0.85)',
-                          color: '#facc15',
-                          fontSize: 13,
-                          padding: '10px 16px',
-                          borderRadius: 8,
-                          zIndex: 100,
-                          maxWidth: 340,
-                          pointerEvents: 'auto',
-                          boxShadow: '0 2px 8px #0008',
-                        }}>
-                          <div style={{fontWeight:'bold',marginBottom:4}}>Debug Info</div>
-                          <div>Image natural size: <b>{imgRef.current ? `${imgRef.current.naturalWidth} x ${imgRef.current.naturalHeight}` : 'N/A'}</b></div>
-                          <div>Rendered size: <b>{width} x {height}</b></div>
-                          <div>Offset: <b>{offsetX}, {offsetY}</b></div>
-                          <div>Container: <b>{containerRef.current ? `${containerRef.current.offsetWidth} x ${containerRef.current.offsetHeight}` : 'N/A'}</b></div>
-                          <div style={{marginTop:6}}>First 3 points (px):</div>
-                          <ul style={{margin:0,paddingLeft:16}}>
-                            {orderedPoints.slice(0,3).map((pt, i) => {
-                              const {x, y} = transformCoordinates(pt, selectedMeridian);
-                              const xPx = (x * width + offsetX).toFixed(1);
-                              const yPx = (y * height + offsetY).toFixed(1);
-                              return <li key={i}>{pt.id}: ({xPx}, {yPx})</li>;
-                            })}
-                          </ul>
-                        </div>
-                        {/* Log image natural size to console on debug mode */}
-                        {imgRef.current && console.log('Image natural size:', imgRef.current.naturalWidth, imgRef.current.naturalHeight)}
-                      </>
+                      null
                     )}
                     {/* Grid lines */}
                     {[0.25,0.5,0.75].map(f=>(
