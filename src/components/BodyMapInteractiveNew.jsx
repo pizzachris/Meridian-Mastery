@@ -246,7 +246,10 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
   const getCurrentImagePath = () => {
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
     const base = "/improved_body_map_with_regions/improved_body_models_and_regions/";
-    if ((selectedMeridian === 'Lung' || selectedMeridian === 'LargeIntestine') && isMobile) {
+    if (selectedMeridian === 'Lung' && isMobile && currentView === 'front') {
+      // Use the new meridian-specific mobile image for Lung front view
+      return "/improved/Lung_Meridian_Mobile.png";
+    } else if ((selectedMeridian === 'LargeIntestine') && isMobile) {
       switch (currentView) {
         case "front":
           return base + "front_view_model_wide_padded_mobile.png";
