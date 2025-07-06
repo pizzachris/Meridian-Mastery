@@ -732,6 +732,21 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     </button>
                   </div>
                 </div>
+                {/* Restore card controls below flashcard */}
+                <div className="flex justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
+                  <button
+                    onClick={flipCard}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
+                  >
+                    Flip Card
+                  </button>
+                  <button
+                    onClick={closeZoom}
+                    className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           </>
