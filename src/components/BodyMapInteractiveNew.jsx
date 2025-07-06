@@ -1,7 +1,33 @@
 
 
+
 import React, { useState, useEffect, useRef } from "react";
 import Logo from "./Logo";
+
+// Add CSS for image container and image
+const styleSheet = `
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  overflow: hidden;
+  padding: 0;
+}
+.meridian-image {
+  display: block;
+  max-width: none;
+  max-height: none;
+  width: auto;
+  height: auto;
+}
+`;
+if (typeof document !== 'undefined' && !document.getElementById('meridian-image-style')) {
+  const style = document.createElement('style');
+  style.id = 'meridian-image-style';
+  style.innerHTML = styleSheet;
+  document.head.appendChild(style);
+}
 
 // Correct IMAGE_DIMENSIONS object
 const IMAGE_DIMENSIONS = {
@@ -485,16 +511,14 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               return (
                 <div
                   ref={containerRef}
-                  className="relative bg-gray-800 rounded-lg mx-auto touch-pan-x touch-pan-y"
+                  className="image-container relative bg-gray-800 rounded-lg mx-auto touch-pan-x touch-pan-y"
                   style={{
                     width: width ? width + 'px' : undefined,
                     height: height ? height + 'px' : undefined,
                     minHeight: 0,
                     minWidth: 0,
-                    overflow: 'auto',
                     boxSizing: 'border-box',
                     touchAction: enablePanZoom ? 'none' : 'auto',
-                    // Remove transform: always start at (0,0) and natural size
                   }}
                   onTouchStart={enablePanZoom ? handleTouchStart : undefined}
                   onTouchMove={enablePanZoom ? handleTouchMove : undefined}
@@ -511,11 +535,10 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     ref={imgRef}
                     src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png"}
                     alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
+                    className="meridian-image"
                     style={{
                       width: imgDims.width ? imgDims.width + 'px' : undefined,
                       height: imgDims.height ? imgDims.height + 'px' : undefined,
-                      objectFit: 'none', // No scaling, show at natural size
-                      display: 'block',
                       opacity: 1
                     }}
                     draggable={false}
@@ -762,16 +785,14 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 return (
                   <div
                     ref={containerRef}
-                    className="relative bg-gray-800 rounded-lg mx-auto touch-pan-x touch-pan-y"
+                    className="image-container relative bg-gray-800 rounded-lg mx-auto touch-pan-x touch-pan-y"
                     style={{
                       width: width + 'px',
                       height: height + 'px',
                       minHeight: 0,
                       minWidth: 0,
-                      overflow: 'auto',
                       boxSizing: 'border-box',
                       touchAction: enablePanZoom ? 'none' : 'auto',
-                      // Remove transform: always start at (0,0) and natural size
                     }}
                     onTouchStart={enablePanZoom ? handleTouchStart : undefined}
                     onTouchMove={enablePanZoom ? handleTouchMove : undefined}
@@ -788,11 +809,10 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       ref={imgRef}
                       src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png"}
                       alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
+                      className="meridian-image"
                       style={{
                         width: imgDims.width ? imgDims.width + 'px' : undefined,
                         height: imgDims.height ? imgDims.height + 'px' : undefined,
-                        objectFit: 'none', // No scaling, show at natural size
-                        display: 'block',
                         opacity: 1
                       }}
                       draggable={false}
