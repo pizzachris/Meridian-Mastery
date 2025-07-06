@@ -489,14 +489,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   style={{
                     width: width ? width + 'px' : undefined,
                     height: height ? height + 'px' : undefined,
-                    maxWidth: width ? width + 'px' : undefined,
-                    maxHeight: height ? height + 'px' : undefined,
                     minHeight: 0,
                     minWidth: 0,
                     overflow: 'auto',
                     boxSizing: 'border-box',
                     touchAction: enablePanZoom ? 'none' : 'auto',
-                    transform: enablePanZoom ? `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)` : undefined
+                    // Remove transform: always start at (0,0) and natural size
                   }}
                   onTouchStart={enablePanZoom ? handleTouchStart : undefined}
                   onTouchMove={enablePanZoom ? handleTouchMove : undefined}
@@ -516,7 +514,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     style={{
                       width: imgDims.width ? imgDims.width + 'px' : undefined,
                       height: imgDims.height ? imgDims.height + 'px' : undefined,
-                      objectFit: 'unset',
+                      objectFit: 'none', // No scaling, show at natural size
                       display: 'block',
                       opacity: 1
                     }}
@@ -768,14 +766,12 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     style={{
                       width: width + 'px',
                       height: height + 'px',
-                      maxWidth: width + 'px',
-                      maxHeight: height + 'px',
                       minHeight: 0,
                       minWidth: 0,
                       overflow: 'auto',
                       boxSizing: 'border-box',
                       touchAction: enablePanZoom ? 'none' : 'auto',
-                      transform: enablePanZoom ? `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)` : undefined
+                      // Remove transform: always start at (0,0) and natural size
                     }}
                     onTouchStart={enablePanZoom ? handleTouchStart : undefined}
                     onTouchMove={enablePanZoom ? handleTouchMove : undefined}
@@ -795,7 +791,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       style={{
                         width: imgDims.width ? imgDims.width + 'px' : undefined,
                         height: imgDims.height ? imgDims.height + 'px' : undefined,
-                        objectFit: 'unset',
+                        objectFit: 'none', // No scaling, show at natural size
                         display: 'block',
                         opacity: 1
                       }}
