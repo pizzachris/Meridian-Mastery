@@ -87,19 +87,15 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
     const img = imgRef.current;
     const container = containerRef.current;
     if (img && container) {
-      const imgRect = img.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-      // Calculate offset of image inside container (letterboxing)
-      const offsetX = imgRect.left - containerRect.left;
-      const offsetY = imgRect.top - containerRect.top;
+      // Use the image's natural size for overlays and container
       setImgDims({
-        width: imgRect.width,
-        height: imgRect.height,
-        offsetX,
-        offsetY
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        offsetX: 0,
+        offsetY: 0
       });
     }
-  };
+  }
 
   // Update image dimensions on window resize and image load
   useEffect(() => {
@@ -458,73 +454,140 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 <div className="flex-1">
             {/* Use exact pixel dimensions for zoomed view */}
             {(() => {
-                // Debug: Show image natural bounds and (0,0) origin
-                const showImageBounds = debugMode;
+              // Debug: Show image natural bounds and (0,0) origin
+              const showImageBounds = debugMode;
               let dims = IMAGE_DIMENSIONS[currentView] || IMAGE_DIMENSIONS.side;
-              const width = dims.width;
-              const height = dims.height;
-              // Show the selected point as a highlighted marker
+              const width = imgDims.width || dims.width;
+              const height = imgDims.height || dims.height;
+              const offsetX = imgDims.offsetX || 0;
+              const offsetY = imgDims.offsetY || 0;
+              // Five Element color map for points
+              const colorMap = {
+                'element-metal': '#a3a3a3',
+                'element-fire': '#ef4444',
+                'element-earth': '#eab308',
+                'element-water': '#3b82f6',
+                'element-wood': '#22c55e'
+              };
+              let meridianColor = '#ef4444';
+              if (selectedMeridian) {
+                const meridian = availableMeridians.find(m => m.id === selectedMeridian);
+                if (meridian && colorMap[meridian.element]) meridianColor = colorMap[meridian.element];
+              }
+              // Sort points by id (e.g., LI1, LI2, ...)
+              let orderedPoints = getPointsForCurrentView();
+              orderedPoints = orderedPoints.slice().sort((a, b) => {
+                const getNum = (id) => parseInt((id||'').replace(/\D+/g, ''));
+                return getNum(a.id) - getNum(b.id);
+              });
+              // Only enable pan/zoom and touchAction:none when a meridian is selected
+              const enablePanZoom = !!selectedMeridian;
               return (
                 <div
-                  className="relative bg-gray-800 rounded-lg overflow-hidden mx-auto"
+                  ref={containerRef}
+                  className="relative bg-gray-800 rounded-lg mx-auto touch-pan-x touch-pan-y"
                   style={{
-                    width: width + 'px',
-                    height: height + 'px',
-                    maxWidth: '100%',
-                    maxHeight: '90vh',
+                    width: width ? width + 'px' : undefined,
+                    height: height ? height + 'px' : undefined,
+                    maxWidth: width ? width + 'px' : undefined,
+                    maxHeight: height ? height + 'px' : undefined,
+                    minHeight: 0,
+                    minWidth: 0,
+                    overflow: 'auto',
+                    boxSizing: 'border-box',
+                    touchAction: enablePanZoom ? 'none' : 'auto',
+                    transform: enablePanZoom ? `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)` : undefined
                   }}
+                  onTouchStart={enablePanZoom ? handleTouchStart : undefined}
+                  onTouchMove={enablePanZoom ? handleTouchMove : undefined}
+                  onTouchEnd={enablePanZoom ? handleTouchEnd : undefined}
                 >
-                  {/* Main image for zoom/flashcard view */}
-                  <>
-                    <img
-                      src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png"}
-                      alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
-                      style={{
-                        width: width + 'px',
-                        height: height + 'px',
-                        objectFit: 'contain',
-                        display: 'block',
-                      }}
-                      draggable={false}
-                    />
-                  </>
-                  {/* Show selected point as a highlighted marker */}
-                  {selectedPoint && (
-                    (() => {
-                      const { x, y } = transformCoordinates(selectedPoint, selectedMeridian);
-                      const xPx = x * width;
-                      const yPx = y * height;
-                      // Use a larger, animated, or colored marker for highlight
-                      return (
-                        <span
-                          style={{
-                            position: 'absolute',
-                            left: xPx - 12,
-                            top: yPx - 12,
-                            width: 24,
-                            height: 24,
-                            background: 'rgba(255,255,0,0.7)',
-                            borderRadius: '50%',
-                            border: '3px solid #fff',
-                            boxShadow: '0 0 12px 4px #facc15',
-                            zIndex: 10,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <span style={{
-                            width: 10,
-                            height: 10,
-                            background: '#facc15',
-                            borderRadius: '50%',
-                            border: '2px solid #fff',
-                            display: 'block',
-                          }} />
-                        </span>
-                      );
-                    })()
+                  {/* Debug overlay toggle button */}
+                  <button
+                    style={{position:'absolute',top:8,right:8,zIndex:20,background:'#222',color:'#fff',padding:'4px 10px',borderRadius:6,border:'1px solid #facc15',fontSize:12,opacity:0.8}}
+                    onClick={e => {e.stopPropagation();setDebugMode(d=>!d);}}
+                  >
+                    {debugMode ? 'Hide Debug' : 'Show Debug'}
+                  </button>
+                  <img
+                    ref={imgRef}
+                    src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png"}
+                    alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
+                    style={{
+                      width: imgDims.width ? imgDims.width + 'px' : undefined,
+                      height: imgDims.height ? imgDims.height + 'px' : undefined,
+                      objectFit: 'unset',
+                      display: 'block',
+                      opacity: 1
+                    }}
+                    draggable={false}
+                    onLoad={handleResize}
+                  />
+                  {/* Debug overlay grid and coordinates */}
+                  {debugMode && (
+                    <>
+                      {/* Image natural bounds and (0,0) origin marker */}
+                      {showImageBounds && (null)}
+                      {/* Grid lines */}
+                      {[0.25,0.5,0.75].map(f=>(
+                        <React.Fragment key={f}>
+                          <div style={{position:'absolute',left:`${f*100}%`,top:0,bottom:0,width:1,background:'#facc15',opacity:0.2,zIndex:15}} />
+                          <div style={{position:'absolute',top:`${f*100}%`,left:0,right:0,height:1,background:'#facc15',opacity:0.2,zIndex:15}} />
+                        </React.Fragment>
+                      ))}
+                      {/* Show all point coordinates */}
+                      {orderedPoints.map((point,index)=>{
+                        const {x,y}=transformCoordinates(point,selectedMeridian);
+                        const xPx=x*width+offsetX;
+                        const yPx=y*height+offsetY;
+                        return (
+                          <div key={index} style={{position:'absolute',left:xPx+10,top:yPx-10,zIndex:16,fontSize:10,color:'#facc15',background:'#222',padding:'1px 4px',borderRadius:3,opacity:0.8}}>
+                            {point.id} ({x.toFixed(3)}, {y.toFixed(3)})
+                          </div>
+                        );
+                      })}
+                    </>
                   )}
+                  {/* Points Overlay - only show when meridian is selected and points exist */}
+                  {selectedMeridian && orderedPoints.length > 0 && orderedPoints.map((point, index) => {
+                    const { x, y } = transformCoordinates(point, selectedMeridian);
+                    const xPx = x * width + offsetX;
+                    const yPx = y * height + offsetY;
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => handlePointClick(point)}
+                        className="absolute hover:scale-110 transition-all cursor-pointer"
+                        style={{
+                          width: 16,
+                          height: 16,
+                          left: xPx - 8,
+                          top: yPx - 8,
+                          padding: 0,
+                          touchAction: 'manipulation',
+                          background: 'transparent',
+                          zIndex: 3,
+                          border: 'none',
+                        }}
+                        tabIndex={0}
+                        aria-label={point.name}
+                      >
+                        <span style={{
+                          display: 'block',
+                          width: 8,
+                          height: 8,
+                          background: meridianColor,
+                          borderRadius: '50%',
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          border: '2px solid white',
+                          boxShadow: '0 0 4px #000',
+                        }} />
+                      </button>
+                    );
+                  })}
                 </div>
               );
             })()}
@@ -672,9 +735,8 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
               {(() => {
                 const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
                 let dims = IMAGE_DIMENSIONS[currentView] ? (isMobile ? IMAGE_DIMENSIONS[currentView].mobile : IMAGE_DIMENSIONS[currentView].desktop) : (isMobile ? IMAGE_DIMENSIONS.side.mobile : IMAGE_DIMENSIONS.side.desktop);
-                // Use the image's natural pixel size for both desktop and mobile
-                const width = dims.width;
-                const height = dims.height;
+                const width = imgDims.width || 0;
+                const height = imgDims.height || 0;
                 const offsetX = imgDims.offsetX || 0;
                 const offsetY = imgDims.offsetY || 0;
                 const circleSize = 16;
@@ -726,93 +788,85 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                     >
                       {debugMode ? 'Hide Debug' : 'Show Debug'}
                     </button>
-                    {/* Always show the side view image as a fallback background */}
                     <img
                       ref={imgRef}
                       src={selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png"}
                       alt={selectedMeridian ? `${currentView} view` : "Body Model Side View"}
                       style={{
-                        width: width + 'px',
-                        height: height + 'px',
-                        objectFit: 'contain',
+                        width: imgDims.width ? imgDims.width + 'px' : undefined,
+                        height: imgDims.height ? imgDims.height + 'px' : undefined,
+                        objectFit: 'unset',
                         display: 'block',
                         opacity: 1
                       }}
                       draggable={false}
-                      srcSet={
-                        (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png") +
-                        ' 1x, ' +
-                        (selectedMeridian ? getCurrentImagePath() : "/improved_body_map_with_regions/improved_body_models_and_regions/side_full_cleaned_padded.png") + ' 2x'
-                      }
                       onLoad={handleResize}
                     />
-                {/* Debug overlay grid and coordinates */}
-                {debugMode && (
-                  <>
-                    {/* Image natural bounds and (0,0) origin marker */}
-                    {showImageBounds && (
-                      null
+                    {/* Debug overlay grid and coordinates */}
+                    {debugMode && (
+                      <>
+                        {/* Image natural bounds and (0,0) origin marker */}
+                        {/* (Optional: add a marker if needed) */}
+                        {/* Grid lines */}
+                        {[0.25,0.5,0.75].map(f=>(
+                          <React.Fragment key={f}>
+                            <div style={{position:'absolute',left:`${f*100}%`,top:0,bottom:0,width:1,background:'#facc15',opacity:0.2,zIndex:15}} />
+                            <div style={{position:'absolute',top:`${f*100}%`,left:0,right:0,height:1,background:'#facc15',opacity:0.2,zIndex:15}} />
+                          </React.Fragment>
+                        ))}
+                        {/* Show all point coordinates */}
+                        {orderedPoints.map((point,index)=>{
+                          const {x,y}=transformCoordinates(point,selectedMeridian);
+                          const xPx=x*width+offsetX;
+                          const yPx=y*height+offsetY;
+                          return (
+                            <div key={index} style={{position:'absolute',left:xPx+10,top:yPx-10,zIndex:16,fontSize:10,color:'#facc15',background:'#222',padding:'1px 4px',borderRadius:3,opacity:0.8}}>
+                              {point.id} ({x.toFixed(3)}, {y.toFixed(3)})
+                            </div>
+                          );
+                        })}
+                      </>
                     )}
-                    {/* Grid lines */}
-                    {[0.25,0.5,0.75].map(f=>(
-                      <React.Fragment key={f}>
-                        <div style={{position:'absolute',left:`${f*100}%`,top:0,bottom:0,width:1,background:'#facc15',opacity:0.2,zIndex:15}} />
-                        <div style={{position:'absolute',top:`${f*100}%`,left:0,right:0,height:1,background:'#facc15',opacity:0.2,zIndex:15}} />
-                      </React.Fragment>
-                    ))}
-                    {/* Show all point coordinates */}
-                    {orderedPoints.map((point,index)=>{
-                      const {x,y}=transformCoordinates(point,selectedMeridian);
-                      const xPx=x*width+offsetX;
-                      const yPx=y*height+offsetY;
+                    {/* Points Overlay - only show when meridian is selected and points exist */}
+                    {selectedMeridian && orderedPoints.length > 0 && orderedPoints.map((point, index) => {
+                      const { x, y } = transformCoordinates(point, selectedMeridian);
+                      const xPx = x * width + offsetX;
+                      const yPx = y * height + offsetY;
                       return (
-                        <div key={index} style={{position:'absolute',left:xPx+10,top:yPx-10,zIndex:16,fontSize:10,color:'#facc15',background:'#222',padding:'1px 4px',borderRadius:3,opacity:0.8}}>
-                          {point.id} ({x.toFixed(3)}, {y.toFixed(3)})
-                        </div>
+                        <button
+                          key={index}
+                          onClick={() => handlePointClick(point)}
+                          className="absolute hover:scale-110 transition-all cursor-pointer"
+                          style={{
+                            width: 16,
+                            height: 16,
+                            left: xPx - 8,
+                            top: yPx - 8,
+                            padding: 0,
+                            touchAction: 'manipulation',
+                            background: 'transparent',
+                            zIndex: 3,
+                            border: 'none',
+                          }}
+                          tabIndex={0}
+                          aria-label={point.name}
+                        >
+                          <span style={{
+                            display: 'block',
+                            width: 8,
+                            height: 8,
+                            background: meridianColor,
+                            borderRadius: '50%',
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            border: '2px solid white',
+                            boxShadow: '0 0 4px #000',
+                          }} />
+                        </button>
                       );
                     })}
-                  </>
-                )}
-                    {/* Points Overlay - only show when meridian is selected and points exist */}
-                {selectedMeridian && orderedPoints.length > 0 && orderedPoints.map((point, index) => {
-                  const { x, y } = transformCoordinates(point, selectedMeridian);
-                  const xPx = x * width + offsetX;
-                  const yPx = y * height + offsetY;
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => handlePointClick(point)}
-                      className="absolute hover:scale-110 transition-all cursor-pointer"
-                      style={{
-                        width: 16,
-                        height: 16,
-                        left: xPx - 8,
-                        top: yPx - 8,
-                        padding: 0,
-                        touchAction: 'manipulation',
-                        background: 'transparent',
-                        zIndex: 3,
-                        border: 'none',
-                      }}
-                      tabIndex={0}
-                      aria-label={point.name}
-                    >
-                      <span style={{
-                        display: 'block',
-                        width: 8,
-                        height: 8,
-                        background: meridianColor,
-                        borderRadius: '50%',
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        border: '2px solid white',
-                        boxShadow: '0 0 4px #000',
-                      }} />
-                    </button>
-                  );
-                })}
                   </div>
                 );
               })()}
@@ -877,7 +931,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
           </div>
         )}
       </div>
-      
+
       {/* Dynamic Point Popup for HT9 only */}
       {showHT9Popup && popupPoint && popupPoint.id === "HT9" && popupPoint.popup && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -930,6 +984,6 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
       )}
     </div>
   );
-};
+}
 
 export default BodyMapInteractiveNew;
