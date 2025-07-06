@@ -5,91 +5,91 @@
   "points": [
     {
       "id": "LU1",
-      "name": "Joong Boo",
+      "name": "Joong boo",
       "meridian": "Lung",
       "description": "",
-      "x": 0.3671,
-      "y": 0.2609
+      "x": 0.545,
+      "y": 0.4067
     },
     {
       "id": "LU2",
       "name": "Oon Moon",
-      "meridian": "Lung", 
+      "meridian": "Lung",
       "description": "",
-      "x": 0.3671,
-      "y": 0.2391
+      "x": 0.545,
+      "y": 0.3844
     },
     {
       "id": "LU3",
       "name": "Chuhn Boo",
       "meridian": "Lung",
       "description": "",
-      "x": 0.2861,
-      "y": 0.3164
+      "x": 0.455,
+      "y": 0.4711
     },
     {
       "id": "LU4",
       "name": "Hyup Baek",
       "meridian": "Lung",
       "description": "",
-      "x": 0.2803,
-      "y": 0.337
+      "x": 0.4533,
+      "y": 0.4911
     },
     {
       "id": "LU5",
       "name": "Chuk Taek",
       "meridian": "Lung",
       "description": "",
-      "x": 0.2688,
-      "y": 0.3792
+      "x": 0.44,
+      "y": 0.5733
     },
     {
       "id": "LU6",
       "name": "Kohng Choe",
       "meridian": "Lung",
       "description": "",
-      "x": 0.2254,
-      "y": 0.4155
+      "x": 0.375,
+      "y": 0.6622
     },
     {
       "id": "LU7",
       "name": "Yuhl Gyuhl",
       "meridian": "Lung",
       "description": "",
-      "x": 0.1994,
-      "y": 0.4614
+      "x": 0.3217,
+      "y": 0.7311
     },
     {
       "id": "LU8",
-      "name": "Kyuhng Guh",
+      "name": "Kyung Guh",
       "meridian": "Lung",
       "description": "",
-      "x": 0.211,
-      "y": 0.4686
+      "x": 0.3217,
+      "y": 0.7444
     },
     {
       "id": "LU9",
       "name": "Tae Yuhn",
       "meridian": "Lung",
       "description": "",
-      "x": 0.1936,
-      "y": 0.4783
+      "x": 0.3033,
+      "y": 0.7533
     },
     {
       "id": "LU10",
       "name": "Uh Jae",
       "meridian": "Lung",
       "description": "",
-      "x": 0.1532,
-      "y": 0.494
+      "x": 0.2583,
+      "y": 0.78
     },
     {
       "id": "LU11",
       "name": "Soh Sahng",
       "meridian": "Lung",
       "description": "",
-      "x": 0.1185,
-      "y": 0.5169
+      "x": 0.2167,
+      "y": 0.81
     }
   ],
   "regions": []
