@@ -620,8 +620,27 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
             })()}
                 </div>
 
-                {/* Flashcard */}
+                {/* Flashcard and region close-up logic */}
                 <div className="flex-1 max-w-md">
+                  {/* Show close-up button if region exists */}
+                  {selectedMeridian === 'Heart' && Array.isArray(points) && points.length > 0 && (
+                    <>
+                      <button
+                        className="mb-4 bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-2 px-4 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
+                        onClick={() => setShowZoomedView('ht1-3')}
+                      >
+                        Arm Close Up for HT1, HT2, HT3
+                      </button>
+                      {showZoomedView === 'ht1-3' && (
+                        <button
+                          className="mb-4 ml-2 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
+                          onClick={() => setShowZoomedView(true)}
+                        >
+                          Exit Close Up
+                        </button>
+                      )}
+                    </>
+                  )}
                   {(() => {
                     const flashcardData = getFlashcardData(selectedPoint);
                     const colors = getElementColors();
@@ -721,8 +740,7 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       </div>
                     );
                   })()}
-
-                  {/* Card controls */}
+                  {/* Card controls - only one row */}
                   <div className="flex justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
                     <button
                       onClick={flipCard}
@@ -737,21 +755,6 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                       Close
                     </button>
                   </div>
-                </div>
-                {/* Restore card controls below flashcard */}
-                <div className="flex justify-center gap-4 sm:gap-6 mt-4 sm:mt-6">
-                  <button
-                    onClick={flipCard}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
-                  >
-                    Flip Card
-                  </button>
-                  <button
-                    onClick={closeZoom}
-                    className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-lg text-sm sm:text-base transition-colors touch-manipulation"
-                  >
-                    Close
-                  </button>
                 </div>
               </div>
             </div>
@@ -796,11 +799,15 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                   if (meridian && colorMap[meridian.element]) meridianColor = colorMap[meridian.element];
                 }
                 // Sort points by id (e.g., LI1, LI2, ...)
-                let orderedPoints = getPointsForCurrentView();
-                orderedPoints = orderedPoints.slice().sort((a, b) => {
-                  const getNum = (id) => parseInt((id||'').replace(/\D+/g, ''));
-                  return getNum(a.id) - getNum(b.id);
-                });
+              let orderedPoints = getPointsForCurrentView();
+              // If Heart close-up is active, filter to HT1, HT2, HT3 only
+              if (selectedMeridian === 'Heart' && showZoomedView === 'ht1-3') {
+                orderedPoints = orderedPoints.filter(p => ['HT1','HT2','HT3'].includes(p.id));
+              }
+              orderedPoints = orderedPoints.slice().sort((a, b) => {
+                const getNum = (id) => parseInt((id||'').replace(/\D+/g, ''));
+                return getNum(a.id) - getNum(b.id);
+              });
                 // Only enable pan/zoom and touchAction:none when a meridian is selected
                 const enablePanZoom = !!selectedMeridian;
                 return (
