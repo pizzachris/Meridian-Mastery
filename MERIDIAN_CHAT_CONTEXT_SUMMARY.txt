@@ -1,0 +1,51 @@
+This file contains the full context and summary of the previous chat session for the Meridian Mastery React app, as of July 6, 2025.
+
+---
+
+# Meridian Mastery React App: Chat Session Summary and Context
+
+## 1. Project Overview
+- **Goal:** Ensure all body model images (desktop and mobile) and point overlays are perfectly aligned in the React app, with correct JSON/image pairing and no image resizing. Support meridian-specific images and JSONs, especially for Lung, and allow for arbitrary image sizes.
+- **Recent Focus:** Add and structure mobile JSONs for each meridian, use new Lung meridian images (desktop and mobile), update JSONs with new points and region polygons, and ensure overlays are pixel-perfect.
+
+## 2. Technical Foundation
+- **Frontend:** React (function components, hooks)
+- **Assets:** Static images in `public/improved_body_map_with_regions/improved_body_models_and_regions/` and `public/improved/`
+- **JSON Data:** Meridian JSONs (e.g., `lung_meridian_with_regions.json`, `lung_meridian_mobile.json`)
+- **Main Component:** `src/components/BodyMapInteractiveNew.jsx`
+- **CSS:** `.image-container`, `.meridian-image` for native image rendering
+
+## 3. Key Code Logic (BodyMapInteractiveNew.jsx)
+- **Image Sizing:** Always uses the image's natural size for overlays and points, supporting arbitrary image sizes.
+- **Image Path Logic:**
+  - For Lung, on mobile front view: `/improved/Lung_Meridian_Mobile.png`
+  - For Lung, on desktop front view: `/improved/Lung_Meridian.png`
+  - For other meridians: uses standard images in `/improved_body_map_with_regions/improved_body_models_and_regions/`
+- **JSON Loading:** Loads points and regions from the correct JSON for each meridian and view.
+- **Overlay Logic:** Points and regions are rendered using the image's true pixel dimensions, with overlays starting at (0,0).
+- **Flashcard Controls:** Always visible in zoomed view.
+
+## 4. Recent Operations
+- Updated `getCurrentImagePath` to use the new Lung mobile image for Lung on mobile front view.
+- Updated `lung_meridian_mobile.json` with new point coordinates and a new region polygon.
+- Ensured overlays and points use the image's natural size for all meridians.
+- Restored flashcard controls in zoomed view.
+- Force pushed all changes to the main branch.
+
+## 5. Outstanding Issues
+- If the new Lung mobile image is not showing, ensure the file `/public/improved/Lung_Meridian_Mobile.png` exists and is not cached by the browser.
+- All code and JSON logic is now set up to support arbitrary image sizes and meridian-specific images for both desktop and mobile.
+
+## 6. How to Continue
+- To add or update a meridian, place the new image in `/public/improved/` and update the corresponding JSON in `/public/improved/`.
+- The main logic for image and overlay rendering is in `src/components/BodyMapInteractiveNew.jsx`.
+- For new meridian images, update the `getCurrentImagePath` function as needed.
+- For new points or regions, update the relevant JSON file.
+
+## 7. Next Steps
+- If you need to add more meridian images or update JSONs, follow the established pattern.
+- If overlays are not aligning, check the image file, JSON coordinates, and ensure the image is not being resized in CSS or JS.
+
+---
+
+This file can be used to start a new chat session and provide the next agent with all the context needed to continue work seamlessly.
