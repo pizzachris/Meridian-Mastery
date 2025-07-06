@@ -801,8 +801,17 @@ const BodyMapInteractiveNew = ({ navigateTo }) => {
                 // Sort points by id (e.g., LI1, LI2, ...)
               let orderedPoints = getPointsForCurrentView();
               // If Heart close-up is active, filter to HT1, HT2, HT3 only
+              // Also, always render points overlay in close-up mode
               if (selectedMeridian === 'Heart' && showZoomedView === 'ht1-3') {
                 orderedPoints = orderedPoints.filter(p => ['HT1','HT2','HT3'].includes(p.id));
+              }
+              // For Lung mobile, ensure points are aligned to the natural image size
+              if (selectedMeridian === 'Lung' && typeof window !== 'undefined' && window.innerWidth < 640 && getCurrentImagePath().includes('Lung_Meridian_Mobile.png')) {
+                // Override imgDims to use natural image size for mobile
+                if (imgRef.current) {
+                  imgDims.width = imgRef.current.naturalWidth;
+                  imgDims.height = imgRef.current.naturalHeight;
+                }
               }
               orderedPoints = orderedPoints.slice().sort((a, b) => {
                 const getNum = (id) => parseInt((id||'').replace(/\D+/g, ''));
