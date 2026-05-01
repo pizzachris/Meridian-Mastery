@@ -1,454 +1,106 @@
-# Interactive Body Map: Development & Alignment Guide
+# Meridian Mastery
 
-## Key Features (as of June 2025)
-- **Perfect Point Alignment:** Points are rendered using the image’s actual rendered size and offset, ensuring perfect alignment on all screens.
-- **Mobile/Desktop Support:**
-  - For the Lung meridian, mobile uses special padded images and a mobile-specific JSON (`lung_meridian_mobile.json`).
-  - Desktop uses the original padded images and desktop JSON.
-  - The code auto-selects the correct image/JSON based on screen width and meridian.
-- **No Polylines:** Only elemental-colored points are rendered (no lines or polylines).
-- **Single Marker Per Point:** Each point is rendered as a single, small, colored circle. In zoom/flashcard view, the selected point is highlighted.
-- **Debug Overlay:** Toggleable overlay shows a grid and all point coordinates for visual alignment verification.
-- **Mobile Scroll & Layout:**
-  - On mobile, the image is fixed in the container and the page scrolls to reveal the full image.
-  - Pan/zoom is only enabled on desktop when a meridian is selected.
-- **HT9 Popup Logic:** Closing the HT9 popup will show the flashcard for HT9 if it is the selected point.
-- **Data Files:**
-  - `public/improved/lung_meridian_with_regions.json` (desktop)
-  - `public/improved/lung_meridian_mobile.json` (mobile)
-  - Similar files for Large Intestine and Small Intestine.
-  - Mobile-padded images are in `public/improved_body_map_with_regions/Improved%20body%20models%20and%20regions/`.
+An interactive Progressive Web App for learning Korean meridian pressure points through flashcards, body maps, quizzes, and progress tracking. Built for Kuk Sool Won practitioners and students of traditional Korean medicine.
 
-## Point Alignment & Debugging
-1. Use the debug overlay (toggle button on the body map) to verify point alignment.
-2. For mobile, ensure the correct mobile image and JSON are loaded (see code in `BodyMapInteractiveNew.jsx`).
-3. Update JSON coordinates as needed for perfect alignment.
-4. Commit and force push after each major update for live testing.
-
-## Adding/Editing Meridian Data
-- To add or update a meridian, edit the relevant JSON in `public/improved/`.
-- For mobile, create a `*_mobile.json` and ensure a matching padded image exists.
-- Use the debug overlay to check alignment on both desktop and mobile.
-
-## Development Notes
-- All image paths must be URL-encoded.
-- The main React component is `src/components/BodyMapInteractiveNew.jsx`.
-- See the code for logic on image/JSON switching and point rendering.
+**Live App:** [merdianmastery.netlify.app](https://merdianmastery.netlify.app)
 
 ---
-# Meridian Mastery - Interactive Korean Acupuncture Learning Platform
 
-A comprehensive Progressive Web Application (PWA) for learning Korean meridian pressure points through interactive body maps, dynamic flashcard systems, and mobile-optimized interfaces.
+## Features
 
-## Project Overview
+**Flashcard System** — 400+ meridian points with Korean names (Hangul), romanized pronunciation, English translations, healing functions, and martial applications. Tap-to-flip cards with element-based color coding (Fire, Earth, Metal, Water, Wood).
 
-Meridian Mastery is a professional-grade educational tool designed for students and practitioners of Korean traditional medicine. The application features an interactive body mapping system with precise acupuncture point visualization, comprehensive flashcard learning modules, and real-time progress tracking.
+**Interactive Body Map** — Front, back, and side anatomical views with clickable acupuncture points. Select a meridian to see its pathway and tap individual points for detail cards.
 
-## Current Build Status - June 22, 2025
+**Quiz System** — Multiple quiz types covering Korean translations, healing properties, martial applications, and meridian identification. Adaptive difficulty with progress-based question selection.
 
-**PRODUCTION READY** - Complete interactive body map system with mobile optimization
+**Progress Tracking** — Session history, per-point success rates, flagging system for difficult points, and performance analytics.
 
-## Core Features
+**Study Modes** — Study by individual meridian channel, by Maek pressure point sets (Chi Ki and Cha Ki), or shuffle all points for comprehensive review.
 
-### Interactive Body Map System
-- **Dynamic Meridian Selection**: Four meridians available (Lung, Large Intestine, Heart, Stomach)
-- **Multi-View Support**: Front, back, and side view anatomical models
-- **Precise Point Mapping**: Clickable acupuncture points with coordinate-based positioning
-- **Zoom Functionality**: 2x and 3x zoom with crosshair targeting for precise point examination
-- **Mobile-Optimized Interface**: Touch-friendly controls with responsive design
+**Offline Support** — Full PWA with service worker caching. Install on any device and study without internet.
 
-### Advanced Flashcard System
-- **Authentic Korean Content**: Traditional Korean names with Hangul characters
-- **Bilateral Point Support**: Complete left/right side meridian mapping
-- **Interactive Cards**: Touch-to-flip functionality with detailed point information
-- **Element-Based Classification**: Dynamic element labels (Fire, Earth, Metal, Water, Wood)
-- **Comprehensive Point Data**: Healing functions, therapeutic insights, and clinical applications
+## Currently Implemented Meridians
 
-### Dynamic Data Architecture
-- **JSON-Based Meridian Data**: Scalable meridian point database with metadata
-- **Element Classification System**: Automatic element-based styling and labeling
-- **Popup Information System**: Contextual point information with warning and info types
-- **Coordinate Mapping**: Precise SVG coordinate system for accurate point placement
+| Meridian | Element | Points |
+|----------|---------|--------|
+| Lung (LU) | Metal | 11 |
+| Large Intestine (LI) | Metal | 20 |
+| Heart (HT) | Fire | 9 |
+| Stomach (ST) | Earth | 45 |
 
-### Professional Mobile Experience
-- **Header Optimization**: Mobile notch-aware positioning
-- **Touch Target Optimization**: Appropriately sized interactive elements
-- **Responsive Flashcards**: Larger mobile-friendly card interfaces
-- **Progressive Enhancement**: Desktop and mobile-specific feature sets
+The data architecture supports all 12 primary meridians plus extraordinary vessels. Additional meridians are added by creating JSON data files in `public/improved/`.
 
-## Technical Architecture
+## Tech Stack
 
-### Frontend Technologies
-- **React 18**: Modern hooks-based component architecture
-- **Vite 4**: Fast development builds with Hot Module Replacement
-- **Tailwind CSS**: Utility-first responsive design system
-- **Progressive Web App**: Service worker implementation for offline functionality
+- **React 18** with hooks-based component architecture
+- **Vite 4** for development and production builds
+- **Tailwind CSS** for responsive, mobile-first design
+- **PWA** with service worker for offline functionality
 
-### Data Management
-- **JSON Meridian Database**: Structured point data with metadata
-- **SVG Coordinate System**: Precise anatomical positioning
-- **Dynamic Loading**: Asynchronous meridian data fetching
-- **State Management**: React hooks for application state
+## Project Structure
 
-### Mobile Optimization
-- **Responsive Design**: Mobile-first approach with desktop enhancement
-- **Touch Interface**: Optimized touch targets and gesture support
-- **Performance Optimization**: Fast loading and smooth animations
-- **Cross-Platform Compatibility**: Works on iOS, Android, and desktop browsers
+```
+src/
+├── main.jsx              # App entry point
+├── App.jsx               # Root component and routing
+├── index.css             # Global styles
+├── components/           # React components
+│   ├── Flashcard.jsx     # Flashcard with pronunciation guide
+│   ├── Quiz.jsx          # Quiz engine
+│   ├── QuizSelection.jsx # Quiz type selector
+│   ├── BodyMapInteractiveNew.jsx  # Body map with point overlay
+│   ├── Header.jsx        # App header
+│   ├── Navigation.jsx    # Navigation controls
+│   ├── ProgressDashboard.jsx  # Progress analytics
+│   ├── SettingsModal.jsx # User settings
+│   └── ...
+├── utils/                # Helper functions
+│   ├── pronunciationHelper.js
+│   ├── progressTracker.js
+│   └── dataLoaderOptimized.js
+└── data/                 # Static data files
+    ├── flashcards.js
+    ├── acupuncturePoints.js
+    └── quizzes.js
 
-## Installation and Development
-
-### Prerequisites
-- Node.js 18 or higher
-- npm or yarn package manager
-
-### Setup Instructions
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/yourusername/meridian-mastery.git
-cd meridian-mastery
+public/
+└── improved/             # Meridian JSON data and body map images
+    ├── lung_meridian_with_regions.json
+    ├── lung_meridian_mobile.json
+    ├── large_intestine_meridian_with_regions.json
+    ├── heart_meridian_with_regions.json
+    └── [body map images]
 ```
 
-2. **Install dependencies**
+## Setup
+
 ```bash
+# Clone
+git clone https://github.com/pizzachris/Meridian-Mastery.git
+cd Meridian-Mastery
+
+# Install dependencies
 npm install
-```
 
-3. **Start development server**
-```bash
+# Development server
 npm run dev
-```
 
-4. **Build for production**
-```bash
+# Production build
 npm run build
 npm run preview
 ```
 
-### Development Features
-- Hot Module Replacement for rapid development
-- Source map support for debugging
-- ESLint and Prettier integration
-- TypeScript support for enhanced development experience
-
-## Project Structure
-
-### Core Components
-- `BodyMapInteractiveNew.jsx`: Main interactive body map component
-- `public/improved/`: Meridian JSON data and anatomical images
-- `src/utils/dataLoaderOptimized.js`: Data loading and management utilities
-
-### Asset Organization
-- `public/improved/`: Current production assets (body models, meridian data)
-- `archive/`: Deprecated files and legacy components
-- `improved_body_map_with_regions/`: Source data for meridian information
-
-### Data Format
-Each meridian JSON file contains:
-- Meridian metadata (name, view, element classification)
-- Point array with coordinates, names, and descriptions
-- Optional popup information for special points
-- Element classification for dynamic styling
-
-## Available Meridians
-
-### Currently Implemented
-1. **Lung Meridian (LU)** - Metal element, 11 points
-2. **Large Intestine Meridian (LI)** - Metal element, 20 points  
-3. **Heart Meridian (HT)** - Fire element, 9 points
-4. **Stomach Meridian (ST)** - Earth element, 45 points
-
-### Expansion Ready
-The architecture supports easy addition of new meridians through JSON data files following the established format.
-
-## User Interface Features
-
-### Navigation
-- Logo-based home navigation
-- Dynamic back button functionality
-- Breadcrumb-style navigation for zoom states
-
-### Body Map Interaction
-- Point selection with visual feedback
-- Automatic view switching based on meridian selection
-- Zoom functionality with centered point focus
-- Real-time coordinate display
-
-### Flashcard System
-- Korean Hangul display with English translations
-- Element-based color coding and badges
-- Touch-to-flip card interaction
-- Detailed therapeutic information display
-
-## Mobile Optimization Details
-
-### Header Management
-- Mobile notch-aware positioning (top-16 on mobile vs top-4 on desktop)
-- Flexible button sizing for different screen sizes
-- Safe area considerations for modern mobile devices
-
-### Point Visualization
-- Progressive sizing: 8px on mobile, 12px on tablet, 16px on desktop
-- Enhanced touch targets for finger interaction
-- Visual feedback for point selection and hover states
-
-### Flashcard Enhancement
-- Increased mobile dimensions (600px height on mobile, 500px on desktop)
-- Larger container widths for better content visibility
-- Optimized text sizing for readability across devices
-
-## Performance Considerations
-
-### Loading Optimization
-- Asynchronous meridian data loading
-- Image optimization for fast rendering
-- Lazy loading for non-critical components
-
-### Memory Management
-- Efficient state management with React hooks
-- Optimized re-rendering through proper dependency arrays
-- Clean component unmounting to prevent memory leaks
-
-### Browser Compatibility
-- Modern browser support (Chrome 90+, Firefox 88+, Safari 14+)
-- Progressive enhancement for older browsers
-- Graceful degradation of advanced features
-
-## Educational Value
-
-### Learning Methodology
-- Visual learning through interactive body maps
-- Kinesthetic learning through touch interaction
-- Traditional Korean medicine point nomenclature
-- Clinical application context for each point
-
-### Content Accuracy
-- Traditional Korean acupuncture point locations
-- Authentic Korean terminology with proper Hangul
-- Therapeutic function descriptions
-- Element theory integration
-
-## Future Development
-
-### Planned Enhancements
-- Additional meridian implementations (Spleen, Small Intestine, Bladder, etc.)
-- Quiz system integration with body map points
-- Progress tracking and learning analytics
-- Audio pronunciation for Korean terminology
-
-### Technical Improvements
-- Enhanced offline functionality
-- Advanced caching strategies
-- Performance monitoring integration
-- Accessibility improvements for screen readers
-
-## Contributing
-
-### Development Guidelines
-- Follow established JSON structure for new meridians
-- Maintain responsive design principles
-- Test across multiple devices and screen sizes
-- Ensure accessibility compliance
-
-### Code Standards
-- ES6+ JavaScript with modern React patterns
-- Tailwind CSS for consistent styling
-- Component-based architecture
-- Clean, documented code with meaningful variable names
-
-## License
-
-MIT License - Open source for educational and commercial use
+Requires Node.js 18+.
 
 ## Deployment
 
-### Production Builds
-The application is optimized for deployment on modern hosting platforms:
-- Netlify (recommended)
-- Vercel
-- GitHub Pages
-- Traditional web servers
+Auto-deploys to Netlify from the `main` branch. Also compatible with Vercel, GitHub Pages, or any static host.
 
-### Build Optimization
-- Tree shaking for minimal bundle size
-- Code splitting for optimal loading
-- Asset optimization for fast delivery
-- Service worker caching for offline functionality
+## Data Format
 
-## Support and Documentation
+Each meridian is defined as a JSON file with point coordinates, Korean names, English translations, healing functions, and martial applications. See existing files in `public/improved/` for the structure.
 
-### Browser Requirements
-- JavaScript enabled
-- SVG support
-- Touch event support (for mobile devices)
-- Local storage support for progress tracking
+## License
 
-### Performance Targets
-- First Contentful Paint: Under 2 seconds
-- Largest Contentful Paint: Under 3 seconds
-- Cumulative Layout Shift: Under 0.1
-- First Input Delay: Under 100ms
-
----
-
-**Meridian Mastery** - Professional Korean acupuncture education through interactive technology
-
-Built for practitioners, students, and educators in traditional Korean medicine
-- **Tailwind CSS 3** - Utility-first styling with custom design system
-- **Framer Motion** - Advanced animations and transitions
-
-### **PWA & Performance**
-- **Service Worker** - Offline functionality with cache management
-- **Progressive Web App** - Install on any device, works offline
-- **Optimized Bundle** - Code splitting and lazy loading
-- **Mobile-First Design** - Touch-optimized responsive interface
-
-### **Data & State Management**
-- **React Context** - Global state management for settings and progress
-- **LocalStorage Integration** - Persistent user progress and preferences
-- **JSON Data Sources** - Structured meridian point database
-- **Real-Time Analytics** - Live progress tracking and performance metrics
-
-## 📱 **Mobile Optimization**
-
-### **Touch Interface**
-- **Gesture Support** - Swipe navigation for flashcards
-- **Safe Area Support** - iPhone notch/status bar compatibility
-- **Touch-Friendly Buttons** - Optimized sizing for mobile interaction
-- **Responsive Layouts** - Adaptive design for all screen sizes
-
-### **Performance Optimization**
-- **Lazy Loading** - Components load as needed
-- **Image Optimization** - SVG-based graphics for crisp display
-- **Efficient Rendering** - Optimized React component lifecycle
-- **Memory Management** - Careful resource handling for mobile devices
-
-## � **Educational Methodology**
-
-### **Target Audience**
-- **Acupuncture Students** - Traditional Korean Medicine learners
-- **TCM Practitioners** - Professionals expanding Korean knowledge
-- **Martial Arts Students** - Kuk Sool Won and traditional Korean martial arts
-- **Language Learners** - Korean medical terminology enthusiasts
-
-### **Learning Progression**
-1. **Foundation Phase** - Basic point identification and Korean pronunciation
-2. **Application Phase** - Therapeutic effects and anatomical locations
-3. **Mastery Phase** - Martial applications and advanced point combinations
-4. **Expert Phase** - Complete meridian understanding and practical application
-
-### **Study Methodologies**
-- **Spaced Repetition** - Algorithm-driven review scheduling
-- **Visual Association** - Color-coded meridian and element systems
-- **Multi-Modal Learning** - Visual, auditory, and kinesthetic approaches
-- **Progressive Difficulty** - Adaptive complexity based on user performance
-
-## 🌐 **Deployment & Hosting**
-
-### **Supported Platforms**
-- **✅ Netlify** (Recommended) - Automatic deployment from GitHub
-- **✅ Vercel** - Zero-configuration deployment with framework detection
-- **✅ GitHub Pages** - Static hosting with GitHub Actions
-- **✅ Any Static Host** - Standard HTML/CSS/JS deployment
-
-### **Build Output**
-- **Optimized Bundle** - Tree-shaken and minified for production
-- **PWA Manifest** - Complete Progressive Web App configuration
-- **Service Worker** - Offline functionality and caching strategy
-- **Icon Set** - Complete icon family for all device types
-
-## � **Design System**
-
-### **Visual Identity**
-- **Triskelion Logo** - Traditional Korean triple spiral design
-- **Color Palette** - Black backgrounds with red/yellow accents
-- **Typography** - Clear, readable fonts optimized for Korean characters
-- **Element Integration** - Five-element theory color coding
-
-### **User Experience**
-- **Intuitive Navigation** - State-based routing without page reloads
-- **Consistent Interface** - Unified design language across all components
-- **Accessibility** - WCAG compliance with keyboard navigation support
-- **Performance First** - Sub-second load times and smooth animations
-
-## 🔧 **Recent Development History**
-
-### **June 15, 2025 - Critical Bug Fixes & Stabilization**
-- ✅ **Complete Debugging Session** - All TypeScript and syntax errors resolved
-- ✅ **Service Worker Configuration** - Proper dev/prod separation
-- ✅ **React State Management** - Fixed disclaimer modal and component state
-- ✅ **ES6 Module Migration** - Modernized entire import system
-- ✅ **Build Optimization** - Clean Vite configuration with HMR
-- ✅ **Error-Free Compilation** - All components validated and functional
-
-### **June 13, 2025 - Element Theory Integration**
-- ✅ **Element Theory Modals** - Educational popups for five-element theory
-- ✅ **Dynamic Backgrounds** - Element-specific visual themes
-- ✅ **Session-Based Display** - One-time educational content per session
-- ✅ **User Controls** - Toggle settings for educational content
-
-### **June 9, 2025 - Mobile Optimization**
-- ✅ **iPhone Compatibility** - Safe area support for notch/status bar
-- ✅ **Touch Interface** - Optimized button sizing and spacing
-- ✅ **Icon System** - Complete PWA icon family with cache-busting
-- ✅ **Responsive Design** - Enhanced mobile-first layout optimization
-
-## 🤝 **Contributing**
-
-### **Development Setup**
-1. Fork the repository on GitHub
-2. Clone your fork locally: `git clone https://github.com/yourusername/meridian-mastery-coach.git`
-3. Create a feature branch: `git checkout -b feature/your-enhancement`
-4. Install dependencies: `npm install`
-5. Start development server: `npm run dev`
-6. Make your changes and test thoroughly
-7. Commit with descriptive messages: `git commit -am 'Add new feature: description'`
-8. Push to your branch: `git push origin feature/your-enhancement`
-9. Create a Pull Request with detailed description
-
-### **Code Standards**
-- **ES6+ JavaScript** - Modern JavaScript standards throughout
-- **React Hooks** - Functional components with hooks preferred
-- **Tailwind CSS** - Utility-first styling, custom components when needed
-- **Component Structure** - Clear separation of concerns and reusability
-- **Performance First** - Optimize for mobile devices and slow connections
-
-### **Areas for Contribution**
-- **Korean Language Content** - Additional meridian points and terminology
-- **Audio Pronunciation** - Enhanced Korean voice synthesis
-- **Educational Content** - Five-element theory and traditional medicine
-- **Mobile Optimization** - Further touch interface improvements
-- **Accessibility** - Screen reader support and keyboard navigation
-
-## 📄 **License**
-
-**MIT License** - Open source and free for educational and commercial use
-
-## 🏆 **Project Status**
-
-### **✅ PRODUCTION READY - June 15, 2025**
-- **Complete Feature Set** - All planned functionality implemented
-- **Bug-Free Operation** - Comprehensive debugging and testing completed
-- **Mobile Optimized** - Full responsive design with touch support
-- **PWA Compliant** - Offline functionality and app installation
-- **Performance Optimized** - Fast loading and smooth animations
-- **Educational Value** - Comprehensive Korean acupuncture learning system
-
-### **Live Demo**
-**🌐 [Try Meridian Mastery Coach](https://meridian-mastery-coach.netlify.app)**
-
-### **Key Metrics**
-- **400+ Pressure Points** - Complete bilateral meridian database
-- **6 Quiz Types** - Comprehensive knowledge testing
-- **12 Meridian Channels** - Full traditional Korean medicine coverage
-- **5 Study Modes** - Flexible learning approaches
-- **Real-Time Progress** - Live tracking and analytics
-
----
-
-**🏮 Master Korean Acupuncture with Confidence! 🎯**
-
-*Built with ❤️ for the traditional medicine learning community*
-
-**Ready for deployment and educational use worldwide** ✨
+MIT
